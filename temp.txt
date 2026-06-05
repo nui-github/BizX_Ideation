@@ -1,0 +1,38 @@
+228:          ? { ...j, status: JobStatus.DONE } 
+235:      setSelectedJob(prev => prev ? { ...prev, status: JobStatus.DONE } : null);
+1013:      status: JobStatus.DONE,
+1124:      status: JobStatus.DONE,
+1471:        status: JobStatus.DONE,
+2305:        case JobStatus.DONE:
+2328:        case JobStatus.DONE: return 'bg-teal-500';
+2517:                          job.status === JobStatus.DONE ? 'bg-teal-500 shadow-teal-200' : 
+2550:                            disabled={job.status === JobStatus.READY || job.status === JobStatus.DONE || isProcessing || hasOngoingOCR}
+2557:                            className={`p-2.5 rounded-xl transition-all ${job.status === JobStatus.READY || job.status === JobStatus.DONE || isProcessing || hasOngoingOCR ? 'text-slate-200 cursor-not-allowed' : 'text-[#0463EF] hover:bg-blue-50'}`}
+3278:                            disabled={selectedJob?.status === JobStatus.DONE}
+3281:                              selectedJob?.status === JobStatus.DONE 
+3293:                      disabled={!hasOCRChanges || selectedJob?.status === JobStatus.DONE}
+3295:                        hasOCRChanges && selectedJob?.status !== JobStatus.DONE
+3784:                           selectedJob.status === JobStatus.DONE ? 'bg-teal-50 border-teal-200 text-teal-700' : 
+3800:                              : selectedJob.status === JobStatus.DONE 
+3825:                  {selectedJob.status !== JobStatus.READY && selectedJob.status !== JobStatus.DONE && (
+3903:                      disabled={isUnassigned || selectedJob.status === JobStatus.DONE}
+3906:                        selectedJob.status === JobStatus.DONE 
+3917:                  {selectedJob.status !== JobStatus.DONE && Object.values(selectedJob.docs).some(s => s === ComparisonDocStatus.RECEIVED) && (
+3940:                        selectedJob.status === JobStatus.DONE || 
+3968:                       disabled={isUnassigned || (!areAllFilesLocked && selectedJob.status !== JobStatus.READY) || selectedJob.status === JobStatus.DONE}
+4133:                                                        disabled={isUnassigned || selectedJob.status === JobStatus.DONE}
+4141:                                                          selectedJob.status === JobStatus.DONE
+4153:                                                        disabled={isUnassigned || selectedJob.status === JobStatus.DONE}
+4161:                                                          selectedJob.status === JobStatus.DONE
+4173:                                                        disabled={isUnassigned || selectedJob.status === JobStatus.DONE}
+4180:                                                          selectedJob.status === JobStatus.DONE
+4193:                                                         disabled={isUnassigned || docStatus === ComparisonDocStatus.EXTRACTING || docStatus === ComparisonDocStatus.LOCKED || selectedJob.status === JobStatus.DONE}
+4202:                                                           (docStatus === ComparisonDocStatus.EXTRACTING || docStatus === ComparisonDocStatus.LOCKED || selectedJob.status === JobStatus.DONE)
+4218:                                                           selectedJob.status === JobStatus.DONE
+4227:                                                           : (docStatus === ComparisonDocStatus.REJECTED || docStatus === ComparisonDocStatus.RECEIVED || docStatus === ComparisonDocStatus.EXTRACTING || (docStatus !== ComparisonDocStatus.LOCKED && isMismatched) || selectedJob.status === JobStatus.DONE)
+4240:                                                        disabled={isUnassigned || docStatus === ComparisonDocStatus.EXTRACTING || docStatus === ComparisonDocStatus.LOCKED || selectedJob.status === JobStatus.DONE}
+4249:                                                          (docStatus === ComparisonDocStatus.EXTRACTING || docStatus === ComparisonDocStatus.LOCKED || selectedJob.status === JobStatus.DONE)
+4259:                                                        disabled={isUnassigned || docStatus === ComparisonDocStatus.REJECTED || docStatus === ComparisonDocStatus.LOCKED || docStatus === ComparisonDocStatus.EXTRACTING || selectedJob.status === JobStatus.DONE}
+4267:                                                          (docStatus === ComparisonDocStatus.REJECTED || docStatus === ComparisonDocStatus.LOCKED || docStatus === ComparisonDocStatus.EXTRACTING || selectedJob.status === JobStatus.DONE)
+4283:                                                          selectedJob.status === JobStatus.DONE
+4292:                                                          : (docStatus === ComparisonDocStatus.REJECTED || docStatus === ComparisonDocStatus.RECEIVED || docStatus === ComparisonDocStatus.EXTRACTING || (docStatus !== ComparisonDocStatus.LOCKED && isMismatched) || selectedJob.status === JobStatus.DONE)

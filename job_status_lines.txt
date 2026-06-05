@@ -1,0 +1,20 @@
+667:         let nextStatus = job.status;
+668:         if (job.status === JobStatus.READY) {
+771:         let nextStatus = job.status;
+772:         if (job.status === JobStatus.READY) {
+1217:             let newStatus = job.status;
+1565:         let newJobStatus = job.status;
+1568:         } else if (job.status === JobStatus.READY && !allLocked) {
+1614:         let newStatus = job.status;
+2336:       .filter(job => statusFilter === 'ALL' || job.status === statusFilter)
+2488:                     const isProcessing = job.status === JobStatus.PROCESSING;
+2515:                           job.status === JobStatus.READY ? 'bg-emerald-500 shadow-emerald-200' : 
+2516:                           job.status === JobStatus.DONE ? 'bg-teal-500 shadow-teal-200' : 
+2517:                           job.status === JobStatus.PENDING ? 'bg-[#0463EF] shadow-blue-200' : 
+2518:                           job.status === JobStatus.REVIEW ? 'bg-amber-500 shadow-amber-200' : 
+2519:                           job.status === JobStatus.PROCESSING ? 'bg-blue-600 animate-pulse' : 
+2543:                       {getStatusBadge(job.status)}
+2549:                             disabled={job.status === JobStatus.READY || job.status === JobStatus.DON
+2556:                             className={`p-2.5 rounded-xl transition-all ${job.status === JobStatus.R
+2578:                             disabled={job.status !== JobStatus.READY || isProcessing}
+2585:                             className={`p-2.5 transition-all rounded-xl ${job.status === JobStatus.R
