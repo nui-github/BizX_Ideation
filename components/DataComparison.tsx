@@ -3531,43 +3531,49 @@ const mockWorkflows: Workflow[] = [
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="font-black text-slate-800 tracking-tight text-lg leading-tight">{pdfPreviewUrl}</h3>
-                    {activeBoardTab !== 'pending' && selectedJob?.docs[pdfPreviewUrl] && (
-                      <div className={`flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border ${
-                        selectedJob.docs[pdfPreviewUrl] === ComparisonDocStatus.MATCHED || 
-                        selectedJob.docs[pdfPreviewUrl] === ComparisonDocStatus.LOCKED || 
-                        selectedJob.docs[pdfPreviewUrl] === ComparisonDocStatus.OCR_DONE ? 'bg-emerald-50 border-emerald-100' :
-                        selectedJob.docs[pdfPreviewUrl] === ComparisonDocStatus.RECEIVED || 
-                        selectedJob.docs[pdfPreviewUrl] === ComparisonDocStatus.EXTRACTING ? 'bg-amber-50 border-amber-100' :
-                        selectedJob.docs[pdfPreviewUrl] === ComparisonDocStatus.ERROR ? 'bg-rose-50 border-rose-100' :
-                        'bg-slate-50 border-slate-100'
-                      }`}>
-                        <div className={`w-1.5 h-1.5 rounded-full ${
-                          selectedJob.docs[pdfPreviewUrl] === ComparisonDocStatus.MATCHED || 
-                          selectedJob.docs[pdfPreviewUrl] === ComparisonDocStatus.LOCKED || 
-                          selectedJob.docs[pdfPreviewUrl] === ComparisonDocStatus.OCR_DONE ? 'bg-emerald-500' :
-                          selectedJob.docs[pdfPreviewUrl] === ComparisonDocStatus.RECEIVED || 
-                          selectedJob.docs[pdfPreviewUrl] === ComparisonDocStatus.EXTRACTING ? 'bg-amber-500 animate-pulse' :
-                          selectedJob.docs[pdfPreviewUrl] === ComparisonDocStatus.ERROR ? 'bg-rose-500' :
-                          'bg-slate-300'
-                        }`}></div>
-                        <span className={`text-[9px] font-black uppercase tracking-wider ${
-                          selectedJob.docs[pdfPreviewUrl] === ComparisonDocStatus.MATCHED || 
-                          selectedJob.docs[pdfPreviewUrl] === ComparisonDocStatus.LOCKED || 
-                          selectedJob.docs[pdfPreviewUrl] === ComparisonDocStatus.OCR_DONE ? 'text-emerald-500' :
-                          selectedJob.docs[pdfPreviewUrl] === ComparisonDocStatus.RECEIVED || 
-                          selectedJob.docs[pdfPreviewUrl] === ComparisonDocStatus.EXTRACTING ? 'text-amber-500' :
-                          selectedJob.docs[pdfPreviewUrl] === ComparisonDocStatus.ERROR ? 'text-rose-500' :
-                          'text-slate-400'
+                    {activeBoardTab !== 'pending' && selectedJob?.docs[pdfPreviewUrl] && (() => {
+                      const docStatus = selectedJob.docs[pdfPreviewUrl];
+                      const isMismatched = mismatchedFileNames.has(pdfPreviewUrl);
+                      const displayStatus = (docStatus === ComparisonDocStatus.MATCHED) && isMismatched
+                        ? ComparisonDocStatus.MISMATCHED
+                        : docStatus;
+                      
+                      const isMatchedOrLocked = displayStatus === ComparisonDocStatus.MATCHED || displayStatus === ComparisonDocStatus.LOCKED;
+                      const isAmber = displayStatus === ComparisonDocStatus.RECEIVED || 
+                                      displayStatus === ComparisonDocStatus.EXTRACTING || 
+                                      displayStatus === ComparisonDocStatus.OCR_DONE;
+                      const isRose = displayStatus === ComparisonDocStatus.ERROR || displayStatus === ComparisonDocStatus.MISMATCHED;
+
+                      return (
+                        <div className={`flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border ${
+                          isMatchedOrLocked ? 'bg-emerald-50 border-emerald-100' :
+                          isAmber ? 'bg-amber-50 border-amber-100' :
+                          isRose ? 'bg-rose-50 border-rose-100' :
+                          'bg-slate-50 border-slate-100'
                         }`}>
-                          {
-                            selectedJob.docs[pdfPreviewUrl] === ComparisonDocStatus.LOCKED ? t.statusLocked : 
-                            (selectedJob.docs[pdfPreviewUrl] === ComparisonDocStatus.RECEIVED || selectedJob.docs[pdfPreviewUrl] === ComparisonDocStatus.EXTRACTING) ? t.statusReceived : 
-                            selectedJob.docs[pdfPreviewUrl] === ComparisonDocStatus.OCR_DONE ? t.statusOcrDone :
-                            selectedJob.docs[pdfPreviewUrl]
-                          }
-                        </span>
-                      </div>
-                    )}
+                          <div className={`w-1.5 h-1.5 rounded-full ${
+                            isMatchedOrLocked ? 'bg-emerald-500' :
+                            displayStatus === ComparisonDocStatus.EXTRACTING ? 'bg-amber-500 animate-pulse' :
+                            isAmber ? 'bg-amber-500' :
+                            isRose ? 'bg-rose-500' :
+                            'bg-slate-300'
+                          }`}></div>
+                          <span className={`text-[9px] font-black uppercase tracking-wider ${
+                            isMatchedOrLocked ? 'text-emerald-500' :
+                            isAmber ? 'text-amber-500' :
+                            isRose ? 'text-rose-500' :
+                            'text-slate-400'
+                          }`}>
+                            {
+                              displayStatus === ComparisonDocStatus.LOCKED ? t.statusLocked : 
+                              (displayStatus === ComparisonDocStatus.RECEIVED || displayStatus === ComparisonDocStatus.EXTRACTING) ? t.statusReceived : 
+                              displayStatus === ComparisonDocStatus.OCR_DONE ? t.statusOcrDone :
+                              displayStatus
+                            }
+                          </span>
+                        </div>
+                      );
+                    })()}
                     {activeBoardTab !== 'pending' && selectedJob?.updatedDocs?.includes(pdfPreviewUrl) && (
                       <span className="shrink-0 bg-blue-50 text-blue-600 text-[9px] font-black px-2 py-0.5 rounded-full border border-blue-100 flex items-center gap-1.5 uppercase tracking-wider">
                         <Save size={10} />
@@ -3575,9 +3581,6 @@ const mockWorkflows: Workflow[] = [
                       </span>
                     )}
                   </div>
-                  {activeBoardTab !== 'pending' && (
-                    <p className="text-[11px] font-bold text-slate-400 tracking-tight leading-none mt-0.5">{t.sourceDocView}</p>
-                  )}
                 </div>
               </div>
               
@@ -3606,15 +3609,6 @@ const mockWorkflows: Workflow[] = [
                {/* Left Pane: PDF Preview in grey canvas container */}
                <div className={`${activeBoardTab === 'pending' ? 'w-full' : 'w-1/2'} flex flex-col border-[#eaecf0] bg-white ${activeBoardTab === 'pending' ? '' : 'border-r'}`}>
                   
-                  {/* Left Column Header Tab */}
-                  {activeBoardTab !== 'pending' && (
-                    <div className="bg-slate-50/50 border-b border-[#eaecf0] flex px-4 shrink-0 justify-between items-center h-12">
-                      <button className="px-4 py-3 border-b-2 border-[#0463EF] text-[#0463EF] text-xs font-black uppercase tracking-wider select-none leading-none">
-                        PDF PREVIEW
-                      </button>
-                    </div>
-                  )}
-
                   {/* PDF Simulator Cool Dark Chrome Toolbar */}
                   <div className="bg-[#323639] h-11 text-white flex items-center justify-between px-4 select-none shrink-0 border-b border-[#212325]">
                     
@@ -4956,13 +4950,19 @@ const mockWorkflows: Workflow[] = [
                            {(selectedJob.status === JobStatus.PROCESSING || selectedJob.status === JobStatus.REVIEW) && (
                              <div className={`w-1.5 h-1.5 rounded-full ${selectedJob.status === JobStatus.PROCESSING ? 'bg-white' : 'bg-amber-500'} animate-pulse`}></div>
                            )}
-                           {selectedJob.status === JobStatus.NEW 
-                              ? (language === 'TH' ? 'รอไฟล์ครบ' : 'PENDING FILES') 
-                              : selectedJob.status === JobStatus.PROCESSING 
-                              ? 'COMPARING' 
-                              : selectedJob.status === JobStatus.DONE 
-                              ? (language === 'TH' ? 'ส่งออกแล้ว' : 'EXPORTED')
-                              : selectedJob.status}
+                           {selectedJob.status === JobStatus.READY 
+                               ? (language === 'TH' ? 'เสร็จสมบูรณ์' : 'READY') 
+                               : selectedJob.status === JobStatus.DONE 
+                               ? (language === 'TH' ? 'ส่งออกแล้ว' : 'EXPORTED') 
+                               : selectedJob.status === JobStatus.PENDING 
+                               ? (language === 'TH' ? 'รอดำเนินการ' : 'PENDING') 
+                               : selectedJob.status === JobStatus.NEW 
+                               ? (language === 'TH' ? 'รอไฟล์ครบ' : 'PENDING FILES') 
+                               : selectedJob.status === JobStatus.PROCESSING 
+                               ? (language === 'TH' ? 'กำลังเปรียบเทียบข้อมูล' : 'COMPARING') 
+                               : selectedJob.status === JobStatus.REVIEW 
+                               ? (language === 'TH' ? 'รอตรวจสอบ' : 'REVIEW') 
+                               : selectedJob.status}
                            <HelpCircle size={10} className="ml-1 opacity-40 group-hover/status:opacity-100 transition-opacity" />
                         </div>
                       </div>
