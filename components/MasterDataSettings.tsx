@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { Modal, Input, Button, Tag, message, Tooltip, Empty } from 'antd';
+import React, { useState, useRef } from 'react';
+import { Modal, Input, Button, Tag, message, Tooltip, Empty, Drawer } from 'antd';
 import { 
   Database, ArrowLeft, Plus, Search, Edit3, Trash2, HelpCircle, 
   Tag as TagIcon, Calendar, CheckCircle, ChevronRight, Hash, ShieldAlert,
-  LayoutGrid, List
+  LayoutGrid, List, Upload, Download, FileSpreadsheet, Check
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import * as XLSX from 'xlsx';
 import { Language } from '../types';
 
 interface MasterRecord {
@@ -112,6 +113,20 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
   const [firstRecordKeys, setFirstRecordKeys] = useState<string[]>([]);
   const [firstRecordKeyInput, setFirstRecordKeyInput] = useState('');
   const [firstRecordValue, setFirstRecordValue] = useState('');
+
+  // Edit Table Modal States
+  const [isEditTableModalOpen, setIsEditTableModalOpen] = useState(false);
+  const [editTableId, setEditTableId] = useState('');
+  const [editTableNameTH, setEditTableNameTH] = useState('');
+  const [editTableNameEN, setEditTableNameEN] = useState('');
+
+  // Excel Import States
+  const [isImportDrawerOpen, setIsImportDrawerOpen] = useState(false);
+  const [parsedRecords, setParsedRecords] = useState<Array<{ id: string; value: string; keys: string[] }>>([]);
+  const [duplicateWarningCount, setDuplicateWarningCount] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [importError, setImportError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const formatDateTime = (isoString: string) => {
     const d = new Date(isoString);
@@ -323,6 +338,217 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
     setRecordToDelete(null);
   };
 
+  // ================= EXCEL IMPORT HANDLERS =================
+  const handleOpenImportExcel = () => {
+    setParsedRecords([]);
+    setDuplicateWarningCount(0);
+    setImportError(null);
+    setIsImportDrawerOpen(true);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handleDownloadTemplate = () => {
+    if (!activeTable) return;
+    const headers = [
+      [
+        language === 'TH' ? 'ชื่อหลักในระบบ (Full System Value / Target) *จำเป็น' : 'Full System Value *Required',
+        language === 'TH' ? 'คีย์สำหรับจับคู่ (Matching Keys - แยกคอมมาหรือเว้นวรรค) *จำเป็น' : 'Matching Keys (comma or space separated) *Required'
+      ]
+    ];
+    
+    // Provide a neat real-world example row depending on the active table
+    let sampleVal = '';
+    let sampleKeys = '';
+    if (activeTable.id === 'vendor') {
+      sampleVal = language === 'TH' ? 'บริษัท เคอรี่ เอ็กซ์เพรส (ประเทศไทย) จำกัด (มหาชน)' : 'Kerry Express (Thailand) Public Company Limited';
+      sampleKeys = 'เคอรี่, Kerry Express, KEX';
+    } else if (activeTable.id === 'customer') {
+      sampleVal = language === 'TH' ? 'บริษัท บีเจซี เฮฟวี่ อินดัสทรี จำกัด (มหาชน)' : 'BJC Heavy Industries Public Company Limited';
+      sampleKeys = 'บีเจซี, BJC Heavy, BJCHI';
+    } else if (activeTable.id === 'product') {
+      sampleVal = 'LED Monitor Deluxe 27-Inch 4K';
+      sampleKeys = 'MONITOR-27, จอแอลอีดี 4K, LED-27-4K';
+    } else {
+      sampleVal = language === 'TH' ? 'ตัวอย่างข้อมูลระบบ' : 'Sample System Target Value';
+      sampleKeys = 'SampleKey1, คีย์สำหรับจับคู่, KeyABC';
+    }
+
+    const sampleRows = [[sampleVal, sampleKeys]];
+    const ws = XLSX.utils.aoa_to_sheet([...headers, ...sampleRows]);
+    
+    // Set widths to keep it elegant and scannable
+    ws['!cols'] = [{ wch: 55 }, { wch: 55 }];
+    
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "MasterDataTemplate");
+    XLSX.writeFile(wb, `${activeTable.id}_import_template.xlsx`);
+    message.success(language === 'TH' ? 'ดาวน์โหลดไฟล์เทมเพลตเรียบร้อยแล้ว' : 'Download Template file successfully!');
+  };
+
+  const processExcelFile = (file: File) => {
+    setImportError(null);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = new Uint8Array(e.target?.result as ArrayBuffer);
+        const workbook = XLSX.read(data, { type: 'array' });
+        if (workbook.SheetNames.length === 0) {
+          setImportError(language === 'TH' ? 'ไฟล์ Excel ต้องมีแผ่นงานอย่างน้อย 1 หน้า' : 'The Excel file must have at least 1 sheet.');
+          return;
+        }
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const rawData = XLSX.utils.sheet_to_json(sheet, { header: 1 }) as any[][];
+        
+        if (rawData.length <= 1) {
+          setImportError(language === 'TH' ? 'ไม่พบข้อมูลรายการในแผ่นงาน (ไม่มีข้อมูลใต้แถวหัวตาราง)' : 'No records found in the sheet layout (below header row).');
+          return;
+        }
+
+        const validParsed: Array<{ id: string; value: string; keys: string[] }> = [];
+        let duplicateCount = 0;
+        const currentExistingKeys = new Set(activeTable?.records.flatMap(r => r.keys.map(k => k.toLowerCase())) || []);
+
+        for (let i = 1; i < rawData.length; i++) {
+          const row = rawData[i];
+          if (!row || row.length === 0) continue;
+          
+          const rawValue = row[0];
+          const rawKeys = row[1];
+          
+          if (!rawValue) continue; // Skip empty value rows
+          
+          const strValue = String(rawValue).trim();
+          if (!strValue) continue;
+
+          // Parse matching keys
+          let keysArray: string[] = [];
+          if (rawKeys) {
+            const rawKeysStr = String(rawKeys);
+            // Support comma, semicolon, and vertical bars as separators
+            keysArray = rawKeysStr
+              .split(/[,;|，]+/)
+              .map(k => k.trim())
+              .filter(Boolean);
+          }
+
+          if (keysArray.length === 0) {
+            // Fallback - use a part of value as key if no key is provided
+            keysArray = [strValue.split(' ')[0]];
+          }
+
+          // Check if any of these imported keys already conflict with current active table database keys
+          let hasConflict = false;
+          for (const key of keysArray) {
+            if (currentExistingKeys.has(key.toLowerCase())) {
+              hasConflict = true;
+            }
+          }
+          if (hasConflict) {
+            duplicateCount++;
+          }
+
+          validParsed.push({
+            id: `imp-${Date.now()}-${Math.floor(Math.random() * 1000000)}-${i}`,
+            value: strValue,
+            keys: keysArray
+          });
+        }
+
+        if (validParsed.length === 0) {
+          setImportError(language === 'TH' ? 'ไม่มีข้อมูลที่นำเข้าได้ คอลัมน์แรกในไฟล์ต้องไม่ว่างเปล่า' : 'No importable database records. The first column values must not be empty.');
+          return;
+        }
+
+        setParsedRecords(validParsed);
+        setDuplicateWarningCount(duplicateCount);
+      } catch (err) {
+        console.error(err);
+        setImportError(language === 'TH' ? 'เกิดข้อผิดพลาดในการอ่านไฟล์ กรุณาตรวจสอบนามสกุล .xlsx หรือ .xls' : 'Error parsing file. Please verify it is a valid .xlsx or .xls file.');
+      }
+    };
+
+    reader.onerror = () => {
+      setImportError(language === 'TH' ? 'ไม่สามารถอ่านไฟล์ระบบได้' : 'Failed to read the file.');
+    };
+    reader.readAsArrayBuffer(file);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      processExcelFile(e.target.files[0]);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const file = e.dataTransfer.files[0];
+      const extension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+      if (['.xlsx', '.xls', '.csv'].includes(extension)) {
+        processExcelFile(file);
+      } else {
+        setImportError(language === 'TH' ? 'รองรับเฉพาะไฟล์ Excel (.xlsx, .xls) หรือ .csv เท่านั้น' : 'Only Excel (.xlsx, .xls) and .csv are supported.');
+      }
+    }
+  };
+
+  const handleSaveImportedRecords = () => {
+    if (!selectedTableId || parsedRecords.length === 0) return;
+
+    setMasterTables(prev => prev.map(tbl => {
+      if (tbl.id !== selectedTableId) return tbl;
+      
+      // Merge unique record format
+      const updatedList = [...tbl.records];
+      
+      parsedRecords.forEach(newItem => {
+        // Prevent importing exact duplicate system target values to keep the list clean if they match exactly
+        const existingWithSameVal = updatedList.find(rec => rec.value.toLowerCase().trim() === newItem.value.toLowerCase().trim());
+        if (existingWithSameVal) {
+          // Merge keys if values match
+          newItem.keys.forEach(k => {
+            if (!existingWithSameVal.keys.some(ek => ek.toLowerCase() === k.toLowerCase())) {
+              existingWithSameVal.keys.push(k);
+            }
+          });
+        } else {
+          // Add as a new record
+          updatedList.push({
+            id: newItem.id,
+            value: newItem.value,
+            keys: newItem.keys
+          });
+        }
+      });
+
+      return {
+        ...tbl,
+        records: updatedList,
+        updatedAt: new Date().toISOString()
+      };
+    }));
+
+    message.success(language === 'TH' 
+      ? `นำเข้าข้อมูลเรียบร้อยแล้ว เพิ่ม ${parsedRecords.length} รายการแล้ว` 
+      : `Import completed! Added ${parsedRecords.length} master records successfully.`
+    );
+    setIsImportDrawerOpen(false);
+    setParsedRecords([]);
+  };
+
   // Add Table Actions
   const handleOpenAddTable = () => {
     setNewTableId('');
@@ -415,6 +641,58 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
     setFirstRecordValue('');
   };
 
+  const handleSaveEditTable = () => {
+    if (!selectedTableId || !activeTable) return;
+
+    const tid = editTableId.trim().toLowerCase();
+    if (!tid) {
+      message.error(t.errorEmptyTableId);
+      return;
+    }
+
+    if (!/^[a-z0-9_]+$/.test(tid)) {
+      message.error(t.errorInvalidTableId);
+      return;
+    }
+
+    const duplicate = masterTables.some(t => t.id.toLowerCase() === tid && t.id !== selectedTableId);
+    if (duplicate) {
+      message.error(t.errorDuplicateTableId);
+      return;
+    }
+
+    const nameTHVal = editTableNameTH.trim();
+    if (!nameTHVal) {
+      message.error(t.errorEmptyTableName);
+      return;
+    }
+
+    const nameENVal = editTableNameEN.trim() || nameTHVal;
+
+    setMasterTables(prev => prev.map(tbl => {
+      if (tbl.id === selectedTableId) {
+        return {
+          ...tbl,
+          id: tid,
+          nameTH: nameTHVal,
+          nameEN: nameENVal,
+          updatedAt: new Date().toISOString()
+        };
+      }
+      return tbl;
+    }));
+
+    // Maintain selection by shifting the active ID
+    setSelectedTableId(tid);
+
+    const successMsg = language === 'TH' 
+      ? 'ปรับปรุงชื่อและรหัสตารางข้อมูลหลักเรียบร้อยแล้ว' 
+      : 'Successfully updated Master Table name and ID.';
+    message.success(successMsg);
+
+    setIsEditTableModalOpen(false);
+  };
+
   const filteredTables = masterTables.filter(tbl => {
     const q = searchTableQuery.toLowerCase();
     return tbl.nameTH.toLowerCase().includes(q) || tbl.nameEN.toLowerCase().includes(q) || tbl.id.toLowerCase().includes(q);
@@ -441,15 +719,32 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
               <ArrowLeft size={18} />
             </button>
             <div>
-              <h1 className="text-2xl font-black tracking-tight leading-none mb-2">
+              <div className="flex items-center gap-2 mb-2 select-none flex-wrap">
+                <h1 className="text-2xl font-black tracking-tight leading-none">
+                  {selectedTableId && activeTable 
+                    ? (language === 'TH' ? activeTable.nameTH : activeTable.nameEN)
+                    : t.title
+                  }
+                </h1>
+                {selectedTableId && activeTable && (
+                  <Tooltip title={language === 'TH' ? 'แก้ไขชื่อรายการ' : 'Edit Item Name'}>
+                    <button
+                      onClick={() => {
+                        setEditTableId(activeTable.id);
+                        setEditTableNameTH(activeTable.nameTH);
+                        setEditTableNameEN(activeTable.nameEN);
+                        setIsEditTableModalOpen(true);
+                      }}
+                      className="p-1.5 text-[#0463EF] bg-blue-50/50 hover:bg-blue-100/50 border border-blue-200/40 rounded-[4px] transition-all cursor-pointer flex items-center justify-center"
+                    >
+                      <Edit3 size={13} />
+                    </button>
+                  </Tooltip>
+                )}
+              </div>
+              <p className="text-sm font-bold text-slate-500">
                 {selectedTableId && activeTable 
-                  ? (language === 'TH' ? activeTable.nameTH : activeTable.nameEN)
-                  : t.title
-                }
-              </h1>
-              <p className="text-sm font-medium text-slate-500">
-                {selectedTableId && activeTable 
-                  ? (language === 'TH' ? `ตารางข้อมูลอ้างอิงรหัสย่อระดับระบบของ: ${activeTable.nameTH}` : `System reference lookup for: ${activeTable.nameEN}`)
+                  ? `Table code/ID: ${activeTable.id}`
                   : t.subtitle
                 }
               </p>
@@ -639,15 +934,27 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
                   />
                 </div>
                 
-                {/* Add Record button moved inline to this record view exactly as requested */}
-                <Button 
-                  type="primary"
-                  onClick={handleOpenAddRecord}
-                  icon={<Plus size={16} />}
-                  className="bg-[#0463EF] hover:bg-[#0463EF]/90 border-none font-bold rounded-[4px] h-[40px] px-5 flex items-center justify-center gap-1.5 cursor-pointer shadow-sm text-sm"
-                >
-                  {t.addRecordBtn}
-                </Button>
+                <div className="flex items-center gap-2.5 shrink-0 select-none">
+                  {/* Excel Import button matching specified mock design and additional user instructions */}
+                  <Button 
+                    type="default"
+                    onClick={handleOpenImportExcel}
+                    icon={<FileSpreadsheet size={16} className="text-emerald-600" />}
+                    className="border-emerald-200 text-emerald-700 hover:text-emerald-800 hover:border-emerald-400 hover:bg-emerald-50/40 font-bold rounded-[4px] h-[40px] px-4 flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs text-sm transition-all"
+                  >
+                    <span>{language === 'TH' ? 'นำเข้าด้วย Excel' : 'Import with Excel'}</span>
+                  </Button>
+
+                  {/* Add Record button moved inline to this record view exactly as requested */}
+                  <Button 
+                    type="primary"
+                    onClick={handleOpenAddRecord}
+                    icon={<Plus size={16} />}
+                    className="bg-[#0463EF] hover:bg-[#0463EF]/90 border-none font-bold rounded-[4px] h-[40px] px-5 flex items-center justify-center gap-1.5 cursor-pointer shadow-sm text-sm"
+                  >
+                    {t.addRecordBtn}
+                  </Button>
+                </div>
               </div>
 
               {/* Records list container */}
@@ -657,12 +964,12 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
                     {/* Table Header Row */}
                     <div className="hidden sm:grid grid-cols-12 bg-slate-50/50 p-4 font-black text-xs text-slate-500 uppercase tracking-widest border-b border-slate-100">
                     <div className="col-span-5 flex items-center gap-1.5">
-                      <TagIcon size={13} />
-                      <span>{t.keysLabel}</span>
-                    </div>
-                    <div className="col-span-5 flex items-center gap-1.5">
                       <CheckCircle size={13} />
                       <span>{t.valueLabel}</span>
+                    </div>
+                    <div className="col-span-5 flex items-center gap-1.5">
+                      <TagIcon size={13} />
+                      <span>{t.keysLabel}</span>
                     </div>
                     <div className="col-span-2 text-right">ACTION</div>
                   </div>
@@ -673,6 +980,19 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
                       key={rec.id}
                       className="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4 p-5 hover:bg-slate-50/30 transition-colors items-center"
                     >
+                      {/* System Value Column */}
+                      <div className="col-span-12 sm:col-span-5 space-y-1">
+                        <span className="sm:hidden text-[10px] font-black text-slate-400 uppercase tracking-widest block">
+                          {t.valueLabel}
+                        </span>
+                        <div className="font-extrabold text-[#010136] text-[14px]">
+                          {rec.value}
+                        </div>
+                        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                          ID: {rec.id.toUpperCase()}
+                        </div>
+                      </div>
+
                       {/* Keys Column */}
                       <div className="col-span-12 sm:col-span-5 space-y-1.5">
                         <span className="sm:hidden text-[10px] font-black text-slate-400 uppercase tracking-widest block">
@@ -687,19 +1007,6 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
                               {key}
                             </span>
                           ))}
-                        </div>
-                      </div>
-
-                      {/* System Value Column */}
-                      <div className="col-span-12 sm:col-span-5 space-y-1">
-                        <span className="sm:hidden text-[10px] font-black text-slate-400 uppercase tracking-widest block">
-                          {t.valueLabel}
-                        </span>
-                        <div className="font-extrabold text-[#010136] text-[14px]">
-                          {rec.value}
-                        </div>
-                        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                          ID: {rec.id.toUpperCase()}
                         </div>
                       </div>
 
@@ -736,10 +1043,10 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
         )}
       </AnimatePresence>
 
-      {/* ================= ADD / EDIT RECORD MODAL (Ant Design based with Design System customizations) ================= */}
-      <Modal
+      {/* ================= ADD / EDIT RECORD DRAWER ================= */}
+      <Drawer
         title={
-          <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-center gap-2">
             <div className="p-1.5 bg-blue-50 text-[#0463EF] rounded-[4px]">
               <Database size={16} />
             </div>
@@ -749,26 +1056,25 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
           </div>
         }
         open={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
-        footer={[
-          <button
-            key="cancel"
-            onClick={() => setIsModalOpen(false)}
-            className="px-4 py-2 border border-slate-200 text-slate-600 font-bold rounded-[4px] hover:bg-slate-50 transition-colors text-xs inline-flex items-center justify-center cursor-pointer mr-2.5 h-[36px]"
-          >
-            {t.cancel}
-          </button>,
-          <button
-            key="submit"
-            onClick={handleSaveRecord}
-            className="px-4 py-2 bg-[#0463EF] hover:bg-[#0463EF]/90 text-white font-bold rounded-[4px] transition-colors text-xs inline-flex items-center justify-center cursor-pointer border-none h-[36px]"
-          >
-            {t.save}
-          </button>
-        ]}
-        width={550}
-        centered
-        className="custom-admin-modal"
+        onClose={() => setIsModalOpen(false)}
+        footer={
+          <div className="flex justify-end gap-2.5 py-1">
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="px-4 py-2 border border-slate-200 text-slate-600 font-bold rounded-[4px] hover:bg-slate-50 transition-colors text-xs inline-flex items-center justify-center cursor-pointer mr-1.5 h-[36px]"
+            >
+              {t.cancel}
+            </button>
+            <button
+              onClick={handleSaveRecord}
+              className="px-4 py-2 bg-[#0463EF] hover:bg-[#0463EF]/90 text-white font-bold rounded-[4px] transition-colors text-xs inline-flex items-center justify-center cursor-pointer border-none h-[36px]"
+            >
+              {t.save}
+            </button>
+          </div>
+        }
+        styles={{ wrapper: { width: 500 } }}
+        placement="right"
       >
         <div className="space-y-5 pt-2">
           {/* Full value system text input */}
@@ -850,7 +1156,7 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
             </p>
           </div>
         </div>
-      </Modal>
+      </Drawer>
 
       {/* ================= DELETE CONFIRMATION DIALOG MODAL ================= */}
       <Modal
@@ -892,10 +1198,10 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
         </div>
       </Modal>
 
-      {/* ================= ADD NEW CUSTOM MASTER TABLE MODAL ================= */}
-      <Modal
+      {/* ================= ADD NEW CUSTOM MASTER TABLE DRAWER ================= */}
+      <Drawer
         title={
-          <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-center gap-2">
             <div className="p-1.5 bg-blue-50 text-[#0463EF] rounded-[4px]">
               <Database size={16} />
             </div>
@@ -905,26 +1211,25 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
           </div>
         }
         open={isAddTableModalOpen}
-        onCancel={() => setIsAddTableModalOpen(false)}
-        footer={[
-          <button
-            key="cancel"
-            onClick={() => setIsAddTableModalOpen(false)}
-            className="px-4 py-2 border border-slate-200 text-slate-600 font-bold rounded-[4px] hover:bg-slate-50 transition-colors text-xs inline-flex items-center justify-center cursor-pointer mr-2.5 h-[36px]"
-          >
-            {t.cancel}
-          </button>,
-          <button
-            key="submit"
-            onClick={handleSaveTable}
-            className="px-4 py-2 bg-[#0463EF] hover:bg-[#0463EF]/90 text-white font-bold rounded-[4px] transition-colors text-xs inline-flex items-center justify-center cursor-pointer border-none h-[36px]"
-          >
-            {t.save}
-          </button>
-        ]}
-        width={580}
-        centered
-        className="custom-admin-modal"
+        onClose={() => setIsAddTableModalOpen(false)}
+        footer={
+          <div className="flex justify-end gap-2.5 py-1">
+            <button
+              onClick={() => setIsAddTableModalOpen(false)}
+              className="px-4 py-2 border border-slate-200 text-slate-600 font-bold rounded-[4px] hover:bg-slate-50 transition-colors text-xs inline-flex items-center justify-center cursor-pointer mr-1.5 h-[36px]"
+            >
+              {t.cancel}
+            </button>
+            <button
+              onClick={handleSaveTable}
+              className="px-4 py-2 bg-[#0463EF] hover:bg-[#0463EF]/90 text-white font-bold rounded-[4px] transition-colors text-xs inline-flex items-center justify-center cursor-pointer border-none h-[36px]"
+            >
+              {t.save}
+            </button>
+          </div>
+        }
+        styles={{ wrapper: { width: 500 } }}
+        placement="right"
       >
         <div className="space-y-4 pt-2 text-[#010136]">
           {/* Table Name (Single field, simplified as requested) */}
@@ -959,7 +1264,241 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
             />
           </div>
         </div>
-      </Modal>
+      </Drawer>
+
+      {/* ================= EDIT MASTER TABLE DRAWER ================= */}
+      <Drawer
+        title={
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 bg-blue-50 text-[#0463EF] rounded-[4px]">
+              <Edit3 size={16} />
+            </div>
+            <span className="text-[18px] font-black text-[#010136]">
+              {language === 'TH' ? 'แก้ไขชื่อรายการ' : 'Edit Item Name'}
+            </span>
+          </div>
+        }
+        open={isEditTableModalOpen}
+        onClose={() => setIsEditTableModalOpen(false)}
+        footer={
+          <div className="flex justify-end gap-2.5 py-1">
+            <button
+              onClick={() => setIsEditTableModalOpen(false)}
+              className="px-4 py-2 border border-slate-200 text-slate-600 font-bold rounded-[4px] hover:bg-slate-50 transition-colors text-xs inline-flex items-center justify-center cursor-pointer mr-1.5 h-[36px]"
+            >
+              {t.cancel}
+            </button>
+            <button
+              onClick={handleSaveEditTable}
+              className="px-4 py-2 bg-[#0463EF] hover:bg-[#0463EF]/90 text-white font-bold rounded-[4px] transition-colors text-xs inline-flex items-center justify-center cursor-pointer border-none h-[36px]"
+            >
+              {language === 'TH' ? 'บันทึกการแก้ไข' : 'Save Changes'}
+            </button>
+          </div>
+        }
+        styles={{ wrapper: { width: 500 } }}
+        placement="right"
+      >
+        <div className="space-y-4 pt-2 text-[#010136]">
+          {/* Table Name */}
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-1">
+              <label className="text-xs font-black text-slate-600 uppercase tracking-wider block">
+                {language === 'TH' ? 'ชื่อตาราง' : 'Table Name'}
+              </label>
+              <span className="text-rose-500">*</span>
+            </div>
+            <Input
+              placeholder={t.tableNamePlaceholder}
+              value={editTableNameTH}
+              onChange={e => {
+                setEditTableNameTH(e.target.value);
+                setEditTableNameEN(e.target.value);
+              }}
+              className="rounded-[4px] border-slate-200 hover:border-[#0463EF] focus:border-[#0463EF] focus:shadow-none p-2.5 text-xs h-[38px] font-bold text-[#010136]"
+            />
+          </div>
+
+          {/* Table ID / code */}
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-1">
+              <label className="text-xs font-black text-slate-600 uppercase tracking-wider block">
+                {t.tableIdLabel}
+              </label>
+              <span className="text-rose-500">*</span>
+            </div>
+            <Input
+              placeholder={t.tableIdPlaceholder}
+              value={editTableId}
+              onChange={e => setEditTableId(e.target.value)}
+              className="rounded-[4px] border-slate-200 hover:border-[#0463EF] focus:border-[#0463EF] focus:shadow-none p-2.5 text-xs h-[38px] font-bold text-[#010136]"
+            />
+          </div>
+        </div>
+      </Drawer>
+
+      {/* ================= IMPORT MASTER RECORD FROM EXCEL DRAWER ================= */}
+      <Drawer
+        title={
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 bg-emerald-50 text-emerald-600 rounded-[4px]">
+              <FileSpreadsheet size={16} />
+            </div>
+            <span className="text-[18px] font-black text-[#010136]">
+              {language === 'TH' ? 'นำเข้าข้อมูลด้วย Excel' : 'Import with Excel'}
+            </span>
+          </div>
+        }
+        open={isImportDrawerOpen}
+        onClose={() => setIsImportDrawerOpen(false)}
+        footer={
+          <div className="flex justify-end gap-2.5 py-1">
+            <button
+              onClick={() => setIsImportDrawerOpen(false)}
+              className="px-4 py-2 border border-slate-200 text-slate-600 font-bold rounded-[4px] hover:bg-slate-50 transition-colors text-xs inline-flex items-center justify-center cursor-pointer mr-1.5 h-[36px]"
+            >
+              {t.cancel}
+            </button>
+            <button
+              onClick={handleSaveImportedRecords}
+              disabled={parsedRecords.length === 0}
+              className={`px-4 py-2 font-bold rounded-[4px] transition-colors text-xs inline-flex items-center justify-center cursor-pointer border-none h-[36px] ${
+                parsedRecords.length === 0 
+                  ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                  : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+              }`}
+            >
+              {language === 'TH' ? `ยืนยันนำเข้า (${parsedRecords.length} รายการ)` : `Confirm Import (${parsedRecords.length} items)`}
+            </button>
+          </div>
+        }
+        styles={{ wrapper: { width: 500 } }}
+        placement="right"
+      >
+        <div className="space-y-5 pt-1 text-[#010136]">
+          {/* Download Template Banner Section */}
+          <div className="p-4 bg-[#0463EF]/5 rounded-[16px] border border-[#0463EF]/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-3xs">
+            <div className="space-y-1">
+              <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider">
+                {language === 'TH' ? 'ต้องการเทมเพลตสำหรับเติมข้อมูล?' : 'Need a template to fill data?'}
+              </h4>
+              <p className="text-[11px] font-bold text-[#0463EF]">
+                {language === 'TH' ? 'กรอกตามคอลัมน์มาตรฐานเพื่อนำเข้าระบบ' : 'Please upload following standard schema columns.'}
+              </p>
+            </div>
+            <button
+              onClick={handleDownloadTemplate}
+              className="px-3 py-1.5 bg-[#0463EF] text-white hover:bg-[#0463EF]/95 text-xs font-bold rounded-[4px] border-none inline-flex items-center gap-1.5 cursor-pointer shrink-0 shadow-sm shadow-[#0463EF]/20 transition-all"
+            >
+              <Download size={12} />
+              <span>{language === 'TH' ? 'ดาวน์โหลดแม่แบบ' : 'Template'}</span>
+            </button>
+          </div>
+
+          {/* Guide Section */}
+          <div className="space-y-1.5 text-xs text-slate-500 font-bold leading-relaxed bg-slate-50 p-4 rounded-[16px] border border-slate-100">
+            <h5 className="font-black text-[#010136] text-[12px] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <HelpCircle size={14} className="text-slate-400" />
+              <span>{language === 'TH' ? 'รูปแบบไฟล์ที่กำหนด (Standard Format)' : 'Standard Format Guide'}</span>
+            </h5>
+            <ol className="list-decimal pl-4 space-y-1">
+              <li>{language === 'TH' ? 'คอลัมน์แรก (Column A) = ชื่อหลักในระบบ (System Value)' : 'Column A = System Target Name Value (e.g., Apple Inc.)'}</li>
+              <li>{language === 'TH' ? 'คอลัมน์ที่สอง (Column B) = คำคีย์เวิร์ดสำหรับจับคู่ (Matching Keys) เช่น "สยามอินดัสทรี, Siam Ind" (คั่นด้วยจุลภาค)' : 'Column B = Match keys separated by comma (e.g. Apple, AAPL)'}</li>
+              <li>{language === 'TH' ? 'ยกเว้นแถวแรกสุด (แถวที่ 1) เป็นหัวตาราง (Headers)' : 'Row 1 inside the sheet will be skipped as headers block.'}</li>
+            </ol>
+          </div>
+
+          {/* File Upload Area */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-black text-slate-600 uppercase tracking-wider block">
+              {language === 'TH' ? 'เลือกไฟล์ข้อมูลสเปรดชีต' : 'Select Spreadsheet File'}
+            </label>
+            
+            <div 
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              onClick={() => fileInputRef.current?.click()}
+              className={`p-6 border border-dashed rounded-[4px] cursor-pointer transition-all flex flex-col items-center justify-center text-center space-y-3 min-h-[140px] select-none ${
+                isDragging 
+                  ? 'border-[#0463EF] bg-blue-50/40 shadow-xs' 
+                  : 'border-slate-200 hover:border-[#0463EF] bg-slate-50/30 hover:bg-white hover:shadow-xs'
+              }`}
+            >
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleFileChange} 
+                accept=".xlsx, .xls, .csv" 
+                className="hidden" 
+              />
+              
+              <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+                <Upload size={20} />
+              </div>
+
+              <div className="space-y-1">
+                <p className="text-xs font-black text-[#010136]">
+                  {language === 'TH' ? 'ลากไฟล์มาวางที่นี่ หรือคลิกเพื่ออัปโหลด' : 'Drag & drop Excel here, or click to browse'}
+                </p>
+                <p className="text-[10px] font-bold text-slate-400">
+                  {language === 'TH' ? 'รองรับเฉพาะไฟล์ .xlsx, .xls หรือ .csv' : 'Supports .xlsx, .xls or .csv spreadsheets'}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Error Banner */}
+          {importError && (
+            <div className="p-3 bg-red-50 text-red-600 border border-red-100 rounded-[4px] text-xs font-bold leading-snug flex items-start gap-2 animate-in fade-in slide-in-from-top-1 duration-200">
+              <ShieldAlert size={14} className="shrink-0 mt-0.5 text-red-500" />
+              <span>{importError}</span>
+            </div>
+          )}
+
+          {/* Parsed Preview Section */}
+          {parsedRecords.length > 0 && (
+            <div className="space-y-3 flex-1 flex flex-col">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-black text-slate-600 uppercase tracking-wider">
+                  {language === 'TH' ? `พบรายการทั้งหมด (${parsedRecords.length} รายการ)` : `Found records (${parsedRecords.length} items)`}
+                </span>
+
+                {duplicateWarningCount > 0 && (
+                  <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-700 text-[10px] font-black border border-amber-200 rounded-[4px] px-2 py-0.5 animate-pulse">
+                    <ShieldAlert size={11} />
+                    <span>{language === 'TH' ? `คีย์ทับซ้อนข้อมูลเดิม ${duplicateWarningCount} รายการ` : `${duplicateWarningCount} overlapping keys`}</span>
+                  </span>
+                )}
+              </div>
+
+              {/* Scrollable Preview Wrapper with Border */}
+              <div className="border border-slate-200 rounded-[8px] max-h-[190px] overflow-y-auto divide-y divide-slate-100 bg-white shadow-inner">
+                {parsedRecords.map((item, idx) => (
+                  <div key={item.id} className="p-2.5 text-xs flex justify-between gap-3 hover:bg-slate-50/50">
+                    <div className="min-w-0 space-y-0.5">
+                      <div className="font-extrabold text-[#010136] truncate leading-tight">
+                        {idx + 1}. {item.value}
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {item.keys.map((k, kIdx) => (
+                          <span key={kIdx} className="bg-slate-100 font-bold text-slate-500 text-[9px] px-1.5 py-0.5 rounded-[2px]">
+                            {k}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <span className="shrink-0 text-[10px] font-bold text-emerald-600 uppercase tracking-wide flex items-center gap-1 select-none">
+                      <Check size={11} />
+                      <span>{language === 'TH' ? 'พร้อม' : 'READY'}</span>
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </Drawer>
     </div>
   );
 };
