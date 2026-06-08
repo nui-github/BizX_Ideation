@@ -20,6 +20,18 @@ const MASTER_DOC_TYPES = [
   { id: 'DO', name: 'Delivery Order', hint: 'Order from consignee to carrier to release cargo', pattern: 'DO_*' }
 ];
 
+const parseStorageTemplate = (template: string) => {
+  if (!template) return '';
+  return template
+    .replace(/{year}/g, '2026')
+    .replace(/{month}/g, '06')
+    .replace(/{date}/g, '20260608')
+    .replace(/{job#}/g, 'US-TH-2026-00445')
+    .replace(/{job_type}/g, 'USA Tech Import Standards')
+    .replace(/{doc_type}/g, 'Invoice')
+    .replace(/{original_name}/g, 'commercial_invoice_v3');
+};
+
 interface DataComparisonWorkflowBuilderProps {
   workflow?: Workflow;
   language: Language;
@@ -513,7 +525,11 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
       };
       case 'storage': return {
         ...baseData,
-        nodeName: '',
+        nodeName: language === 'TH' ? 'บันทึกข้อมูล (Storage Node)' : 'Storage Connection',
+        directoryPath: '/imports/{year}/{month}',
+        directoryNaming: '{job#}-{job_type}',
+        fileNamingMode: 'original',
+        fileNamingTemplate: '{job#}_{doc_type}_{date}',
       };
       case 'extract': return {
         ...baseData,
@@ -986,7 +1002,15 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
       }
       case 'compare': {
         const d = node.data;
-        return !d.ruleId || d.isConfigured === false;
+        return !d.ruleId;
+      }
+      case 'storage': {
+        const d = node.data;
+        if (!d.directoryPath || d.directoryPath.trim() === '') return true;
+        if (!d.directoryNaming || d.directoryNaming.trim() === '') return true;
+        if (!d.fileNamingMode) return true;
+        if (d.fileNamingMode === 'custom' && (!d.fileNamingTemplate || d.fileNamingTemplate.trim() === '')) return true;
+        return false;
       }
       default: return false;
     }
@@ -1612,6 +1636,46 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                           ))}
                         </div>
                       </>
+                    )}
+
+                    {node.type === 'storage' && (
+                      <div className="space-y-3">
+                        <div className="p-3 bg-slate-50/80 rounded-[8px] border border-slate-100 space-y-2">
+                          <div className="flex flex-col gap-1">
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">DIRECTORY PATH</span>
+                            <span className="text-[10px] font-bold text-slate-700 truncate font-mono bg-white border border-slate-200/50 px-2 py-1 rounded-[4px] mt-0.5">
+                              {node.data.directoryPath || '/imports/{year}/{month}'}
+                            </span>
+                          </div>
+                          
+                          <div className="flex flex-col gap-1 pt-1 border-t border-slate-100/50">
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">DIRECTORY NAMING</span>
+                            <span className="text-[10px] font-bold text-slate-700 truncate font-mono bg-white border border-slate-200/50 px-2 py-1 rounded-[4px] mt-0.5">
+                              {node.data.directoryNaming || '{job#}-{job_type}'}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center justify-between pt-1.5 border-t border-slate-100/50">
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">FILE NAMING</span>
+                            <span className={`text-[9px] font-black uppercase tracking-tight px-2 py-0.5 rounded-[4px] border ${
+                              node.data.fileNamingMode === 'custom' 
+                                ? 'bg-indigo-50 border-indigo-100 text-indigo-600' 
+                                : 'bg-emerald-50 border-emerald-100 text-emerald-600'
+                            }`}>
+                              {node.data.fileNamingMode === 'custom' ? 'Custom' : 'Original'}
+                            </span>
+                          </div>
+
+                          {node.data.fileNamingMode === 'custom' && (
+                            <div className="flex flex-col gap-1 pt-1 border-t border-slate-100">
+                              <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">TEMPLATE</span>
+                              <span className="text-[10px] font-bold text-slate-700 truncate font-mono bg-white border border-slate-200/50 px-2 py-1 rounded-[4px] mt-0.5">
+                                {node.data.fileNamingTemplate || '{job#}_{doc_type}_{date}'}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     )}
                       </>
                     )}
@@ -3148,8 +3212,217 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                   </div>
                 )}
 
+                {/* Storage Node Config */}
+                {node.type === 'storage' && (
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-sm font-black text-[#010136] uppercase tracking-wider mb-2">
+                        {language === 'TH' ? 'ตั้งค่าการจัดเก็บข้อมูล (Storage Settings)' : 'Storage Settings'}
+                      </h3>
+                      <p className="text-xs text-slate-500 mb-4 leading-relaxed">
+                        {language === 'TH' 
+                          ? 'กำหนดโครงสร้าง โฟลเดอร์ปลายทาง และรูปแบบการตั้งชื่อไฟล์สำหรับบันทึกข้อมูล' 
+                          : 'Configure destination folder structures and file naming conventions for outputs.'}
+                      </p>
+                    </div>
+
+                    {/* Section 1: Directory path */}
+                    <div className="p-4 bg-white border border-slate-200 shadow-sm rounded-[16px] space-y-4">
+                      <div className="flex items-center gap-2">
+                        <FolderInput size={16} className="text-[#0463EF]" />
+                        <h4 className="text-xs font-black text-[#010136] uppercase tracking-wider">
+                          Section 1: Directory Path (เส้นทางหลัก) <span className="text-rose-500 font-bold">*</span>
+                        </h4>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <input 
+                          type="text"
+                          value={node.data.directoryPath !== undefined ? node.data.directoryPath : "/imports/{year}/{month}"}
+                          onChange={(e) => updateNodeData(node.id, { directoryPath: e.target.value })}
+                          className="w-full bg-slate-50 p-3 text-xs font-bold text-[#010136] border border-slate-200 rounded-[4px] focus:outline-none focus:border-[#0463EF] focus:ring-1 focus:ring-[#0463EF]/20 transition-all font-mono"
+                          placeholder="/imports/{year}/{month}"
+                        />
+                        
+                        {/* Variables Hint */}
+                        <div className="bg-slate-50 border border-slate-100 p-2.5 rounded-[8px] space-y-1">
+                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
+                            {language === 'TH' ? 'คลิกเพื่อแทรกแท็ก (Click to insert):' : 'Click to insert tag:'}
+                          </p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {['{year}', '{month}', '{date}', '{job#}', '{job_type}'].map(tag => (
+                              <button
+                                key={tag}
+                                onClick={() => {
+                                  const currentPath = node.data.directoryPath !== undefined ? node.data.directoryPath : "/imports/{year}/{month}";
+                                  updateNodeData(node.id, { directoryPath: currentPath + tag });
+                                }}
+                                className="px-1.5 py-0.5 bg-white hover:bg-blue-50 hover:border-[#0463EF] border border-slate-200 text-[#0463EF] rounded-[4px] text-[10px] font-mono font-bold transition-all"
+                              >
+                                {tag}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Preview */}
+                        <div className="flex flex-col gap-1 p-2.5 bg-blue-50/50 border border-blue-100 rounded-[8px]">
+                          <p className="text-[9px] font-black text-[#0463EF] uppercase tracking-wider leading-none">
+                            {language === 'TH' ? 'ตัวอย่างเส้นทางจริง:' : 'Real Path Preview:'}
+                          </p>
+                          <p className="text-[11px] font-bold text-slate-600 font-mono break-all leading-relaxed mt-1">
+                            {parseStorageTemplate(node.data.directoryPath !== undefined ? node.data.directoryPath : "/imports/{year}/{month}") || '/'}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Section 2: Directory naming */}
+                    <div className="p-4 bg-white border border-slate-200 shadow-sm rounded-[16px] space-y-4 font-sans max-w-full">
+                      <div className="flex items-center gap-2">
+                        <Folder size={16} className="text-[#0463EF]" />
+                        <h4 className="text-xs font-black text-[#010136] uppercase tracking-wider">
+                          Section 2: Directory Naming (ชื่อโฟลเดอร์) <span className="text-rose-500 font-bold">*</span>
+                        </h4>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <input 
+                          type="text"
+                          value={node.data.directoryNaming !== undefined ? node.data.directoryNaming : "{job#}-{job_type}"}
+                          onChange={(e) => updateNodeData(node.id, { directoryNaming: e.target.value })}
+                          className="w-full bg-slate-50 p-3 text-xs font-bold text-[#010136] border border-slate-200 rounded-[4px] focus:outline-none focus:border-[#0463EF] focus:ring-1 focus:ring-[#0463EF]/20 transition-all font-mono"
+                          placeholder="{job#}-{job_type}"
+                        />
+                        
+                        {/* Variables Hint */}
+                        <div className="bg-slate-50 border border-slate-100 p-2.5 rounded-[8px] space-y-1">
+                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
+                            {language === 'TH' ? 'คลิกเพื่อแทรกแท็ก (Click to insert):' : 'Click to insert tag:'}
+                          </p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {['{year}', '{month}', '{date}', '{job#}', '{job_type}'].map(tag => (
+                              <button
+                                key={tag}
+                                onClick={() => {
+                                  const currentNaming = node.data.directoryNaming !== undefined ? node.data.directoryNaming : "{job#}-{job_type}";
+                                  updateNodeData(node.id, { directoryNaming: currentNaming + tag });
+                                }}
+                                className="px-1.5 py-0.5 bg-white hover:bg-blue-50 hover:border-[#0463EF] border border-slate-200 text-[#0463EF] rounded-[4px] text-[10px] font-mono font-bold transition-all"
+                              >
+                                {tag}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Preview */}
+                        <div className="flex flex-col gap-1 p-2.5 bg-blue-50/50 border border-blue-100 rounded-[8px]">
+                          <p className="text-[9px] font-black text-[#0463EF] uppercase tracking-wider leading-none">
+                            {language === 'TH' ? 'ตัวอย่างชื่อโฟลเดอร์จริง:' : 'Folder Name Preview:'}
+                          </p>
+                          <p className="text-[11px] font-bold text-slate-600 font-mono break-all leading-relaxed mt-1">
+                            {parseStorageTemplate(node.data.directoryNaming !== undefined ? node.data.directoryNaming : "{job#}-{job_type}") || 'No directory name'}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Section 3: File naming */}
+                    <div className="p-4 bg-white border border-slate-200 shadow-sm rounded-[16px] space-y-4 font-sans max-w-full">
+                      <div className="flex items-center gap-2">
+                        <FileText size={16} className="text-[#0463EF]" />
+                        <h4 className="text-xs font-black text-[#010136] uppercase tracking-wider">
+                          Section 3: File Naming (รูปแบบชื่อไฟล์) <span className="text-rose-500 font-bold">*</span>
+                        </h4>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-3 font-sans">
+                        <button
+                          onClick={() => updateNodeData(node.id, { fileNamingMode: 'original' })}
+                          className={`p-3 border transition-all rounded-[8px] flex flex-col justify-between h-[80px] text-left transition-all ${
+                            (node.data.fileNamingMode || 'original') === 'original' 
+                              ? 'border-[#0463EF] bg-blue-50/50 text-[#010136] ring-1 ring-[#0463EF]' 
+                              : 'border-slate-200 bg-white hover:border-slate-300 text-slate-500 hover:bg-slate-50'
+                          }`}
+                        >
+                          <span className="text-[11px] font-black uppercase tracking-wider leading-none">Original Name</span>
+                          <span className="text-[9px] text-slate-400 font-bold leading-tight block mt-1">
+                            {language === 'TH' ? 'ใช้ชื่อไฟล์เดิม ไม่เปลี่ยน' : 'Keep default filename'}
+                          </span>
+                        </button>
+
+                        <button
+                          onClick={() => updateNodeData(node.id, { fileNamingMode: 'custom' })}
+                          className={`p-3 border transition-all rounded-[8px] flex flex-col justify-between h-[80px] text-left transition-all ${
+                            node.data.fileNamingMode === 'custom' 
+                              ? 'border-[#0463EF] bg-blue-50/50 text-[#010136] ring-1 ring-[#0463EF]' 
+                              : 'border-slate-200 bg-white hover:border-slate-300 text-slate-500 hover:bg-slate-50'
+                          }`}
+                        >
+                          <span className="text-[11px] font-black uppercase tracking-wider leading-none">Custom Template</span>
+                          <span className="text-[9px] text-slate-400 font-bold leading-tight block mt-1">
+                            {language === 'TH' ? 'กำหนดตามต้องการ' : 'Define naming rules'}
+                          </span>
+                        </button>
+                      </div>
+
+                      {/* Custom template input block */}
+                      {node.data.fileNamingMode === 'custom' && (
+                        <div className="space-y-3 pt-3 border-t border-slate-100 animate-in fade-in slide-in-from-top-2 duration-200">
+                          <div className="space-y-1">
+                            <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1 block">
+                              File Naming Template <span className="text-rose-500 font-bold">*</span>
+                            </label>
+                            <input 
+                              type="text"
+                              value={node.data.fileNamingTemplate !== undefined ? node.data.fileNamingTemplate : "{job#}_{doc_type}_{date}"}
+                              onChange={(e) => updateNodeData(node.id, { fileNamingTemplate: e.target.value })}
+                              className="w-full bg-slate-50 p-3 text-xs font-bold text-[#010136] border border-slate-200 rounded-[4px] focus:outline-none focus:border-[#0463EF] focus:ring-1 focus:ring-[#0463EF]/20 transition-all font-mono"
+                              placeholder="{job#}_{doc_type}_{date}"
+                            />
+                          </div>
+
+                          {/* Variables Hint */}
+                          <div className="bg-slate-50 border border-slate-100 p-2.5 rounded-[8px] space-y-1">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
+                              {language === 'TH' ? 'คลิกเพื่อแทรกแท็ก (Click to insert):' : 'Click to insert tag:'}
+                            </p>
+                            <div className="flex flex-wrap gap-1.5">
+                              {['{job#}', '{doc_type}', '{date}', '{original_name}'].map(tag => (
+                                <button
+                                  key={tag}
+                                  onClick={() => {
+                                    const currentTemplate = node.data.fileNamingTemplate !== undefined ? node.data.fileNamingTemplate : "{job#}_{doc_type}_{date}";
+                                    updateNodeData(node.id, { fileNamingTemplate: currentTemplate + tag });
+                                  }}
+                                  className="px-1.5 py-0.5 bg-white hover:bg-blue-50 hover:border-[#0463EF] border border-slate-200 text-[#0463EF] rounded-[4px] text-[10px] font-mono font-bold transition-all"
+                                >
+                                  {tag}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Preview for File Naming */}
+                      <div className="flex flex-col gap-1 p-2.5 bg-blue-50/50 border border-blue-100 rounded-[8px]">
+                        <p className="text-[9px] font-black text-[#0463EF] uppercase tracking-wider leading-none">
+                          {language === 'TH' ? 'ตัวอย่างชื่อไฟล์จริง:' : 'File Name Preview:'}
+                        </p>
+                        <p className="text-[11px] font-bold text-slate-600 font-mono break-all leading-relaxed mt-1">
+                          {node.data.fileNamingMode === 'custom' 
+                            ? (parseStorageTemplate(node.data.fileNamingTemplate !== undefined ? node.data.fileNamingTemplate : "{job#}_{doc_type}_{date}") ? `${parseStorageTemplate(node.data.fileNamingTemplate !== undefined ? node.data.fileNamingTemplate : "{job#}_{doc_type}_{date}")}.pdf` : 'No custom template') 
+                            : 'commercial_invoice_v3.pdf'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Generic Config for other nodes */}
-                {node.type !== 'get_file' && node.type !== 'hybrid_mail_filter' && node.type !== 'attachment_filter' && node.type !== 'group_of_file' && node.type !== 'create_job' && node.type !== 'send_to' && node.type !== 'compare' && (
+                {node.type !== 'get_file' && node.type !== 'hybrid_mail_filter' && node.type !== 'attachment_filter' && node.type !== 'group_of_file' && node.type !== 'create_job' && node.type !== 'send_to' && node.type !== 'compare' && node.type !== 'storage' && (
                   <div className="flex flex-col items-center justify-center h-[200px] text-center opacity-40">
                     <Settings size={40} className="mb-4" />
                     <p className="text-sm font-bold uppercase tracking-tight">Configuration module coming soon</p>
