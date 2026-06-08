@@ -1,0 +1,283 @@
+<div class="p-6 bg-slate-50 min-h-screen text-[#010136]" style="font-family: 'IBM Plex Sans Thai', sans-serif;">
+  <div class="max-w-7xl mx-auto space-y-6">
+    <!-- Header Controls -->
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-xl font-bold text-[#010136]">
+          {{ language === 'TH' ? 'ตัวออกแบบเวิร์กโฟลว์จับคู่ประเภทข้อมูล' : 'Data Sync & Match Designer' }}
+        </h1>
+        <p class="text-xs text-slate-500 mt-0.5">
+          {{ language === 'TH' ? 'ตั้งค่าโฟลว์การสแกน การแบ่งสิทธิ์ และปลายทางสำหรับเซฟข้อมูล' : 'Orchestrate document pipelines, rulesets, and direct storage outputs' }}
+        </p>
+      </div>
+
+      <button 
+        (click)="language = language === 'TH' ? 'EN' : 'TH'"
+        class="px-3.5 py-1.5 border border-slate-200 hover:border-[#0463EF] text-xs font-bold transition-all rounded-[4px]"
+      >
+        {{ language === 'TH' ? 'EN' : 'TH' }}
+      </button>
+    </div>
+
+    <!-- Active Pipeline Stage Canvas Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- LHS: Flow Canvas Preview Map -->
+      <div class="lg:col-span-2 bg-white border border-slate-200 rounded-[16px] p-6 h-[500px] flex flex-col justify-between relative shadow-sm">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <span class="text-xs font-bold text-slate-400">PIPELINE GRAPH CANVAS</span>
+          <span class="px-2.5 py-1 font-bold rounded-full bg-blue-50 text-[#0463EF] text-[10px] uppercase">
+            {{ activeWorkflow?.name }}
+          </span>
+        </div>
+
+        <!-- Node Mock Placement -->
+        <div class="flex-1 flex items-center justify-center gap-4 relative">
+          <div *ngFor="let node of activeWorkflow?.nodes" class="relative group">
+            <div 
+              (click)="openNodeConfig(node.id)"
+              [class]="isNodeIncomplete(node) ? 'border-dashed border-rose-300 ring-4 ring-rose-50' : 'border-slate-200'"
+              class="w-48 p-4 bg-white border-2 hover:border-[#0463EF] transition-all rounded-[8px] flex flex-col items-center text-center cursor-pointer relative shadow-xs"
+            >
+              <!-- Alert icon if incomplete -->
+              <div 
+                *ngIf="isNodeIncomplete(node)" 
+                class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-rose-500 text-white rounded-full flex items-center justify-center text-[10px] font-bold animate-bounce"
+              >
+                !
+              </div>
+
+              <div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-[#0463EF] mb-2 shadow-inner">
+                <lucide-icon name="hard-drive" class="w-5 h-5"></lucide-icon>
+              </div>
+
+              <span class="text-xs font-bold text-[#010136] truncate max-w-full block">
+                {{ node.data.nodeName || node.type }}
+              </span>
+              <span class="text-[9px] text-slate-400 font-mono mt-1 uppercase tracking-tight">
+                {{ node.type }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RHS: Node Configuration Dock Sidebar -->
+      <div class="bg-white border border-slate-200 rounded-[16px] shadow-sm overflow-hidden flex flex-col h-[500px]">
+        <!-- Configuration Header -->
+        <div class="bg-slate-50/80 px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <lucide-icon name="settings" class="w-4.5 h-4.5 text-[#0463EF]"></lucide-icon>
+            <span class="text-xs font-black text-[#010136] uppercase tracking-wider">
+              {{ language === 'TH' ? 'ตั้งค่าพารามิเตอร์โหนด (CONFIGURATION)' : 'NODE PARAMETERS' }}
+            </span>
+          </div>
+          <span 
+            *ngIf="selectedNode"
+            class="px-2 py-0.5 rounded-[4px] bg-slate-200/50 text-[#010136] text-[9px] font-mono font-bold uppercase"
+          >
+            {{ selectedNode.type }}
+          </span>
+        </div>
+
+        <!-- Node Settings Form Panel (with Overflow) -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-6">
+          <div *ngIf="!selectedNode" class="flex flex-col items-center justify-center h-full text-center text-slate-400">
+            <lucide-icon name="info" class="w-8 h-8 text-slate-300 mb-2"></lucide-icon>
+            <p class="text-xs font-medium">{{ language === 'TH' ? 'คลิกที่โหนดบนแผนผังด้านซ้ายเพื่อตั้งค่าพารามิเตอร์' : 'Click a node in the graph layout to customize its variables' }}</p>
+          </div>
+
+          <!-- Specific Config for STORAGE node types -->
+          <div *ngIf="selectedNode && selectedNode.type === 'storage'" class="space-y-6">
+            <!-- Node Title Custom Customizer -->
+            <div class="space-y-1.5">
+              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Custom Name</label>
+              <input 
+                type="text"
+                [(ngModel)]="selectedNode.data.nodeName"
+                placeholder="Storage Node Name"
+                class="w-full bg-slate-50 border border-slate-200 px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#0463EF] rounded-[4px] h-9 text-[#010136]"
+              />
+            </div>
+
+            <!-- Section 1: Directory Path -->
+            <div class="p-4 bg-white border border-slate-200 rounded-[16px] space-y-4">
+              <div class="flex items-center gap-2">
+                <lucide-icon name="folder-input" class="w-4 h-4 text-[#0463EF]"></lucide-icon>
+                <h4 class="text-xs font-bold text-[#010136] uppercase tracking-wider">
+                  Section 1: Directory Path <span class="text-red-500 font-bold">*</span>
+                </h4>
+              </div>
+
+              <div class="space-y-3">
+                <input 
+                  type="text"
+                  [(ngModel)]="selectedNode.data.directoryPath"
+                  placeholder="/imports/{year}/{month}"
+                  class="w-full p-2.5 bg-slate-50 border border-slate-200 focus:outline-[#0463EF] rounded-[4px] text-xs font-mono font-bold h-9 block text-[#010136]"
+                />
+
+                <!-- Clicking Variable insert buttons -->
+                <div class="bg-slate-50 border border-slate-100 p-2.5 rounded-[8px] space-y-1.5">
+                  <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">
+                    {{ language === 'TH' ? 'คลิกเพื่อแทรกแท็ก:' : 'Click to insert tag:' }}
+                  </p>
+                  <div class="flex flex-wrap gap-1">
+                    <button 
+                      *ngFor="let tag of ['{year}', '{month}', '{date}', '{job#}']"
+                      (click)="selectedNode.data.directoryPath = (selectedNode.data.directoryPath || '') + tag"
+                      class="px-1.5 py-0.5 border border-slate-200 hover:border-[#0463EF] bg-white text-[#0463EF] hover:bg-blue-50/50 text-[9px] font-mono font-bold transition-all rounded-[4px] cursor-pointer"
+                    >
+                      {{ tag }}
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Precalculated Preview -->
+                <div class="flex flex-col gap-0.5 p-2 bg-blue-50/40 border border-blue-100/50 rounded-[8px]">
+                  <p class="text-[8px] font-black text-[#0463EF] uppercase tracking-wider">Real Path Preview:</p>
+                  <p class="text-[10px] font-bold text-slate-600 font-mono break-all leading-tight">
+                    {{ parseStorageTemplate(selectedNode.data.directoryPath || '/imports/{year}/{month}') }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 2: Directory Naming -->
+            <div class="p-4 bg-white border border-slate-200 rounded-[16px] space-y-4">
+              <div class="flex items-center gap-2">
+                <lucide-icon name="folder" class="w-4 h-4 text-[#0463EF]"></lucide-icon>
+                <h4 class="text-xs font-bold text-[#010136] uppercase tracking-wider">
+                  Section 2: Directory Naming <span class="text-red-500 font-bold">*</span>
+                </h4>
+              </div>
+
+              <div class="space-y-3">
+                <input 
+                  type="text"
+                  [(ngModel)]="selectedNode.data.directoryNaming"
+                  placeholder="{job#}-{job_type}"
+                  class="w-full p-2.5 bg-slate-50 border border-slate-200 focus:outline-[#0463EF] rounded-[4px] text-xs font-mono font-bold h-9 block text-[#010136]"
+                />
+
+                <div class="bg-slate-50 border border-slate-100 p-2.5 rounded-[8px] space-y-1.5">
+                  <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">
+                    {{ language === 'TH' ? 'คลิกเพื่อแทรกแท็ก:' : 'Click to insert tag:' }}
+                  </p>
+                  <div class="flex flex-wrap gap-1">
+                    <button 
+                      *ngFor="let tag of ['{job#}', '{job_type}', '{date}']"
+                      (click)="selectedNode.data.directoryNaming = (selectedNode.data.directoryNaming || '') + tag"
+                      class="px-1.5 py-0.5 border border-slate-200 hover:border-[#0463EF] bg-white text-[#0463EF] hover:bg-blue-50/50 text-[9px] font-mono font-bold transition-all rounded-[4px] cursor-pointer"
+                    >
+                      {{ tag }}
+                    </button>
+                  </div>
+                </div>
+
+                <div class="flex flex-col gap-0.5 p-2 bg-blue-50/40 border border-blue-100/50 rounded-[8px]">
+                  <p class="text-[8px] font-black text-[#0463EF] uppercase tracking-wider">Folder Name Preview:</p>
+                  <p class="text-[10px] font-bold text-slate-600 font-mono break-all leading-tight">
+                    {{ parseStorageTemplate(selectedNode.data.directoryNaming || '{job#}-{job_type}') }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 3: File Naming options -->
+            <div class="p-4 bg-white border border-slate-200 rounded-[16px] space-y-4">
+              <div class="flex items-center gap-2">
+                <lucide-icon name="file-text" class="w-4 h-4 text-[#0463EF]"></lucide-icon>
+                <h4 class="text-xs font-bold text-[#010136] uppercase tracking-wider">
+                  Section 3: File Naming <span class="text-red-500 font-bold">*</span>
+                </h4>
+              </div>
+
+              <!-- Selection Grids -->
+              <div class="grid grid-cols-2 gap-2">
+                <button 
+                  [class.border-[#0463EF]]="selectedNode.data.fileNamingMode === 'original'"
+                  [class.bg-blue-50/50]="selectedNode.data.fileNamingMode === 'original'"
+                  (click)="selectedNode.data.fileNamingMode = 'original'"
+                  class="p-2.5 border border-slate-200 hover:border-slate-300 rounded-[8px] flex flex-col justify-between h-[80px] text-left transition-all cursor-pointer"
+                >
+                  <span class="text-[10px] font-bold text-[#010136]">Original Name</span>
+                  <span class="text-[9px] text-slate-400 font-medium leading-none">Keep default title</span>
+                </button>
+
+                <button 
+                  [class.border-[#0463EF]]="selectedNode.data.fileNamingMode === 'custom'"
+                  [class.bg-blue-50/50]="selectedNode.data.fileNamingMode === 'custom'"
+                  (click)="selectedNode.data.fileNamingMode = 'custom'"
+                  class="p-2.5 border border-slate-200 hover:border-slate-300 rounded-[8px] flex flex-col justify-between h-[80px] text-left transition-all cursor-pointer"
+                >
+                  <span class="text-[10px] font-bold text-[#010136]">Custom Template</span>
+                  <span class="text-[9px] text-slate-400 font-medium leading-none">Write naming rules</span>
+                </button>
+              </div>
+
+              <!-- Custom Text Naming variables -->
+              <div *ngIf="selectedNode.data.fileNamingMode === 'custom'" class="space-y-3 pt-2 border-t border-slate-100">
+                <div class="space-y-1.5">
+                  <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">File Naming Template</label>
+                  <input 
+                    type="text"
+                    [(ngModel)]="selectedNode.data.fileNamingTemplate"
+                    placeholder="{job#}_{doc_type}_{date}"
+                    class="w-full p-2 bg-slate-50 border border-slate-200 focus:outline-[#0463EF] rounded-[4px] text-xs font-mono font-bold h-9 block text-[#010136]"
+                  />
+                </div>
+
+                <div class="bg-slate-50 border border-slate-100 p-2.5 rounded-[8px] space-y-1.5">
+                  <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Insert tag:</p>
+                  <div class="flex flex-wrap gap-1">
+                    <button 
+                      *ngFor="let tag of ['{job#}', '{doc_type}', '{date}']"
+                      (click)="selectedNode.data.fileNamingTemplate = (selectedNode.data.fileNamingTemplate || '') + tag"
+                      class="px-1.5 py-0.5 border border-slate-200 hover:border-[#0463EF] bg-white text-[#0463EF] hover:bg-blue-50/50 text-[9px] font-mono font-bold transition-all rounded-[4px] cursor-pointer"
+                    >
+                      {{ tag }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Preview result block -->
+              <div class="flex flex-col gap-0.5 p-2 bg-blue-50/40 border border-blue-100/50 rounded-[8px]">
+                <p class="text-[8px] font-black text-[#0463EF] uppercase tracking-wider">File Name Preview:</p>
+                <p class="text-[10px] font-bold text-slate-600 font-mono break-all leading-tight">
+                  <span *ngIf="selectedNode.data.fileNamingMode === 'custom'; else originalTemplateShow">
+                    {{ parseStorageTemplate(selectedNode.data.fileNamingTemplate || '{job#}_{doc_type}_{date}') }}.pdf
+                  </span>
+                  <ng-template #originalTemplateShow>commercial_invoice_v3.pdf</ng-template>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar Action Footer buttons -->
+        <div class="p-6 border-t border-slate-100 flex gap-3 bg-white">
+          <button 
+            *ngIf="selectedNode"
+            (click)="closeNodeConfig()"
+            class="flex-1 py-3 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-[4px] transition-all cursor-pointer h-10 flex items-center justify-center text-[#010136]"
+          >
+            {{ language === 'TH' ? 'ยกเลิก' : 'Cancel' }}
+          </button>
+          
+          <button 
+            *ngIf="selectedNode"
+            (click)="saveWorkflowConfig()"
+            [disabled]="isNodeIncomplete(selectedNode)"
+            [class.cursor-not-allowed]="isNodeIncomplete(selectedNode)"
+            [class.opacity-50]="isNodeIncomplete(selectedNode)"
+            class="flex-[2] py-3 text-xs font-bold text-white bg-[#0463EF] hover:bg-blue-600 rounded-[4px] transition-all cursor-pointer h-10 flex items-center justify-center"
+          >
+            {{ language === 'TH' ? 'บันทึกการตั้งค่า' : 'Save Configuration' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

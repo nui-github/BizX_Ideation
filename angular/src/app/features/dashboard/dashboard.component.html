@@ -1,0 +1,314 @@
+<div class="p-6 bg-slate-50 min-h-screen text-[#010136]" style="font-family: 'IBM Plex Sans Thai', sans-serif;">
+  <!-- Section Wrapper - Radius 16px -->
+  <div class="bg-white border border-slate-200 shadow-sm p-6 rounded-[16px] space-y-6">
+    <!-- Header Block -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-6 bg-[#0463EF] rounded-full"></span>
+          <h1 class="text-xl font-bold tracking-tight text-[#010136]">
+            {{ language === 'TH' ? 'รายการงานเปรียบเทียบข้อมูล (Data Comparison Jobs)' : 'Data Comparison Jobs' }}
+          </h1>
+        </div>
+        <p class="text-xs text-slate-500 mt-1">
+          {{ language === 'TH' ? 'ระบบตรวจรับและตรวจสอบความถูกต้องของชุดเอกสาร (OCR Cross-Check Dashboard)' : 'Verify document accuracy and matching indices across OCR sets' }}
+        </p>
+      </div>
+
+      <!-- Action Buttons - Radius 4px -->
+      <div class="flex items-center gap-2">
+        <button 
+          (click)="openStatusGuide()"
+          class="px-4 py-2 border border-slate-200 text-[#010136] hover:bg-slate-50 text-xs font-medium cursor-pointer transition-all rounded-[4px] flex items-center gap-2 h-9"
+          id="btn-status-guide"
+        >
+          <lucide-icon name="help-circle" class="w-4 h-4 text-[#0463EF]"></lucide-icon>
+          <span>{{ language === 'TH' ? 'คู่มือสถานะ (Status Guide)' : 'Status Guide' }}</span>
+        </button>
+
+        <button 
+          (click)="toggleLanguage()" 
+          class="px-3 py-2 border border-slate-200 hover:border-[#0463EF] hover:text-[#0463EF] text-xs font-bold transition-all rounded-[4px] h-9 cursor-pointer"
+          id="btn-lang-toggle"
+        >
+          {{ language === 'TH' ? 'EN' : 'TH' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter Control Sub-Section - Radius 8px -->
+    <div class="p-4 bg-slate-50/70 border border-slate-200/50 rounded-[8px] flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="relative w-full md:w-96">
+        <lucide-icon name="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></lucide-icon>
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery"
+          [placeholder]="language === 'TH' ? 'ค้นหาตาม Job Reference หรือ ชื่อเวิร์กโฟลว์...' : 'Search Job Reference or workflow...'"
+          class="w-full pl-9 pr-4 py-2 text-xs bg-white border border-slate-200 text-[#010136] focus:outline-none focus:border-[#0463EF] transition-all rounded-[4px] h-9"
+        />
+      </div>
+
+      <div class="flex items-center gap-2 w-full md:w-auto">
+        <span class="text-xs text-slate-500 whitespace-nowrap">{{ language === 'TH' ? 'สถานะ:' : 'Status:' }}</span>
+        <select 
+          [(ngModel)]="statusFilter"
+          class="w-full md:w-44 px-3 py-2 text-xs bg-white border border-slate-200 text-[#011136] focus:outline-none focus:border-[#0463EF] transition-all rounded-[4px] h-9"
+        >
+          <option value="ALL">{{ language === 'TH' ? 'ทั้งหมด (All Status)' : 'All Status' }}</option>
+          <option value="NEW">NEW</option>
+          <option value="PENDING">PENDING</option>
+          <option value="REVIEW">REVIEW</option>
+          <option value="READY">READY</option>
+          <option value="DONE">DONE</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Main Table Listing -->
+    <div class="overflow-x-auto border border-slate-200 rounded-[8px] shadow-sm">
+      <table class="w-full border-collapse text-left text-xs text-slate-600">
+        <thead class="bg-slate-50 border-b border-slate-200 text-[#010136] font-bold">
+          <tr>
+            <th class="p-4">{{ language === 'TH' ? 'คิว / วันที่นำเข้า' : 'Queue / Date Imported' }}</th>
+            <th class="p-4">Reference ID</th>
+            <th class="p-4">Workflow Name</th>
+            <th class="p-4">{{ language === 'TH' ? 'เอกสารในชุดตรวจ' : 'Documents Status' }}</th>
+            <th class="p-4 text-center">{{ language === 'TH' ? 'ความแม่นยำ' : 'Accuracy Score' }}</th>
+            <th class="p-4 text-center">{{ language === 'TH' ? 'ความคืบหน้า' : 'Progress' }}</th>
+            <th class="p-4 text-center">Status</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 bg-white">
+          <tr 
+            *ngFor="let job of filteredJobs" 
+            (click)="selectJob(job)"
+            class="hover:bg-blue-50/30 cursor-pointer transition-all border-b border-slate-100"
+          >
+            <!-- Job Metadata -->
+            <td class="p-4">
+              <div class="flex flex-col gap-0.5">
+                <span class="font-bold text-[#010136] font-mono">{{ job.id }}</span>
+                <span class="text-[10px] text-slate-400 font-mono">{{ job.createdAt | date:'yyyy-MM-dd HH:mm' }}</span>
+              </div>
+            </td>
+
+            <td class="p-4">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-[#010136] font-mono text-sm">{{ job.reference }}</span>
+                <span *ngFor="let tag of job.tags" class="px-2 py-0.5 rounded-[4px] text-[9px] bg-slate-100 text-slate-600 font-medium">
+                  {{ tag }}
+                </span>
+              </div>
+            </td>
+
+            <td class="p-4 font-semibold text-slate-700">
+              {{ job.workflowName }}
+            </td>
+
+            <!-- OCR Document status grid layout -->
+            <td class="p-4">
+              <div class="flex flex-wrap gap-2">
+                <div 
+                  *ngFor="let doc of job.docs | keyvalue" 
+                  [class]="getDocStatusBadgeClass(doc.value)"
+                  class="px-2.5 py-1 rounded-[4px] text-[10px] font-bold flex items-center gap-1.5 transition-all"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full" [class]="doc.value === 'MATCHED' ? 'bg-emerald-500' : 'bg-rose-500'"></span>
+                  <span>{{ doc.key }}</span>
+                  <span class="text-[8px] opacity-70 uppercase tracking-tighter">({{ doc.value }})</span>
+                </div>
+              </div>
+            </td>
+
+            <!-- Accuracy Index -->
+            <td class="p-4 text-center font-mono">
+              <span *ngIf="job.accuracyScore !== undefined; else noScore" class="font-bold text-sm text-[#0463EF]">
+                {{ job.accuracyScore }}%
+              </span>
+              <ng-template #noScore>
+                <span class="text-slate-300 font-bold">-</span>
+              </ng-template>
+            </td>
+
+            <!-- Dynamic progress gauge bar -->
+            <td class="p-4">
+              <div class="flex flex-col items-center gap-1 min-w-[80px]">
+                <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                  <div 
+                    class="h-full bg-gradient-to-r from-[#0463EF] to-[#16EA9E] transition-all duration-300" 
+                    [style.width.%]="job.progress"
+                  ></div>
+                </div>
+                <span class="text-[10px] font-black font-mono text-[#010136]">{{ job.foundDocs }}/{{ job.totalDocs }} ({{ job.progress }}%)</span>
+              </div>
+            </td>
+
+            <!-- Status Indicator Label -->
+            <td class="p-4 text-center">
+              <span [class]="getJobStatusBadgeClass(job.status)" class="px-3 py-1 font-bold rounded-[4px] text-[10px] tracking-wide inline-block">
+                {{ job.status }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Detail Drawer slide over (Radius 16px) -->
+  <div 
+    *ngIf="isDrawerOpen && selectedJob" 
+    class="fixed inset-0 z-50 bg-[#010136]/30 backdrop-blur-xs flex items-center justify-end transition-all"
+    (click)="closeDrawer()"
+  >
+    <div 
+      class="w-full max-w-2xl bg-white h-screen shadow-2xl p-6 overflow-y-auto space-y-6 flex flex-col justify-between"
+      style="border-radius: 16px 0 0 16px;"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="space-y-6">
+        <!-- Close Drawer bar -->
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+          <div class="flex items-center gap-2">
+            <lucide-icon name="file-text" class="w-5 h-5 text-[#0463EF]"></lucide-icon>
+            <h2 class="text-lg font-bold text-[#010136]">Job Verification Dossier</h2>
+          </div>
+          <button (click)="closeDrawer()" class="p-2 hover:bg-slate-100 rounded-full cursor-pointer">
+            <lucide-icon name="x" class="w-5 h-5 text-[#010136]"></lucide-icon>
+          </button>
+        </div>
+
+        <!-- Reference card -->
+        <div class="p-4 bg-slate-50 border border-slate-200 rounded-[8px] space-y-3">
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">{{ language === 'TH' ? 'งานอ้างอิงเลขที่' : 'JOB REFERENCE NUMBER' }}</span>
+              <h3 class="text-xl font-black text-[#010136] font-mono leading-none mt-1">{{ selectedJob.reference }}</h3>
+            </div>
+            <span [class]="getJobStatusBadgeClass(selectedJob.status)" class="px-2.5 py-1 font-black rounded-[4px] text-[10px] uppercase">
+              {{ selectedJob.status }}
+            </span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 pt-3 border-t border-slate-200/50 text-[11px]">
+            <div>
+              <span class="font-medium text-slate-400">{{ language === 'TH' ? 'พนักงาน/ผู้ตรวจสอบ' : 'Assignee Operation:' }}</span>
+              <p class="font-bold text-slate-700 mt-0.5">{{ selectedJob.assignee || 'Operation Pool' }}</p>
+            </div>
+            <div>
+              <span class="font-medium text-slate-400">{{ language === 'TH' ? 'เดดไลน์ตรวจสอบ' : 'Verification Expiry:' }}</span>
+              <p class="font-bold text-slate-700 mt-0.5 font-mono">{{ selectedJob.expiryDate }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Document Grid detail -->
+        <div class="space-y-3">
+          <h4 class="text-xs font-black text-[#010136] uppercase tracking-wider">{{ language === 'TH' ? 'สถานะชุดเอกสาร OCR' : 'OCR DOCUMENT DOSSIERS' }}</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div 
+              *ngFor="let doc of selectedJob.docs | keyvalue"
+              class="p-3 bg-white border border-slate-200 rounded-[8px] flex items-center justify-between"
+            >
+              <div class="flex items-center gap-2.5">
+                <lucide-icon name="file" class="w-4 h-4 text-slate-400"></lucide-icon>
+                <span class="text-xs font-bold text-slate-700">{{ doc.key }}</span>
+              </div>
+              <span [class]="getDocStatusBadgeClass(doc.value)" class="px-2 py-0.5 text-[9px] font-black rounded-[4px]">
+                {{ doc.value }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-4 border-t border-slate-100 flex gap-3">
+        <button 
+          (click)="closeDrawer()"
+          class="flex-1 py-3 border border-slate-200 hover:bg-slate-50 text-xs font-bold transition-all rounded-[4px] cursor-pointer"
+        >
+          {{ language === 'TH' ? 'ย้อนกลับ' : 'Back' }}
+        </button>
+        <button 
+          class="flex-1 py-3 bg-[#0463EF] hover:bg-blue-600 text-white text-xs font-bold transition-all rounded-[4px] cursor-pointer shadow-sm disabled:cursor-not-allowed disabled:opacity-50"
+          [disabled]="selectedJob.status === 'DONE'"
+        >
+          {{ language === 'TH' ? 'ทำเครื่องหมายสำเร็จ' : 'Mark Verification Done' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Simple Status Guide Modal (Radius 16px) -->
+  <div 
+    *ngIf="isStatusGuideOpen"
+    class="fixed inset-0 z-50 bg-[#010136]/40 backdrop-blur-xs flex items-center justify-center p-4"
+    (click)="closeStatusGuide()"
+  >
+    <div 
+      class="w-full max-w-lg bg-white p-6 rounded-[16px] shadow-2xl space-y-6"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center gap-2">
+          <lucide-icon name="info" class="w-5 h-5 text-[#0463EF]"></lucide-icon>
+          <h2 class="text-sm font-bold text-[#010136] uppercase tracking-wider">
+            {{ language === 'TH' ? 'คู่มือสถานะเปรียบเทียบข้อมูล' : 'Data Comparison Status Guide' }}
+          </h2>
+        </div>
+        <button (click)="closeStatusGuide()" class="p-1.5 hover:bg-slate-100 rounded-full cursor-pointer">
+          <lucide-icon name="x" class="w-4 h-4 text-[#010136]"></lucide-icon>
+        </button>
+      </div>
+
+      <!-- Detailed Guide Table -->
+      <div class="space-y-4 max-h-[400px] overflow-y-auto pr-1">
+        <div class="p-3 bg-blue-50/50 rounded-[8px] border border-blue-100 space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-[#0463EF]"></span>
+            <span class="text-xs font-black text-[#010136]">MATCHED</span>
+          </div>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            {{ language === 'TH' 
+              ? 'ระบบประมวลผลดึงข้อมูลดัชนี (เช่น PO#, Net Price, VAT) ตรงกันครบถ้วนในทุกประเภทเอกสารที่ตรวจสอบ' 
+              : 'All target cross-check parameters matched with completely verified index criteria.' }}
+          </p>
+        </div>
+
+        <div class="p-3 bg-red-50/50 rounded-[8px] border border-red-100 space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping"></span>
+            <span class="text-xs font-black text-rose-600">MISMATCHED</span>
+          </div>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            {{ language === 'TH' 
+              ? 'ข้อมูลดัชนีไม่ตรงกัน (เช่น ยอดรวมภาษีหรือชื่อบริษัทคลาดเคลื่อน) ต้องการการตรวจทานและแก้ไขแบบแมนนวล' 
+              : 'Index parameter deviation detected. Immediate compliance evaluation required.' }}
+          </p>
+        </div>
+
+        <div class="p-3 bg-amber-50/50 rounded-[8px] border border-amber-100 space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+            <span class="text-xs font-black text-amber-600">RECEIVED</span>
+          </div>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            {{ language === 'TH' 
+              ? 'ได้รับไฟล์ข้อมูลเข้ามาในกลุ่มจัดเก็บเรียบร้อยแล้ว แต่อยู่ระหว่างรอเข้าคิวเพื่อทำการดึงค่าดัชนี OCR/AI' 
+              : 'Document structure saved. Index parsing queuing initiates shortly.' }}
+          </p>
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-2 border-t border-slate-100">
+        <button 
+          (click)="closeStatusGuide()"
+          class="px-5 py-2.5 bg-[#0463EF] hover:bg-blue-600 text-white text-xs font-bold transition-all rounded-[4px] cursor-pointer"
+        >
+          {{ language === 'TH' ? 'เข้าใจแล้ว' : 'Got it' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
