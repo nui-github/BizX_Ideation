@@ -1,8 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TrackingService } from '../../core/services/tracking.service';
-import { WorkflowService } from '../../core/services/workflow.service';
 import { ComparisonJob, TrackingItem, Language, JobStatus, ComparisonDocStatus } from '../../core/models/types.model';
 
 @Component({
@@ -20,19 +19,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
   searchQuery: string = '';
   statusFilter: string = 'ALL';
   
-  // UI States
-  isDrawerOpen: boolean = false;
-  isStatusGuideOpen: boolean = false;
+  // UI States (Ant Design Drawer & Modal Controls)
+  isDrawerVisible: boolean = false;
+  isStatusGuideVisible: boolean = false;
   
   private destroy$ = new Subject<void>();
 
-  constructor(
-    private trackingService: TrackingService,
-    private workflowService: WorkflowService
-  ) {}
+  constructor(private trackingService: TrackingService) {}
 
   ngOnInit(): void {
-    // 1. Fetch Comparison Jobs through Service Bridge
+    // Fetch comparison jobs via service layer
     this.trackingService.getComparisonJobs()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -41,7 +37,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
       });
 
-    // 2. Fetch Tracking Data Items
+    // Fetch tracking items via service layer
     this.trackingService.getTrackingItems()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -56,7 +52,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  // Filter logic
+  // Pure data filtering logic
   get filteredJobs(): ComparisonJob[] {
     return this.jobs.filter(job => {
       const matchesSearch = job.reference.toLowerCase().includes(this.searchQuery.toLowerCase()) || 
@@ -66,30 +62,45 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  // UI Event handlers
-  selectJob(job: ComparisonJob): void {
+  // Open & Close Details via ng-zorro Drawer
+  openDetails(job: ComparisonJob): void {
     this.selectedJob = job;
-    this.isDrawerOpen = true;
+    this.isDrawerVisible = true;
   }
 
-  closeDrawer(): void {
-    this.isDrawerOpen = false;
+  closeDetails(): void {
+    this.isDrawerVisible = false;
     this.selectedJob = null;
+  }
+
+  // Open & Close Status Guide via ng-zorro Modal
+  openStatusGuide(): void {
+    this.isStatusGuideVisible = true;
+  }
+
+  closeStatusGuide(): void {
+    this.isStatusGuideVisible = false;
   }
 
   toggleLanguage(): void {
     this.language = this.language === 'TH' ? 'EN' : 'TH';
   }
 
-  openStatusGuide(): void {
-    this.isStatusGuideOpen = true;
+  markAsDone(job: ComparisonJob): void {
+    // Use the Service bridge to mutate state
+    this.trackingService.updateComparisonJob(job.id, { status: JobStatus.DONE })
+      .subscribe({
+        next: (updatedJob) => {
+          this.jobs = this.jobs.map(j => j.id === updatedJob.id ? updatedJob : j);
+          if (this.selectedJob?.id === updatedJob.id) {
+            this.selectedJob = updatedJob;
+          }
+          this.closeDetails();
+        }
+      });
   }
 
-  closeStatusGuide(): void {
-    this.isStatusGuideOpen = false;
-  }
-
-  // Helper utility mappings for HTML indicators
+  // Tailwind CSS helper mapping to retain original gorgeous styling rules
   getDocStatusBadgeClass(status: ComparisonDocStatus): string {
     switch (status) {
       case ComparisonDocStatus.MATCHED:
