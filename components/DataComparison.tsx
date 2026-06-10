@@ -4451,7 +4451,7 @@ const mockWorkflows: Workflow[] = [
               <div className="flex gap-4 w-full mt-4">
                  <Button 
                    size="large" 
-                   className="flex-1 rounded-xl h-14 font-black uppercase tracking-widest text-[11px] border-slate-200 text-slate-600 hover:bg-slate-50 font-sans"
+                   className="flex-1 rounded-[4px] h-14 font-black uppercase tracking-widest text-[11px] border-slate-200 text-slate-600 hover:bg-slate-50 font-sans"
                    onClick={() => {
                      setShowRejectPendingModal(false);
                      setRejectPendingId(null);
@@ -4462,7 +4462,7 @@ const mockWorkflows: Workflow[] = [
                  <Button 
                    type="primary" 
                    size="large" 
-                   className="flex-1 rounded-xl h-14 font-black uppercase tracking-widest text-[11px] bg-rose-500 border-none shadow-lg shadow-rose-500/20 hover:bg-rose-600 font-sans"
+                   className="flex-1 rounded-[4px] h-14 font-black uppercase tracking-widest text-[11px] bg-rose-500 border-none shadow-lg shadow-rose-500/20 hover:bg-rose-600 font-sans"
                    onClick={confirmRejectPending}
                  >
                    {language === 'TH' ? 'ปฏิเสธไฟล์' : 'REJECT FILE'}
@@ -4492,7 +4492,7 @@ const mockWorkflows: Workflow[] = [
             <div className="flex gap-4 w-full mt-4">
               <Button 
                 size="large" 
-                className="flex-1 rounded-xl h-14 font-black uppercase tracking-widest text-[11px] border-slate-200 text-slate-600 hover:bg-slate-50 font-sans"
+                className="flex-1 rounded-[4px] h-14 font-black uppercase tracking-widest text-[11px] border-slate-200 text-slate-600 hover:bg-slate-50 font-sans"
                 onClick={() => {
                   setShowDeleteColumnConfirmModal(false);
                   setDeleteColumnTargetDocName(null);
@@ -4503,7 +4503,7 @@ const mockWorkflows: Workflow[] = [
               <Button 
                 type="primary" 
                 size="large" 
-                className="flex-1 rounded-xl h-14 font-black uppercase tracking-widest text-[11px] bg-rose-500 border-none shadow-lg shadow-rose-500/20 hover:bg-rose-600 font-sans"
+                className="flex-1 rounded-[4px] h-14 font-black uppercase tracking-widest text-[11px] bg-rose-500 border-none shadow-lg shadow-rose-500/20 hover:bg-rose-600 font-sans"
                 onClick={() => {
                   const targetDoc = deleteColumnTargetDocName;
                   handleDeleteDocColumn(targetDoc);
@@ -4544,13 +4544,13 @@ const mockWorkflows: Workflow[] = [
                     setShowWorkflowWarning(false);
                     // Navigation logic would go here
                   }}
-                  className="w-full py-4 bg-[#0463EF] text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-blue-600 transition-all flex items-center justify-center gap-2"
+                  className="w-full py-4 bg-[#0463EF] text-white rounded-[4px] font-black text-sm uppercase tracking-widest hover:bg-blue-600 transition-all flex items-center justify-center gap-2 border-none"
                  >
                    {language === 'TH' ? 'ไปที่ตั้งค่าเวิร์กโฟลว์' : 'Go to Set Workflow'}
                  </button>
                  <button 
                   onClick={() => setShowWorkflowWarning(false)}
-                  className="w-full py-4 bg-white border border-slate-200 text-slate-400 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-slate-50 transition-all"
+                  className="w-full py-2 bg-transparent hover:bg-transparent text-slate-400 hover:text-slate-500 font-bold text-sm transition-all cursor-pointer border-none"
                  >
                    {language === 'TH' ? 'ยกเลิก' : 'Cancel'}
                  </button>
@@ -4651,7 +4651,7 @@ const mockWorkflows: Workflow[] = [
             <div className="flex gap-4 w-full mt-2">
               <Button 
                 size="large" 
-                className="flex-1 rounded-xl h-12 font-black uppercase tracking-widest text-[11px] border-slate-200 text-slate-600 hover:bg-slate-50 font-sans"
+                className="flex-1 rounded-[4px] h-12 font-black uppercase tracking-widest text-[11px] border-slate-200 text-slate-600 hover:bg-slate-50 font-sans"
                 onClick={() => setExportJob(null)}
               >
                 {language === 'TH' ? 'ยกเลิก' : 'CANCEL'}
@@ -4660,7 +4660,7 @@ const mockWorkflows: Workflow[] = [
                 type="primary" 
                 size="large" 
                 disabled={exportOption === 'workflow' && !exportJob.workflowName && !selectedExportWorkflow}
-                className="flex-1 rounded-xl h-12 font-black uppercase tracking-widest text-[11px] bg-[#0463EF] hover:bg-[#0352c7] border-none shadow-lg shadow-blue-500/20 font-sans disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex-1 rounded-[4px] h-12 font-black uppercase tracking-widest text-[11px] bg-[#0463EF] hover:bg-[#0352c7] border-none shadow-lg shadow-blue-500/20 font-sans disabled:opacity-40 disabled:cursor-not-allowed"
                 onClick={() => handleConfirmExport(exportJob)}
               >
                 {language === 'TH' ? 'ส่งออกข้อมูล' : 'EXPORT DATA'}
@@ -4684,13 +4684,13 @@ const mockWorkflows: Workflow[] = [
               <div className="flex flex-col w-full gap-3 mt-4">
                  <button 
                   onClick={handleForceLock}
-                  className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center justify-center gap-2"
+                  className="w-full py-4 bg-slate-900 text-white rounded-[4px] font-black text-sm uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center justify-center gap-2 border-none"
                  >
                    <Lock size={18} /> {t.yesLockProceed}
                  </button>
                  <button 
                   onClick={() => setShowLockPrompt(false)}
-                  className="w-full py-4 bg-white border border-slate-200 text-slate-400 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-slate-50 transition-all"
+                  className="w-full py-2 bg-transparent hover:bg-transparent text-slate-400 hover:text-slate-500 font-bold text-sm transition-all cursor-pointer border-none"
                  >
                    {t.illCheckAgain}
                  </button>
@@ -4719,14 +4719,14 @@ const mockWorkflows: Workflow[] = [
               <div className="flex flex-col w-full gap-2.5 mt-2">
                   <button 
                     onClick={handleClaimJob}
-                    className="w-full py-3.5 bg-[#0463EF] hover:bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-blue-500/10 hover:shadow-blue-500/25 border-none"
+                    className="w-full py-3.5 bg-[#0463EF] hover:bg-blue-600 text-white rounded-[4px] font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-blue-500/10 hover:shadow-blue-500/25 border-none"
                   >
                     <Check size={16} strokeWidth={3} />
                     <span>{language === 'TH' ? 'ใช่, ยืนยันรับงาน' : 'YES, CLAIM JOB'}</span>
                   </button>
                   <button 
                     onClick={() => setShowClaimPrompt(false)}
-                    className="w-full py-3.5 bg-white border border-slate-200 text-slate-400 hover:text-slate-500 hover:bg-slate-50 rounded-2xl font-black text-xs uppercase tracking-widest transition-all cursor-pointer"
+                    className="w-full py-2 bg-transparent hover:bg-transparent text-slate-400 hover:text-slate-500 font-bold text-sm transition-all cursor-pointer border-none"
                   >
                     {language === 'TH' ? 'ยกเลิก' : 'CANCEL'}
                   </button>
@@ -4771,7 +4771,7 @@ const mockWorkflows: Workflow[] = [
                      setShowRejectFileModal(false);
                      setRejectFileTargetDocName(null);
                    }}
-                   className="w-full py-4 bg-rose-500 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-rose-600 transition-all flex items-center justify-center gap-2"
+                   className="w-full py-4 bg-rose-500 text-white rounded-[4px] font-black text-sm uppercase tracking-widest hover:bg-rose-600 transition-all flex items-center justify-center gap-2 border-none"
                   >
                     {language === 'TH' ? 'ยืนยันปฏิเสธ' : 'Confirm Reject'}
                   </button>
@@ -4780,7 +4780,7 @@ const mockWorkflows: Workflow[] = [
                      setShowRejectFileModal(false);
                      setRejectFileTargetDocName(null);
                    }}
-                   className="w-full py-4 bg-white border border-slate-200 text-slate-400 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-slate-50 transition-all"
+                   className="w-full py-2 bg-transparent hover:bg-transparent text-slate-400 hover:text-slate-500 font-bold text-sm transition-all cursor-pointer border-none"
                   >
                     {language === 'TH' ? 'ยกเลิก' : 'Cancel'}
                   </button>
@@ -4809,14 +4809,14 @@ const mockWorkflows: Workflow[] = [
               <div className="flex flex-col w-full gap-2.5 mt-2">
                   <button 
                     onClick={handleUnclaimJob}
-                    className="w-full py-3.5 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-rose-500/10 hover:shadow-rose-500/25 border-none"
+                    className="w-full py-3.5 bg-rose-600 hover:bg-rose-700 text-white rounded-[4px] font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-rose-500/10 hover:shadow-rose-500/25 border-none"
                   >
                     <Check size={16} strokeWidth={3} />
                     <span>{language === 'TH' ? 'ใช่, ยกเลิกรับงาน' : 'YES, UNCLAIM JOB'}</span>
                   </button>
                   <button 
                     onClick={() => setShowUnclaimPrompt(false)}
-                    className="w-full py-3.5 bg-white border border-slate-200 text-slate-400 hover:text-slate-500 hover:bg-slate-50 rounded-2xl font-black text-xs uppercase tracking-widest transition-all cursor-pointer"
+                    className="w-full py-2 bg-transparent hover:bg-transparent text-slate-400 hover:text-slate-500 font-bold text-sm transition-all cursor-pointer border-none"
                   >
                     {language === 'TH' ? 'ยกเลิก' : 'CANCEL'}
                   </button>

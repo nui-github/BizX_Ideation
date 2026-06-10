@@ -1030,30 +1030,6 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
               />
             </div>
 
-            {/* Template Type */}
-            <div className="space-y-1.5" id="template-type-select-container">
-              <label className="text-xs font-black text-[#010136] uppercase tracking-wider flex items-center gap-1.5">
-                <span>Template Type</span>
-                <span className="text-rose-500 font-bold">*</span>
-                <Tooltip title={isTh ? 'เป็นการเลือก template การอ่านของระบบ OCR ที่ระบบใช้ร่วมกัน' : 'Selects the reading template of the OCR system shared by the application'}>
-                  <HelpCircle size={14} className="text-[#010136]/40 cursor-help" />
-                </Tooltip>
-              </label>
-              <Select
-                value={formTemplateType || undefined}
-                onChange={(value) => setFormTemplateType(value)}
-                placeholder={isTh ? 'เลือกประเภทสคีมา...' : 'Select schema type...'}
-                className="w-full text-slate-800 shadow-2xs font-semibold custom-template-type-select"
-                style={{ height: '42px', borderRadius: '4px' }}
-                styles={{ popup: { root: { borderRadius: '4px' } } }}
-                options={[
-                  { value: 'import-standard', label: 'import-standard' },
-                  { value: 'fta-compliance', label: 'fta-compliance' },
-                  { value: 'import-premium', label: 'import-premium' },
-                  { value: 'other', label: 'other' }
-                ]}
-              />
-            </div>
 
             {/* AI Prompt Input (Prompt AI) */}
             <div className="space-y-1.5 pt-2">
