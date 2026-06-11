@@ -977,6 +977,17 @@ function App() {
       setCurrentView(view);
   };
 
+  React.useEffect(() => {
+    const handleViewChange = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail) {
+        setCurrentView(customEvent.detail);
+      }
+    };
+    window.addEventListener('change-view', handleViewChange);
+    return () => window.removeEventListener('change-view', handleViewChange);
+  }, []);
+
   const handleViewExtraction = (item: TrackingItem) => {
       setExtractionItem(item);
       setCurrentView('EXTRACTION');

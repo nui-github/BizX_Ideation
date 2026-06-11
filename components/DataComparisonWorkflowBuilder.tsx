@@ -10,6 +10,7 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { Workflow, WorkflowNode, WorkflowEdge, Language, DocType } from '../types';
 import { TRANSLATIONS } from '../translations';
+import { DEFAULT_SCHEMAS } from './LabelSchemaSettings';
 
 const MASTER_DOC_TYPES = [
   { id: 'INV', name: 'Invoice', hint: 'Commercial Invoice with billing details', pattern: 'INV_*, INVOICE_*' },
@@ -30,6 +31,27 @@ const parseStorageTemplate = (template: string) => {
     .replace(/{job_type}/g, 'USA Tech Import Standards')
     .replace(/{doc_type}/g, 'Invoice')
     .replace(/{original_name}/g, 'commercial_invoice_v3');
+};
+
+const getLocalLabelSchemas = (): any[] => {
+  if (typeof window !== 'undefined') {
+    const saved = localStorage.getItem('bizx_label_schemas');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Failed to parse local schemas', e);
+      }
+    }
+  }
+  return DEFAULT_SCHEMAS;
+};
+
+const getSchemaNameById = (schemaId: string): string => {
+  if (!schemaId) return '';
+  const schemas = getLocalLabelSchemas();
+  const schema = schemas.find(s => s.id === schemaId);
+  return schema ? schema.name : schemaId;
 };
 
 interface DataComparisonWorkflowBuilderProps {
@@ -533,7 +555,10 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
       };
       case 'extract': return {
         ...baseData,
-        nodeName: '',
+        nodeName: language === 'TH' ? 'สกัดข้อมูล (Extract)' : 'Extract Node',
+        schemaId: '',
+        confidenceThreshold: 80,
+        allowReview: true
       };
       case 'compare': return {
         ...baseData,
@@ -997,8 +1022,13 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
         return hasDeletedType;
       }
       case 'extract': {
-        // Only return true if explicitly marked as unconfigured
-        return node.data.isConfigured === false;
+        const d = node.data;
+        if (!d.schemaId) return true;
+        if (d.confidenceThreshold === undefined || d.confidenceThreshold === null || d.confidenceThreshold === '') return true;
+        
+        const thresholdVal = Number(d.confidenceThreshold);
+        if (isNaN(thresholdVal) || thresholdVal < 0 || thresholdVal > 100) return true;
+        return false;
       }
       case 'compare': {
         const d = node.data;
@@ -1674,6 +1704,37 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                               </span>
                             </div>
                           )}
+                        </div>
+                      </div>
+                    )}
+
+                    {node.type === 'extract' && (
+                      <div className="space-y-3">
+                        <div className="p-3 bg-slate-50/80 rounded-[8px] border border-slate-100 space-y-2">
+                          <div className="flex flex-col gap-1">
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">SCHEMA</span>
+                            <span className="text-[10px] font-semibold text-slate-700 truncate font-sans bg-white border border-slate-200/50 px-2 py-1 rounded-[4px] mt-0.5" title={getSchemaNameById(node.data.schemaId)}>
+                              {getSchemaNameById(node.data.schemaId) || (language === 'TH' ? 'ไม่ได้เลือก' : 'Not Selected')}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center justify-between pt-1.5 border-t border-slate-100/50">
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">THRESHOLD</span>
+                            <span className="text-[10px] font-bold text-[#0463EF] font-mono bg-blue-50/60 border border-blue-100 px-2 py-0.5 rounded-[4px]">
+                              {node.data.confidenceThreshold !== undefined ? `≥ ${node.data.confidenceThreshold}%` : '≥ 80%'}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center justify-between pt-1.5 border-t border-slate-100/50">
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none font-sans">ALLOW REVIEW</span>
+                            <span className={`text-[9px] font-black uppercase tracking-tight px-2 py-0.5 rounded-[4px] border ${
+                              node.data.allowReview !== false 
+                                ? 'bg-emerald-50 border-emerald-100 text-emerald-600' 
+                                : 'bg-rose-50 border-rose-100 text-rose-600'
+                            }`}>
+                              {node.data.allowReview !== false ? (language === 'TH' ? 'ON' : 'ON') : (language === 'TH' ? 'OFF' : 'OFF')}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     )}
@@ -3421,8 +3482,220 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                   </div>
                 )}
 
+                {/* Extract Node Config */}
+                {node.type === 'extract' && (() => {
+                  const schemasList = getLocalLabelSchemas();
+                  const selectedSchemaId = node.data.schemaId || '';
+                  const selectedSchema = schemasList.find(s => s.id === selectedSchemaId);
+                  
+                  return (
+                    <div className="space-y-6">
+                      <div>
+                        <h3 className="text-sm font-black text-[#010136] uppercase tracking-wider mb-2">
+                          {language === 'TH' ? 'ตั้งค่าสกัดข้อมูล (Extract Node Settings)' : 'Extract Node Settings'}
+                        </h3>
+                        <p className="text-xs text-slate-500 mb-4 leading-relaxed font-sans">
+                          {language === 'TH' 
+                            ? 'ระบบจะแยกและตรวจดึงข้อมูลจากเอกสารตามกฎและสคีมาที่กำหนดไว้' 
+                            : 'AI will parse, inspect, and extract document data according to selected schemas.'}
+                        </p>
+                      </div>
+
+                      {/* Section 1: Label schema */}
+                      <div className="p-4 bg-white border border-slate-200 shadow-sm rounded-[16px] space-y-4 font-sans">
+                        <div className="flex items-center gap-2">
+                          <Layers size={16} className="text-[#0463EF]" />
+                          <h4 className="text-xs font-black text-[#010136] uppercase tracking-wider">
+                            Section 1: Label Schema <span className="text-rose-500 font-bold">*</span>
+                          </h4>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          {schemasList.length === 0 ? (
+                            <div className="bg-slate-50 p-4 border border-slate-200 rounded-[4px] space-y-2">
+                              <p className="text-xs font-semibold text-slate-500">
+                                {language === 'TH' ? 'ยังไม่มี Schema ในระบบ' : 'No schemas found in the system'}
+                              </p>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setDrawerNodeId(null);
+                                  window.dispatchEvent(new CustomEvent('change-view', { detail: 'SETTINGS_LABEL_SCHEMA' }));
+                                }}
+                                className="text-[#0463EF] hover:underline font-bold text-xs flex items-center gap-1 cursor-pointer"
+                              >
+                                {language === 'TH' ? 'ไปสร้าง Label schema →' : 'Go to create Label schema →'}
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="space-y-3">
+                              <select 
+                                value={selectedSchemaId}
+                                onChange={(e) => updateNodeData(node.id, { schemaId: e.target.value })}
+                                className="w-full bg-slate-50 p-3 text-xs font-bold text-[#010136] border border-slate-200 rounded-[4px] focus:outline-none focus:border-[#0463EF] focus:ring-1 focus:ring-[#0463EF]/20 transition-all cursor-pointer"
+                              >
+                                <option value="" disabled className="text-slate-400">
+                                  {language === 'TH' ? '-- เลือก Label Schema --' : '-- Choose Label Schema --'}
+                                </option>
+                                {schemasList.map(s => (
+                                  <option key={s.id} value={s.id}>
+                                    {s.name}
+                                  </option>
+                                ))}
+                              </select>
+
+                              {/* Schema Summary Preview */}
+                              {selectedSchema && (
+                                <div className="p-4 bg-blue-50/40 border border-blue-100 rounded-[8px] space-y-3 animate-in fade-in duration-200">
+                                  <p className="text-[10px] font-black text-[#0463EF] uppercase tracking-wider">
+                                    {language === 'TH' ? 'สรุป Schema ที่เลือก:' : 'Selected Schema Summary:'}
+                                  </p>
+                                  <div className="space-y-2">
+                                    {(selectedSchema.configs || []).map((config: any) => {
+                                      const docTypeName = currentDocTypes.find((dt: any) => dt.id === config.docTypeId)?.name || config.docTypeId;
+                                      const labelCount = config.labels?.length || 0;
+                                      return (
+                                        <div key={config.docTypeId} className="flex items-center justify-between bg-white px-3 py-2 rounded-lg border border-blue-100/40">
+                                          <div className="flex items-center gap-1.5">
+                                            <FileText size={12} className="text-[#0463EF]" />
+                                            <span className="text-[11px] font-black text-slate-700">{docTypeName}</span>
+                                          </div>
+                                          <span className="text-[10px] font-black bg-blue-50 text-[#0463EF] px-2 py-0.5 rounded" style={{ borderRadius: '4px' }}>
+                                            {labelCount} {language === 'TH' ? 'Labels' : 'Labels'}
+                                          </span>
+                                        </div>
+                                      );
+                                    })}
+                                    {(!selectedSchema.configs || selectedSchema.configs.length === 0) && (
+                                      <p className="text-[11px] font-medium text-slate-500 italic">
+                                        {language === 'TH' ? 'ไม่มีโครงร่างเอกสารในสคีมานี้' : 'No document configurations present in this schema'}
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Section 2: Confidence Threshold */}
+                      <div className="p-4 bg-white border border-slate-200 shadow-sm rounded-[16px] space-y-4 font-sans">
+                        <div className="flex items-center gap-2">
+                          <ShieldCheck size={16} className="text-[#0463EF]" />
+                          <h4 className="text-xs font-black text-[#010136] uppercase tracking-wider">
+                            Section 2: Confidence Threshold <span className="text-rose-500 font-bold">*</span>
+                          </h4>
+                        </div>
+                        
+                        <div className="space-y-4">
+                          {(() => {
+                            const currentValue = node.data.confidenceThreshold !== undefined ? Number(node.data.confidenceThreshold) : 80;
+                            return (
+                              <div className="space-y-4">
+                                <div className="flex items-center gap-4">
+                                  <input 
+                                    type="range"
+                                    min="0"
+                                    max="100"
+                                    value={currentValue}
+                                    onChange={(e) => {
+                                      updateNodeData(node.id, { confidenceThreshold: Number(e.target.value) });
+                                    }}
+                                    className="flex-1 accent-[#0463EF] h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer"
+                                  />
+                                  <div className="flex items-center gap-1 bg-blue-50 border border-blue-100 px-3 py-1" style={{ borderRadius: '4px' }}>
+                                    <span className="text-xs font-black text-[#0463EF] font-mono">{currentValue}%</span>
+                                  </div>
+                                </div>
+
+                                <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-100/50">
+                                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mr-1">Presets:</span>
+                                  {[50, 70, 80, 90, 100].map((preset) => {
+                                    const isSelected = currentValue === preset;
+                                    return (
+                                      <button
+                                        key={preset}
+                                        type="button"
+                                        onClick={() => updateNodeData(node.id, { confidenceThreshold: preset })}
+                                        className={`px-3 py-1 text-xs font-black font-mono transition-all cursor-pointer ${
+                                          isSelected 
+                                            ? 'bg-[#0463EF] border-[#0463EF] text-white shadow-sm' 
+                                            : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100 hover:border-slate-300'
+                                        }`}
+                                        style={{ borderRadius: '4px' }}
+                                      >
+                                        {preset}%
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+
+                                <div className="bg-slate-50 border border-slate-100 p-3 rounded-[8px]">
+                                  <p className="text-[10px] font-bold text-slate-500 leading-relaxed font-sans">
+                                    {language === 'TH' 
+                                      ? `≥ ${currentValue}% → auto-accept ไหลต่อได้เลย` 
+                                      : `≥ ${currentValue}% → auto-accept can flow through`}
+                                    <br />
+                                    {language === 'TH' 
+                                      ? `< ${currentValue}% → ขึ้นอยู่กับ Allow review` 
+                                      : `< ${currentValue}% → depends on Allow review`}
+                                  </p>
+                                </div>
+                              </div>
+                            );
+                          })()}
+                        </div>
+                      </div>
+
+                      {/* Section 3: Allow Review */}
+                      <div className="p-4 bg-white border border-slate-200 shadow-sm rounded-[16px] space-y-4 font-sans">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <UserCheck size={16} className="text-[#0463EF]" />
+                            <h4 className="text-xs font-black text-[#010136] uppercase tracking-wider">
+                              Section 3: Allow Review
+                            </h4>
+                          </div>
+                          
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newVal = node.data.allowReview === false ? true : false;
+                              updateNodeData(node.id, { allowReview: newVal });
+                            }}
+                            className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                              node.data.allowReview !== false ? 'bg-[#0463EF]' : 'bg-slate-200'
+                            }`}
+                          >
+                            <span
+                              className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                                node.data.allowReview !== false ? 'translate-x-5' : 'translate-x-0'
+                              }`}
+                            />
+                          </button>
+                        </div>
+                        
+                        <div className="p-3 bg-slate-50/80 rounded-[8px] border border-slate-100/50">
+                          <p className="text-[11px] font-bold text-slate-600 leading-relaxed">
+                            {node.data.allowReview !== false ? (
+                              language === 'TH' 
+                                ? 'ถ้า field ไหน confidence ต่ำกว่า threshold ระบบจะหยุดรอ และส่งไปให้ user review ใน Job detail ก่อน แล้วค่อยไหลต่อ' 
+                                : 'If any field has confidence below the threshold, the system will pause and send it to the Human Review Queue in Job detail before proceeding.'
+                            ) : (
+                              language === 'TH' 
+                                ? 'ระบบใช้ค่าที่ AI ดึงมาทั้งหมด ไม่ว่า confidence จะเป็นเท่าไหร่ ไหลต่อทันทีโดยไม่รอ review' 
+                                : 'The system uses all values extracted by the AI regardless of confidence and proceeds immediately without waiting for human review.'
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+
                 {/* Generic Config for other nodes */}
-                {node.type !== 'get_file' && node.type !== 'hybrid_mail_filter' && node.type !== 'attachment_filter' && node.type !== 'group_of_file' && node.type !== 'create_job' && node.type !== 'send_to' && node.type !== 'compare' && node.type !== 'storage' && (
+                {node.type !== 'get_file' && node.type !== 'hybrid_mail_filter' && node.type !== 'attachment_filter' && node.type !== 'group_of_file' && node.type !== 'create_job' && node.type !== 'send_to' && node.type !== 'compare' && node.type !== 'storage' && node.type !== 'extract' && (
                   <div className="flex flex-col items-center justify-center h-[200px] text-center opacity-40">
                     <Settings size={40} className="mb-4" />
                     <p className="text-sm font-bold uppercase tracking-tight">Configuration module coming soon</p>

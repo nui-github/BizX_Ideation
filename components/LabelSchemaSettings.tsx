@@ -147,7 +147,23 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
   onBack,
   setComparisonWorkflows
 }) => {
-  const [schemas, setSchemas] = useState<LabelSchema[]>(DEFAULT_SCHEMAS);
+  const [schemas, setSchemas] = useState<LabelSchema[]>(() => {
+    const saved = typeof window !== 'undefined' ? localStorage.getItem('bizx_label_schemas') : null;
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Failed to parse saved schemas', e);
+      }
+    }
+    return DEFAULT_SCHEMAS;
+  });
+
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('bizx_label_schemas', JSON.stringify(schemas));
+    }
+  }, [schemas]);
   const [searchQuery, setSearchQuery] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editingSchema, setEditingSchema] = useState<LabelSchema | null>(null);
@@ -441,12 +457,6 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
     );
     if (nameExists) {
       setErrorMsg(isTh ? 'ชื่อ Schema นี้มีอยู่แล้วในระบบ กรุณาใช้ชื่ออื่น' : 'Schema name already exists. Please choose another name.');
-      return;
-    }
-
-    // Template Type validation (Required)
-    if (!formTemplateType.trim()) {
-      setErrorMsg(isTh ? 'กรุณาเลือกประเภทเทมเพลต (Template Type)' : 'Please select a Template Type');
       return;
     }
 
