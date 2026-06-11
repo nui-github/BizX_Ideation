@@ -925,7 +925,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
                             <span>{isTh ? 'AI PROMPT' : 'AI PROMPT'}</span>
                           </div>
                           {schema.aiPrompt ? (
-                            <div className="text-xs bg-blue-50/40 p-2 border border-blue-100/50 rounded-xl font-medium text-slate-600 line-clamp-2 leading-relaxed" title={schema.aiPrompt}>
+                            <div className="text-xs bg-blue-50/40 p-2 border border-blue-100/50 rounded-xl font-medium text-slate-600 truncate leading-relaxed" title={schema.aiPrompt}>
                               {schema.aiPrompt}
                             </div>
                           ) : (
