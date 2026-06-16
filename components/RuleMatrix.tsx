@@ -153,6 +153,12 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
     );
   };
 
+  const isArrayField = (field: string) => {
+    if (!field) return false;
+    const fL = field.toLowerCase();
+    return fL.startsWith('items.') || fL.startsWith('item.') || fL.includes('items') || fL.includes('goods') || fL.includes('packed') || fL.includes('containers');
+  };
+
   const getLabelsForDocTypeAndSchema = (colName: string, schemaId: string): string[] => {
     const docTypeId = getDocTypeIdFromColName(colName);
     if (schemaId) {
@@ -397,6 +403,9 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
     });
   };
 
+  const isAnyEditing = editingFieldId !== null;
+  const colWidth = isAnyEditing ? 320 : 160;
+
   return (
     <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm space-y-6 animate-in fade-in duration-500 w-full" id="rule-matrix-wrapper">
       {/* Header Bar */}
@@ -491,7 +500,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
 
       <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
         <div className="overflow-auto relative pb-32 max-h-[75vh]"> {/* Added padding for dropdowns and max-height for sticky to work */}
-          <table className="w-full text-left border-collapse" style={{ minWidth: `${Math.max(100, activeRule.docTypes.length * 150)}px`}}>
+          <table className="w-full text-left border-collapse" style={{ minWidth: `${180 + activeRule.docTypes.length * colWidth}px`}}>
             <thead>
               <tr className="bg-slate-50 border-b border-slate-200">
                 <th className="px-6 py-3 text-[10px] font-black text-slate-500 uppercase tracking-widest sticky top-0 left-0 bg-slate-50 z-[50] shadow-[2px_2px_5px_rgba(0,0,0,0.02)] min-w-[180px] w-[180px] outline outline-1 outline-slate-200 h-[40px]">Field Name</th>
@@ -501,7 +510,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                   const canMoveRight = !isRemark && idx < activeRule.docTypes.length - 2;
 
                   return (
-                    <th key={idx} className="px-4 py-3 text-center text-[10px] font-black uppercase tracking-tight sticky top-0 z-[30] min-w-[150px] max-w-[150px] w-[150px] outline outline-1 outline-slate-200 h-[40px] bg-slate-100 text-slate-500">
+                    <th key={idx} className="px-4 py-3 text-center text-[10px] font-black uppercase tracking-tight sticky top-0 z-[30] outline outline-1 outline-slate-200 h-[40px] bg-slate-100 text-slate-500" style={{ minWidth: `${colWidth}px`, maxWidth: `${colWidth}px`, width: `${colWidth}px` }}>
                       <div className="flex items-center justify-between gap-1 w-full group/head relative">
                         {/* Left button space to keep centering */}
                         <div className="flex items-center w-[20px] justify-start shrink-0">
@@ -612,7 +621,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                            const isRemarkCol = activeRule.docTypes[vIdx] === t.docTypeRemark;
                            const allRuleFields = activeRule?.parts?.flatMap((p: any) => p.rows.map((r: any) => r.detail)) || [];
                            return (
-                             <td key={vIdx} className={`px-4 py-4 text-center border-r border-slate-50 transition-colors last:border-r-0 align-top ${isEditing ? 'bg-white' : ''}`}>
+                             <td key={vIdx} style={{ minWidth: `${colWidth}px`, maxWidth: `${colWidth}px`, width: `${colWidth}px` }} className={`px-4 py-4 text-center border-r border-slate-50 transition-colors last:border-r-0 align-top ${isEditing ? 'bg-white' : ''}`}>
                                {isEditing ? (
                                   isRemarkCol ? (
                                     <textarea
@@ -724,6 +733,161 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                                         </>
                                       );
                                     })()}
+                                    {!!currentVal?.schemaField && currentVal?.isMain && isArrayField(currentVal?.schemaField) && (
+                                      <div className="bg-slate-50 border border-slate-200/60 p-3 rounded-lg text-left mt-2 flex flex-col gap-2.5 shadow-sm relative">
+                                        <div className="text-[10px] font-black tracking-wider text-slate-400 uppercase select-none">
+                                          {language === 'TH' ? 'ARRAY ITEM MATCHING' : 'ARRAY ITEM MATCHING'}
+                                        </div>
+                                        
+                                        {/* Radios for Mode Selection */}
+                                        <div className="flex gap-4 items-center">
+                                          <label className="flex items-center gap-1.5 cursor-pointer text-[11px] font-bold text-slate-700 select-none">
+                                            <input 
+                                              type="radio"
+                                              name={`arrayMatchingMode-${row.id}-${vIdx}`}
+                                              checked={currentVal?.arrayMatchingMode !== 'position'}
+                                              onChange={() => {
+                                                const newValues = [...editFormData.values];
+                                                newValues[vIdx] = {
+                                                  ...newValues[vIdx],
+                                                  arrayMatchingMode: 'key-based',
+                                                  arrayMatchingKey: newValues[vIdx].arrayMatchingKey || 'itemId',
+                                                  arrayMatchingFields: newValues[vIdx].arrayMatchingFields || ['hsCode', 'description', 'quantity'],
+                                                  fallbackToIndex: newValues[vIdx].fallbackToIndex !== false
+                                                };
+                                                setEditFormData({...editFormData, values: newValues});
+                                              }}
+                                              className="w-3.5 h-3.5 text-blue-600 border-slate-300 focus:ring-blue-500 accent-blue-600 cursor-pointer"
+                                            />
+                                            <span>Key-based</span>
+                                          </label>
+                                          
+                                          <label className="flex items-center gap-1.5 cursor-pointer text-[11px] font-bold text-slate-700 select-none">
+                                            <input 
+                                              type="radio"
+                                              name={`arrayMatchingMode-${row.id}-${vIdx}`}
+                                              checked={currentVal?.arrayMatchingMode === 'position'}
+                                              onChange={() => {
+                                                const newValues = [...editFormData.values];
+                                                newValues[vIdx] = {
+                                                  ...newValues[vIdx],
+                                                  arrayMatchingMode: 'position'
+                                                };
+                                                setEditFormData({...editFormData, values: newValues});
+                                              }}
+                                              className="w-3.5 h-3.5 text-blue-600 border-slate-300 focus:ring-blue-500 accent-blue-600 cursor-pointer"
+                                            />
+                                            <span>By position</span>
+                                          </label>
+                                        </div>
+
+                                        {/* Inputs if Key-based is selected */}
+                                        {currentVal?.arrayMatchingMode !== 'position' && (
+                                          <div className="flex flex-col gap-2 mt-0.5 animate-in fade-in duration-150">
+                                            {/* Key Selection Dropdown */}
+                                            <select
+                                              className="w-full bg-white border border-slate-200 rounded px-2.5 py-1.5 text-[10px] font-bold text-slate-700 focus:border-blue-400 outline-none cursor-pointer"
+                                              style={{ borderRadius: '4px' }}
+                                              value={currentVal?.arrayMatchingKey || 'itemId'}
+                                              onChange={(e) => {
+                                                const newValues = [...editFormData.values];
+                                                newValues[vIdx] = {
+                                                  ...newValues[vIdx],
+                                                  arrayMatchingKey: e.target.value
+                                                };
+                                                setEditFormData({...editFormData, values: newValues});
+                                              }}
+                                            >
+                                              <option value="itemId">itemId</option>
+                                              <option value="itemCode">itemCode</option>
+                                              <option value="sku">sku</option>
+                                              <option value="productName">productName</option>
+                                            </select>
+
+                                            {/* Multi-select for field lists */}
+                                            <div className="relative">
+                                              <div className="w-full bg-white border border-blue-400 focus:border-blue-500 rounded p-1.5 flex flex-wrap items-center gap-1 min-h-[30px] pr-6 cursor-pointer" style={{ borderRadius: '4px' }} onClick={() => {
+                                                const el = document.getElementById(`array-fields-dropdown-${row.id}-${vIdx}`);
+                                                if (el) el.classList.toggle('hidden');
+                                              }}>
+                                                {(currentVal?.arrayMatchingFields || ['hsCode', 'description', 'quantity']).map((fld: string) => (
+                                                  <span key={fld} className="inline-flex items-center gap-1 bg-slate-100 text-slate-700 text-[9.5px] font-bold px-1.5 py-0.5 rounded border border-slate-200">
+                                                    {fld}
+                                                    <button 
+                                                      type="button"
+                                                      onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        const currentFields = currentVal?.arrayMatchingFields || ['hsCode', 'description', 'quantity'];
+                                                        const nextFields = currentFields.filter((f: string) => f !== fld);
+                                                        const newValues = [...editFormData.values];
+                                                        newValues[vIdx] = {
+                                                          ...newValues[vIdx],
+                                                          arrayMatchingFields: nextFields
+                                                        };
+                                                        setEditFormData({...editFormData, values: newValues});
+                                                      }}
+                                                      className="text-slate-400 hover:text-red-500 font-bold ml-0.5 select-none cursor-pointer"
+                                                    >
+                                                      ×
+                                                    </button>
+                                                  </span>
+                                                ))}
+                                                <div className="absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                                                  <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
+                                                </div>
+                                              </div>
+
+                                              {/* Toggle popup options for multi-select */}
+                                              <div id={`array-fields-dropdown-${row.id}-${vIdx}`} className="absolute left-0 right-0 top-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg z-[200] hidden p-1.5 text-left flex flex-col gap-1 max-h-[150px] overflow-y-auto">
+                                                {['hsCode', 'description', 'quantity', 'itemId', 'price', 'amount'].map(opt => {
+                                                  const isSelected = (currentVal?.arrayMatchingFields || ['hsCode', 'description', 'quantity']).includes(opt);
+                                                  return (
+                                                    <label key={opt} className="flex items-center gap-2 px-1.5 py-1 hover:bg-slate-50 text-[9.5px] font-bold text-slate-600 cursor-pointer select-none">
+                                                      <input 
+                                                        type="checkbox"
+                                                        checked={isSelected}
+                                                        onChange={() => {
+                                                          const currentFields = currentVal?.arrayMatchingFields || ['hsCode', 'description', 'quantity'];
+                                                          const nextFields = isSelected 
+                                                            ? currentFields.filter((f: string) => f !== opt)
+                                                            : [...currentFields, opt];
+                                                          const newValues = [...editFormData.values];
+                                                          newValues[vIdx] = {
+                                                            ...newValues[vIdx],
+                                                            arrayMatchingFields: nextFields
+                                                          };
+                                                          setEditFormData({...editFormData, values: newValues});
+                                                        }}
+                                                        className="w-3 h-3 text-blue-600 border-slate-300 focus:ring-blue-500 accent-blue-600 cursor-pointer"
+                                                      />
+                                                      <span>{opt}</span>
+                                                    </label>
+                                                  );
+                                                })}
+                                              </div>
+                                            </div>
+
+                                            {/* Checkbox Fallback to Index */}
+                                            <label className="flex items-center gap-2 cursor-pointer text-[10px] font-bold text-slate-600 select-none mt-1">
+                                              <input 
+                                                type="checkbox"
+                                                checked={currentVal?.fallbackToIndex !== false}
+                                                onChange={(e) => {
+                                                  const newValues = [...editFormData.values];
+                                                  newValues[vIdx] = {
+                                                    ...newValues[vIdx],
+                                                    fallbackToIndex: e.target.checked
+                                                  };
+                                                  setEditFormData({...editFormData, values: newValues});
+                                                }}
+                                                className="w-3.5 h-3.5 text-blue-600 rounded border-slate-300 accent-blue-600 focus:outline-none cursor-pointer"
+                                              />
+                                              <span>{language === 'TH' ? 'Fallback to index' : 'Fallback to index'}</span>
+                                            </label>
+                                          </div>
+                                        )}
+                                      </div>
+                                    )}
                                     {!!currentVal?.schemaField && !currentVal?.isMain && (
                                       <div className="flex items-center gap-1.5 w-full animate-in fade-in slide-in-from-top-1 duration-200">
                                         <select 
@@ -811,9 +975,16 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                                       </div>
                                     )}
                                     {val?.isMain ? (
-                                      <div className="inline-flex items-center justify-center w-full min-w-[100px] px-2 py-1.5 rounded bg-blue-50 text-blue-700 border border-blue-200 text-[9px] font-black tracking-tight uppercase shadow-sm">
-                                        {language === 'TH' ? 'เอกสารหลัก' : 'MAIN DOC'}
-                                      </div>
+                                      <>
+                                        <div className="inline-flex items-center justify-center w-full min-w-[100px] px-2 py-1.5 rounded bg-blue-50 text-blue-700 border border-blue-200 text-[9px] font-black tracking-tight uppercase shadow-sm">
+                                          {language === 'TH' ? 'เอกสารหลัก' : 'MAIN DOC'}
+                                        </div>
+                                        {isArrayField(val?.schemaField) && (
+                                          <div className="bg-blue-50 border border-blue-200 text-[#0463EF] text-[8.5px] font-bold px-2 py-1 rounded-full text-center tracking-tight shadow-sm mt-1.5">
+                                            Key: {val?.arrayMatchingKey || 'itemId'} • {val?.fallbackToIndex !== false ? '1 fallback' : 'no fallback'}
+                                          </div>
+                                        )}
+                                      </>
                                     ) : (
                                       <div className={`inline-flex items-center justify-center w-full min-w-[100px] px-2 py-1.5 rounded-md text-[9px] font-bold tracking-tight uppercase ${
                                       val?.type === 'EXACT' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 

@@ -62,13 +62,7 @@ export const DEFAULT_SCHEMAS: LabelSchema[] = [
           { id: 'l-1', name: 'Invoice#', required: true, compare: true, section: 'Header', type: 'string' },
           { id: 'l-1-date', name: 'Invoice Date', required: true, compare: true, section: 'Header', type: 'date' },
           { id: 'l-1-cust', name: 'Customer Name', required: true, compare: false, section: 'Header', type: 'string' },
-          { 
-            id: 'l-3', 
-            name: 'Line Items', 
-            required: true, 
-            compare: false, 
-            section: 'Description', 
-            type: 'array',
+          { id: 'l-3', name: 'Line Items', required: true, compare: false, section: 'Description', type: 'array',
             subLabels: [
               { id: 'l-3-sub-1', name: 'Item Code', required: true, type: 'string', compare: false },
               { id: 'l-3-sub-2', name: 'Product Name', required: true, type: 'string', compare: false },
@@ -76,6 +70,9 @@ export const DEFAULT_SCHEMAS: LabelSchema[] = [
               { id: 'l-3-sub-4', name: 'Unit Price', required: true, type: 'number', compare: false }
             ]
           },
+          { id: 'l-items-qty', name: 'items.quantity', required: false, compare: true, section: 'Description', type: 'array' },
+          { id: 'l-items-hscode', name: 'items.hsCode', required: false, compare: true, section: 'Description', type: 'array' },
+          { id: 'l-items-desc', name: 'items.description', required: false, compare: true, section: 'Description', type: 'array' },
           { id: 'l-2', name: 'Total Value', required: true, compare: true, section: 'Footer', type: 'number' },
           { id: 'l-2-tax', name: 'VAT (7%)', required: false, compare: false, section: 'Footer', type: 'number' }
         ]
@@ -121,6 +118,9 @@ export const DEFAULT_SCHEMAS: LabelSchema[] = [
             ]
           },
           { id: 'l-8', name: 'Weight', required: false, compare: false, section: 'Footer', type: 'number' },
+          { id: 'l-pl-items-qty', name: 'items.quantity', required: false, compare: true, section: 'Description', type: 'array' },
+          { id: 'l-pl-items-hscode', name: 'items.hsCode', required: false, compare: true, section: 'Description', type: 'array' },
+          { id: 'l-pl-items-desc', name: 'items.description', required: false, compare: true, section: 'Description', type: 'array' },
           { id: 'l-pl-footer-packages', name: 'Total Packages', required: true, compare: true, section: 'Footer', type: 'number' }
         ]
       }

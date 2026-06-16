@@ -53,7 +53,7 @@ export const ManageRule: React.FC<ManageRuleProps> = ({ language, comparisonWork
   // Mock Rules Data
   const [rules, setRules] = useState(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('bizx_compare_rules_v4');
+      const saved = localStorage.getItem('bizx_compare_rules_v5');
       if (saved) {
         try {
           return JSON.parse(saved);
@@ -142,20 +142,20 @@ export const ManageRule: React.FC<ManageRuleProps> = ({ language, comparisonWork
                 {type: 'BILINGUAL', schemaId: 'ls-1', schemaField: 'B/L No'},
                 {type: 'TEXT', text: ''}
               ] },
-              { id: 'd2', detail: 'Item No. / Model No. (SKU)', detailTh: 'รหัสสินค้า / รุ่น (SKU)', values: [
-                {type: 'EXACT', schemaId: 'ls-1', schemaField: 'Invoice#'},
-                {type: 'EXACT', schemaId: 'ls-2', schemaField: 'PO No'},
-                {type: '', schemaId: 'ls-1', schemaField: 'Invoice#', isMain: true},
-                {type: 'EXACT', schemaId: 'ls-1', schemaField: 'Packing#'},
-                {type: 'EXACT', schemaId: 'ls-1', schemaField: 'B/L No'},
+              { id: 'd2', detail: 'hsCode', detailTh: 'พิกัดอัตราศุลกากร (hsCode)', values: [
+                {type: 'EXACT', schemaId: 'ls-1', schemaField: 'items.hsCode'},
+                {type: 'EXACT', schemaId: 'ls-2', schemaField: 'items.hsCode'},
+                {type: '', schemaId: 'ls-1', schemaField: 'items.hsCode', isMain: true, arrayMatchingMode: 'key-based', arrayMatchingKey: 'itemId', arrayMatchingFields: ['hsCode', 'description', 'quantity'], fallbackToIndex: true},
+                {type: 'EXACT', schemaId: 'ls-1', schemaField: 'items.hsCode'},
+                {type: 'EXACT', schemaId: 'ls-1', schemaField: 'items.hsCode'},
                 {type: 'TEXT', text: ''}
               ] },
-              { id: 'd3', detail: "Q'ty by line", detailTh: 'จำนวนสินค้าตามรายการสินค้า', values: [
-                {type: 'NUMBER_WORD', schemaId: 'ls-1', schemaField: 'Quantity'},
-                {type: 'NUMBER_WORD', schemaId: 'ls-2', schemaField: 'PO No'},
-                {type: '', schemaId: 'ls-1', schemaField: 'Quantity', isMain: true},
-                {type: 'NUMBER_WORD', schemaId: 'ls-1', schemaField: 'Packing#'},
-                {type: 'NUMBER_WORD', schemaId: 'ls-1', schemaField: 'B/L No'},
+              { id: 'd3', detail: 'quantity', detailTh: 'จำนวนหน่วยสินค้า (quantity)', values: [
+                {type: 'NUMBER_WORD', schemaId: 'ls-1', schemaField: 'items.quantity'},
+                {type: 'NUMBER_WORD', schemaId: 'ls-2', schemaField: 'items.quantity'},
+                {type: '', schemaId: 'ls-1', schemaField: 'items.quantity', isMain: true, arrayMatchingMode: 'key-based', arrayMatchingKey: 'itemId', arrayMatchingFields: ['hsCode', 'description', 'quantity'], fallbackToIndex: true},
+                {type: 'NUMBER_WORD', schemaId: 'ls-1', schemaField: 'items.quantity'},
+                {type: 'NUMBER_WORD', schemaId: 'ls-1', schemaField: 'items.quantity'},
                 {type: 'TEXT', text: ''}
               ] },
               { id: 'd4', detail: 'UOM', detailTh: 'หน่วยนับสินค้า (UOM)', values: [
@@ -427,7 +427,7 @@ export const ManageRule: React.FC<ManageRuleProps> = ({ language, comparisonWork
 
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('bizx_compare_rules_v4', JSON.stringify(rules));
+      localStorage.setItem('bizx_compare_rules_v5', JSON.stringify(rules));
     }
   }, [rules]);
 
