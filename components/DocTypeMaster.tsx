@@ -172,7 +172,7 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
 
   const text = {
     TH: {
-      title: "ตั้งค่า Doc Type",
+      title: "ตั้งค่า Doc Type & Label Schema",
       subtitle: "รายการประเภทเอกสารและคู่มือกำหนดรูปแบบชื่อไฟล์ให้ AI ตรวจสอบและประมวลผล",
       searchPlaceholder: "ค้นหาประเภทเอกสาร...",
       addBtn: "เพิ่ม Doc Type",
@@ -209,7 +209,7 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
       schemaLabelConfidence: "ความแม่นยำขั้นต่ำ",
     },
     EN: {
-      title: "Doc Type Settings",
+      title: "Doc Type & Label Schema Settings",
       subtitle: "List of document types and filename signature guides for AI classification",
       searchPlaceholder: "Search document types...",
       addBtn: "Add Doc Type",
@@ -386,39 +386,16 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
               </button>
             )}
             <h1 className="text-xl md:text-2xl font-black text-slate-800 tracking-tight flex items-center gap-2">
-              {activeTab === 'doctype' ? (
-                <>
-                  <Settings className="text-blue-600 animate-spin-slow" size={22} />
-                  {text.title}
-                </>
-              ) : (
-                <>
-                  <Layers className="text-blue-600 animate-pulse" size={22} />
-                  {language === 'TH' ? 'ตั้งค่า Label schema' : 'Label Schema Settings'}
-                </>
-              )}
+              <Settings className="text-blue-600 animate-spin-slow" size={22} />
+              {text.title}
             </h1>
           </div>
           <p className="text-xs md:text-sm text-slate-500 font-medium leading-relaxed">
-            {activeTab === 'doctype' 
-              ? text.subtitle 
-              : (language === 'TH' 
-                  ? 'ตรวจสอบและกำหนดโครงสร้างข้อมูลสคีมาป้ายระบุ (Label Schema) สำหรับการจับคู่ฟิลด์เอกสารร่วมกันในแต่ละเวิร์กโฟลว์' 
-                  : 'Maintain structured data extraction schemas and check for field match configurations across your workflows')}
+            {text.subtitle}
           </p>
         </div>
 
-        {activeTab === 'doctype' && (
-          <div className="flex items-center gap-3 self-end md:self-center">
-            <button
-              onClick={handleOpenAddModal}
-              className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md shadow-blue-500/10 flex items-center gap-2 transition cursor-pointer"
-            >
-              <Plus size={16} strokeWidth={2.5} />
-              <span>{text.addBtn}</span>
-            </button>
-          </div>
-        )}
+        {/* Buttons have been moved to the search row below */}
       </div>
 
       {/* Tab Switcher */}
@@ -450,62 +427,72 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
       </div>
 
       {activeTab === 'doctype' ? (
-        <>
+        <div className="flex flex-col gap-4 !mt-4 animate-in fade-in duration-300" id="doctype-tab-panel">
           {/* Control Filter row & total display */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/80 p-1.5 rounded-2xl border border-slate-200/35">
-        <div className="relative flex-1 max-w-md animate-in fade-in duration-300">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-          <Input
-            type="text"
-            className="w-full text-xs font-semibold h-[42px] px-10 rounded-xl"
-            placeholder={text.searchPlaceholder}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          {searchQuery && (
-            <button 
-              onClick={() => setSearchQuery('')}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 p-0.5 hover:bg-slate-100 rounded text-slate-400 hover:text-slate-600"
-            >
-              <X size={12} />
-            </button>
-          )}
-        </div>
-        
-        <div className="flex items-center justify-between sm:justify-end gap-4">
-          <div className="text-[11px] font-black uppercase text-slate-400 tracking-wider px-2 flex items-center gap-1.5 select-none font-sans">
-            <Sparkles size={12} className="text-blue-500 animate-pulse" />
-            {text.totalTypes(filteredDocTypes.length)}
-          </div>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="relative flex-1 max-w-sm">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+              <Input
+                type="text"
+                className="w-full text-xs font-semibold px-10 border border-slate-200/80 shadow-xs focus:ring-1 focus:ring-blue-500/25 transition-all font-sans"
+                style={{ height: '38px', borderRadius: '4px' }}
+                placeholder={text.searchPlaceholder}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              {searchQuery && (
+                <button 
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 p-0.5 hover:bg-slate-100 rounded text-slate-400 hover:text-slate-600 cursor-pointer"
+                >
+                  <X size={12} />
+                </button>
+              )}
+            </div>
+            
+            <div className="flex items-center gap-3">
+              {/* View Toggle */}
+              <div className="flex bg-slate-200/60 p-1 border border-slate-200/40 h-[38px] items-center" style={{ borderRadius: '4px' }}>
+                <button
+                  type="button"
+                  onClick={() => setViewMode('CARD')}
+                  className={`h-full px-2.5 rounded-sm transition-all duration-200 flex items-center justify-center cursor-pointer ${
+                    viewMode === 'CARD'
+                      ? 'bg-white text-blue-600 shadow-sm'
+                      : 'text-slate-500 hover:text-slate-800'
+                  }`}
+                  style={{ borderRadius: '2px' }}
+                  title="Card View"
+                >
+                  <LayoutGrid size={14} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode('LIST')}
+                  className={`h-full px-2.5 rounded-sm transition-all duration-200 flex items-center justify-center cursor-pointer ${
+                    viewMode === 'LIST'
+                      ? 'bg-white text-blue-600 shadow-sm'
+                      : 'text-slate-500 hover:text-slate-800'
+                  }`}
+                  style={{ borderRadius: '2px' }}
+                  title="List View"
+                >
+                  <List size={14} />
+                </button>
+              </div>
 
-          <div className="flex items-center bg-white border border-slate-200 p-0.5 rounded-xl shadow-xs">
-            <button
-              onClick={() => setViewMode('CARD')}
-              className={`p-1.5 rounded-lg transition-all duration-200 flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider cursor-pointer ${
-                viewMode === 'CARD'
-                  ? 'bg-blue-600 text-white shadow-xs'
-                  : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
-              }`}
-              title="Card View"
-            >
-              <LayoutGrid size={13} />
-              <span className="hidden xs:inline">Card</span>
-            </button>
-            <button
-              onClick={() => setViewMode('LIST')}
-              className={`p-1.5 rounded-lg transition-all duration-200 flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider cursor-pointer ${
-                viewMode === 'LIST'
-                  ? 'bg-blue-600 text-white shadow-xs'
-                  : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
-              }`}
-              title="List View"
-            >
-              <List size={13} />
-              <span className="hidden xs:inline">List</span>
-            </button>
+              {/* "+ เพิ่ม DOC TYPE" button on the same row, far right */}
+              <button
+                type="button"
+                onClick={handleOpenAddModal}
+                className="h-[38px] px-4 bg-[#0463EF] hover:bg-blue-700 active:scale-95 text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-blue-500/10 flex items-center gap-2 transition cursor-pointer"
+                style={{ borderRadius: '4px' }}
+              >
+                <Plus size={15} strokeWidth={2.5} />
+                <span>{language === 'TH' ? 'เพิ่ม DOC TYPE' : 'ADD DOC TYPE'}</span>
+              </button>
+            </div>
           </div>
-        </div>
-      </div>
 
       {/* Main Area */}
       {docTypes.length === 0 ? (
@@ -747,16 +734,18 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
           </table>
         </div>
       )}
-        </>
+        </div>
       ) : (
-        <LabelSchemaSettings
-          language={language}
-          docTypes={docTypes}
-          workflows={workflows}
-          comparisonWorkflows={comparisonWorkflows}
-          setComparisonWorkflows={setComparisonWorkflows}
-          hideHeader={true}
-        />
+        <div className="!mt-4" id="schema-tab-panel">
+          <LabelSchemaSettings
+            language={language}
+            docTypes={docTypes}
+            workflows={workflows}
+            comparisonWorkflows={comparisonWorkflows}
+            setComparisonWorkflows={setComparisonWorkflows}
+            hideHeader={true}
+          />
+        </div>
       )}
 
       {/* Slide-In Form Drawer */}

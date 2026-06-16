@@ -666,57 +666,57 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
           </button>
         </motion.div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-4 animate-in fade-in duration-300">
           {/* Search / Filter Utility Bar */}
-          <div className="bg-slate-50/80 p-2.5 rounded-2xl border border-slate-200/35 shadow-xs flex flex-col sm:flex-row gap-4 items-center justify-between">
-            <div className="relative w-full sm:max-w-md">
-              <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input 
-                type="text" 
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="relative flex-1 max-w-sm">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+              <Input
+                type="text"
+                className="w-full text-xs font-semibold px-10 border border-slate-200/80 shadow-xs focus:ring-1 focus:ring-blue-500/25 transition-all font-sans"
+                style={{ height: '38px', borderRadius: '4px' }}
                 placeholder={isTh ? 'ค้นหาสคีมาด้วยชื่อ หรือคำอธิบาย...' : 'Search schema by name, description...'}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-white text-slate-800 placeholder-slate-400 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0463EF]/20 focus:border-[#0463EF] text-sm font-semibold h-[42px] transition-all"
               />
+              {searchQuery && (
+                <button 
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 p-0.5 hover:bg-slate-100 rounded text-slate-400 hover:text-slate-600 cursor-pointer"
+                >
+                  <X size={12} />
+                </button>
+              )}
             </div>
             
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="flex items-center gap-1 text-xs font-bold text-slate-500 bg-white px-3 py-1.5 rounded-xl border border-slate-100 shadow-3xs">
-                <Info size={14} className="text-[#0463EF]" />
-                <span>
-                  {isTh 
-                    ? `ค้นพบทั้งหมด ${filteredSchemas.length} รายการ`
-                    : `Total ${filteredSchemas.length} schemas found`}
-                </span>
-              </div>
-
+            <div className="flex items-center gap-3">
               {/* View Mode Toggle */}
-              <div className="flex items-center bg-white border border-slate-200 p-0.5 rounded-xl shadow-2xs">
+              <div className="flex bg-slate-200/60 p-1 border border-slate-200/40 h-[38px] items-center" style={{ borderRadius: '4px' }}>
                 <button
                   type="button"
                   onClick={() => setViewMode('GRID')}
-                  className={`p-1.5 rounded-lg transition-all duration-200 flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider cursor-pointer ${
+                  className={`h-full px-2.5 rounded-sm transition-all duration-200 flex items-center justify-center cursor-pointer ${
                     viewMode === 'GRID'
-                      ? 'bg-[#0463EF] text-white shadow-xs'
-                      : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+                      ? 'bg-white text-blue-600 shadow-sm'
+                      : 'text-slate-500 hover:text-slate-800'
                   }`}
+                  style={{ borderRadius: '2px' }}
                   title={isTh ? 'แสดงแบบตารางการ์ด' : 'Grid View'}
                 >
-                  <LayoutGrid size={13} />
-                  <span>Card</span>
+                  <LayoutGrid size={14} />
                 </button>
                 <button
                   type="button"
                   onClick={() => setViewMode('LIST')}
-                  className={`p-1.5 rounded-lg transition-all duration-200 flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider cursor-pointer ${
+                  className={`h-full px-2.5 rounded-sm transition-all duration-200 flex items-center justify-center cursor-pointer ${
                     viewMode === 'LIST'
-                      ? 'bg-[#0463EF] text-white shadow-xs'
-                      : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+                      ? 'bg-white text-blue-600 shadow-sm'
+                      : 'text-slate-500 hover:text-slate-800'
                   }`}
+                  style={{ borderRadius: '2px' }}
                   title={isTh ? 'แสดงแบบรายการเรียง' : 'List View'}
                 >
-                  <List size={13} />
-                  <span>List</span>
+                  <List size={14} />
                 </button>
               </div>
 
@@ -724,10 +724,11 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
                 <button
                   type="button"
                   onClick={handleOpenCreate}
-                  className="px-4 py-2 bg-[#0463EF] hover:bg-[#0352cc] text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md shadow-blue-500/15 flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer ml-1"
+                  className="h-[38px] px-4 bg-[#0463EF] hover:bg-blue-700 active:scale-95 text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-blue-500/10 flex items-center gap-2 transition cursor-pointer"
+                  style={{ borderRadius: '4px' }}
                 >
-                  <Plus size={14} />
-                  <span>{isTh ? 'สร้างสคีมาใหม่' : 'Create Schema'}</span>
+                  <Plus size={15} strokeWidth={2.5} />
+                  <span>{isTh ? 'สร้างสคีมาใหม่' : 'CREATE SCHEMA'}</span>
                 </button>
               )}
             </div>
@@ -896,7 +897,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
               </table>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <AnimatePresence mode="popLayout">
                 {filteredSchemas.map((schema, idx) => {
                   const schemaDocTypes = getDocTypeNames(schema.docTypes);
@@ -910,46 +911,52 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.95 }}
                       transition={{ duration: 0.2, delay: idx * 0.04 }}
-                      className="bg-white border border-slate-200/80 hover:border-blue-200 hover:shadow-lg hover:shadow-slate-100 rounded-[8px] p-6 transition-all duration-300 flex flex-col h-full relative group"
+                      className="bg-white border border-slate-200/70 hover:border-blue-300 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 group flex flex-col justify-between gap-4 relative overflow-hidden h-full"
                     >
-                      {/* Schema card header */}
-                      <div className="flex items-start justify-between gap-3 mb-3">
-                        <div className="p-3 bg-blue-50/40 text-[#0463EF] rounded-[4px] group-hover:bg-[#0463EF] group-hover:text-white transition-all duration-300">
-                          <Layers size={18} />
-                        </div>
-                        
-                        {/* Action buttons */}
-                        <div className="flex items-center gap-1.5">
-                          <Tooltip title={isTh ? 'แก้ไขสคีมา' : 'Edit Schema'}>
-                            <button
-                              onClick={() => handleOpenEdit(schema)}
-                              className="p-2 hover:bg-slate-50 text-slate-400 hover:text-slate-700 bg-white border border-slate-105 rounded-xl transition-all cursor-pointer"
-                            >
-                              <Edit3 size={15} />
-                            </button>
-                          </Tooltip>
+                      {/* Highlight bar top */}
+                      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-sky-400 opacity-60"></div>
 
-                          <button
-                            onClick={() => setSchemaToDelete(schema)}
-                            className="p-2 hover:bg-rose-50 text-slate-400 hover:text-rose-600 bg-white border border-slate-105 rounded-xl transition-all cursor-pointer"
-                          >
-                            <Trash2 size={15} />
-                          </button>
-                        </div>
-                      </div>
+                      <div className="space-y-4 flex-1 flex flex-col justify-between">
+                        <div className="space-y-3">
+                          {/* ID Badge & Header */}
+                          <div className="flex items-start justify-between">
+                            <div className="flex items-center gap-2.5">
+                              <div className="h-8 w-8 bg-blue-50 border border-blue-100/85 rounded-lg flex items-center justify-center text-blue-600 shadow-2xs shrink-0 select-none">
+                                <Layers size={14} className="text-blue-500 animate-pulse" />
+                              </div>
+                              <h3 className="text-sm font-black text-slate-800 tracking-tight group-hover:text-blue-700 transition-colors uppercase">
+                                {schema.name}
+                              </h3>
+                            </div>
+                            
+                            {/* Action Buttons */}
+                            <div className="flex items-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
+                              <button
+                                type="button"
+                                onClick={() => handleOpenEdit(schema)}
+                                className="p-1.5 hover:bg-slate-100 text-slate-500 hover:text-blue-600 rounded-lg transition-colors cursor-pointer"
+                                title={isTh ? 'แก้ไขสคีมา' : 'Edit Schema'}
+                              >
+                                <Edit3 size={13} />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setSchemaToDelete(schema)}
+                                className="p-1.5 hover:bg-rose-50 text-slate-500 hover:text-destructive rounded-lg transition-colors cursor-pointer"
+                                title="Delete"
+                              >
+                                <Trash2 size={13} />
+                              </button>
+                            </div>
+                          </div>
 
-                      {/* Meta Names */}
-                      <div className="flex-1 space-y-4">
-                        <div>
-                          <h4 className="text-base font-black text-[#010136] tracking-tight group-hover:text-[#0463EF] transition-colors leading-snug">
-                            {schema.name}
-                          </h4>
-                          <p className="text-xs text-slate-500 font-medium leading-relaxed mt-1 line-clamp-2">
+                          {/* Description box */}
+                          <p className="text-xs text-slate-500 font-medium leading-relaxed font-sans mt-1 line-clamp-2 px-1">
                             {schema.description || (isTh ? '(ไม่มีคำอธิบายคีย์เพิ่มเติม)' : '(No description provided)')}
                           </p>
                         </div>
 
-                        <hr className="border-slate-100" />
+                        <hr className="border-slate-100/80" />
 
                         {/* Doc types section with counts */}
                         <div className="space-y-2">
