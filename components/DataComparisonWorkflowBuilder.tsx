@@ -204,34 +204,52 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
 }) => {
   const currentDocTypes = docTypes || MASTER_DOC_TYPES;
   const t = TRANSLATIONS[language];
-  const defaultRules = rules || [
+  // Sync comparing rules cleanly from localStorage if present
+  const localRules = typeof window !== 'undefined' ? (() => {
+    const saved = localStorage.getItem('bizx_compare_rules');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Failed to parse compare rules in builder', e);
+      }
+    }
+    return null;
+  })() : null;
+
+  const defaultRules = rules || localRules || [
     {
       id: 'rule-001',
       name: 'Import Declaration High-Value',
+      nameTh: 'กฎตรวจสอบใบขนสินค้าข้ามแดนมูลค่าสูง',
       description: 'Strict matching for high value retail and industrial imports including custom clearances.',
       docTypes: ['INV', 'PL', 'CO', 'BL', 'PO']
     },
     {
       id: 'rule-002',
       name: 'Standard Export Documents',
+      nameTh: 'กฎตรวจสอบเอกสารส่งออกมาตรฐาน',
       description: 'Standard matching for commercial invoices and packing lists for export shipments.',
       docTypes: ['INV', 'PL']
     },
     {
       id: 'rule-003',
       name: 'Chemical & Dangerous Goods',
+      nameTh: 'กฎตรวจสอบเคมีภัณฑ์และสินค้าอันตราย',
       description: 'Specific comparison checks for dangerous chemical clearance declaration datasets.',
       docTypes: ['INV', 'PL', 'CO', 'BL']
     },
     {
       id: 'rule-004',
       name: 'Automated HS Code Verification',
+      nameTh: 'กฎเปรียบเทียบพิกัดศุลกากร (HS Code) อัตโนมัติ',
       description: 'Verifies standard HS Code classifications and special duty rate matches for general imports.',
       docTypes: ['INV', 'PL', 'CO']
     },
     {
       id: 'rule-005',
       name: 'B2B Freight Invoice Discrepancy',
+      nameTh: 'กฎตรวจส่วนต่างบิลค่าขนส่งทางเรือ (B2B)',
       description: 'Cross-checks logistics carrier costs, freight charges, and surcharges against billing statements.',
       docTypes: ['INV', 'BL']
     }
@@ -1738,6 +1756,30 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                         </div>
                       </div>
                     )}
+
+                    {node.type === 'compare' && (
+                      <div className="space-y-3">
+                        <div className="p-3 bg-slate-50/80 rounded-[8px] border border-slate-100 space-y-2">
+                          <div className="flex flex-col gap-1">
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">COMPARE RULE</span>
+                            <span className="text-[10px] font-semibold text-slate-700 truncate font-sans bg-white border border-slate-200/50 px-2 py-1 rounded-[4px] mt-0.5" title={node.data.ruleName}>
+                              {node.data.ruleName || (language === 'TH' ? 'ไม่ได้เลือก' : 'Not Selected')}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center justify-between pt-1.5 border-t border-slate-100/50">
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none font-sans">ALLOW REVIEW</span>
+                            <span className={`text-[9px] font-black uppercase tracking-tight px-2 py-0.5 rounded-[4px] border ${
+                              node.data.allowReview !== false 
+                                ? 'bg-emerald-50 border-emerald-100 text-emerald-600' 
+                                : 'bg-rose-50 border-rose-100 text-rose-600'
+                            }`}>
+                              {node.data.allowReview !== false ? (language === 'TH' ? 'ON' : 'ON') : (language === 'TH' ? 'OFF' : 'OFF')}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                       </>
                     )}
                   </div>
@@ -3223,53 +3265,208 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                       </p>
                     </div>
 
-                    <div>
-                      <label className="block text-xs font-black text-slate-700 mb-2 uppercase tracking-wide">
-                        {language === 'TH' ? 'เลือก Compare Rule' : 'Select Compare Rule'} <span className="text-red-500">*</span>
-                      </label>
-                      <select
-                        value={node.data?.ruleId || ''}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          const selectedRule = defaultRules.find(r => r.id === val);
-                          updateNodeData(node.id, { 
-                            ruleId: val,
-                            ruleName: selectedRule ? selectedRule.name : '',
-                            isConfigured: !!val
-                          });
-                        }}
-                        style={{ borderRadius: '4px' }}
-                        className="w-full bg-white border border-slate-300 px-4 py-3 text-sm font-bold text-[#010136] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all cursor-pointer"
-                      >
-                        <option value="">-- {language === 'TH' ? 'เลือก Compare Rule' : 'Select Compare Rule'} --</option>
-                        {defaultRules.map((rule: any) => (
-                          <option key={rule.id} value={rule.id}>{rule.name}</option>
-                        ))}
-                      </select>
-                    </div>
+                     {/* Section 1: Compare rule dropdown */}
+                     <div className="space-y-3">
+                       <label className="block text-xs font-black text-slate-700 uppercase tracking-wide">
+                         {language === 'TH' ? 'เลือก Compare Rule' : 'Select Compare Rule'} <span className="text-red-500">*</span>
+                       </label>
+                       
+                       <select
+                         value={node.data?.ruleId || ''}
+                         onChange={(e) => {
+                           const val = e.target.value;
+                           const selectedRule = defaultRules.find((r: any) => r.id === val);
+                           const ruleNameDisplay = selectedRule ? (language === 'TH' ? (selectedRule.nameTh || selectedRule.name) : selectedRule.name) : '';
+                           updateNodeData(node.id, { 
+                             ruleId: val,
+                             ruleName: ruleNameDisplay,
+                             isConfigured: !!val
+                           });
+                         }}
+                         style={{ borderRadius: '4px' }}
+                         className="w-full bg-white border border-slate-300 px-4 py-3 text-sm font-bold text-[#010136] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all cursor-pointer"
+                       >
+                         <option value="">-- {language === 'TH' ? 'เลือก Compare Rule' : 'Select Compare Rule'} --</option>
+                         {defaultRules.map((rule: any) => {
+                           const ruleLabel = language === 'TH' ? (rule.nameTh || rule.name) : rule.name;
+                           return (
+                             <option key={rule.id} value={rule.id}>
+                               {ruleLabel}
+                             </option>
+                           );
+                         })}
+                       </select>
 
+                       {/* ถ้ายังไม่มี rule เลย ให้แสดง link "ไปสร้าง Compare rule" */}
+                       {(!defaultRules || defaultRules.length === 0) && (
+                         <div className="p-3 bg-amber-50 border border-amber-200 mt-2" style={{ borderRadius: '8px' }}>
+                           <p className="text-xs font-bold text-amber-700">
+                             {language === 'TH' ? 'ยังไม่มี Compare rule ในระบบ' : 'No Compare rules found.'}
+                           </p>
+                           <button
+                             type="button"
+                             onClick={() => window.dispatchEvent(new CustomEvent('change-view', { detail: 'DATA_COMPARISON_RULE' }))}
+                             className="text-xs font-black text-[#0463EF] hover:underline mt-1.5 flex items-center gap-1"
+                           >
+                             {language === 'TH' ? 'ไปสร้าง Compare rule' : 'Go create a Compare rule'} &rarr;
+                           </button>
+                         </div>
+                       )}
+                     </div>
+
+                    {/* เมื่อเลือก rule แล้ว ให้แสดง preview สรุป rule ที่เลือก */}
                     {node.data?.ruleId && (
                       (() => {
-                        const boundRule = defaultRules.find(r => r.id === node.data.ruleId);
+                        const boundRule = defaultRules.find((r: any) => r.id === node.data.ruleId);
                         if (!boundRule) return null;
+                        const detailTitle = language === 'TH' ? 'พรีวิวเงื่อนไขเปรียบเทียบข้อมูล (Preview Rule Summary)' : 'Compare Rule Preview Summary';
+                        const ruleTitle = language === 'TH' ? (boundRule.nameTh || boundRule.name) : boundRule.name;
+                        const descriptionText = language === 'TH' ? (boundRule.descriptionTh || boundRule.description) : boundRule.description;
+                        
+                        // Gather rows across parts
+                        const rows = boundRule.parts ? boundRule.parts.flatMap((p: any) => p.rows || []) : [];
+
                         return (
-                          <div className="p-4 bg-blue-50/30 border border-blue-100 space-y-2" style={{ borderRadius: '8px' }}>
-                            <span className="text-[10px] font-black text-[#0463EF] bg-blue-100/60 px-2.5 py-1 rounded uppercase tracking-wider">
-                              {language === 'TH' ? 'Rule ดำเนินการอยู่' : 'Active Rule'}
-                            </span>
-                            <h4 className="text-sm font-black text-[#010136]">{boundRule.name}</h4>
-                            <p className="text-xs font-medium text-slate-500 leading-relaxed">{boundRule.description}</p>
-                            <div className="pt-2 border-t border-slate-200/50 flex flex-wrap gap-1.5">
-                              {(boundRule.docTypes || []).map((dt: string) => (
-                                <span key={dt} className="inline-flex items-center text-[10px] font-bold px-2.5 py-1 bg-slate-100 text-slate-700 rounded" style={{ borderRadius: '4px' }}>
-                                  {dt}
+                          <div className="space-y-3 pt-3 border-t border-slate-100">
+                            <div className="p-4 bg-blue-50/20 border border-blue-100 space-y-3" style={{ borderRadius: '8px' }}>
+                              <div className="flex items-center justify-between">
+                                <span className="text-[10px] font-black text-[#0463EF] bg-blue-100/60 px-2.5 py-1 rounded uppercase tracking-wider">
+                                  {language === 'TH' ? 'Rule ที่เลือกอยู่' : 'Selected Rule'}
                                 </span>
-                              ))}
+                                <button
+                                  type="button"
+                                  onClick={() => window.dispatchEvent(new CustomEvent('change-view', { detail: 'DATA_COMPARISON_RULE' }))}
+                                  className="text-[10px] font-black text-[#0463EF] hover:underline"
+                                >
+                                  {language === 'TH' ? 'แก้ไขกฎนี้' : 'Edit this rule'}
+                                </button>
+                              </div>
+
+                              <div>
+                                <h4 className="text-xs font-black text-[#010136]">{ruleTitle}</h4>
+                                <p className="text-[11px] font-bold text-slate-400 mt-1 leading-relaxed">{descriptionText}</p>
+                              </div>
+
+                              {/* Document Types mapping chains */}
+                              <div className="pt-2 border-t border-slate-200/50 flex flex-wrap gap-1">
+                                {(boundRule.docTypes || []).map((dt: string) => (
+                                  <span key={dt} className="inline-flex items-center text-[9px] font-black px-2 py-0.5 bg-slate-100/80 text-slate-600 rounded" style={{ borderRadius: '4px' }}>
+                                    {dt}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Field matching type lists: "Quantity -> Invoice vs Packing list vs B/L · Exact" */}
+                            <div className="border border-slate-100 rounded-lg p-3 bg-white space-y-2">
+                              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">
+                                {detailTitle}
+                              </p>
+                              
+                              <div className="divide-y divide-slate-50 max-h-[220px] overflow-y-auto custom-scrollbar pr-1">
+                                {rows.length === 0 ? (
+                                  <p className="text-xs text-slate-400 italic py-2 text-center">
+                                    {language === 'TH' ? 'ไม่มีฟิลด์เปรียบเทียบในกฎนี้' : 'No comparison fields defined in this rule.'}
+                                  </p>
+                                ) : (
+                                  rows.map((row: any) => {
+                                    const rowLabel = language === 'TH' ? (row.detailTh || row.detail) : row.detail;
+                                    
+                                    // Find which document types are mapped for this row
+                                    const involvedDocs = (row.values || []).map((val: any, idx: number) => {
+                                      if (val && val.type && val.type !== 'TEXT') {
+                                        return boundRule.docTypes[idx] || null;
+                                      }
+                                      return null;
+                                    }).filter(Boolean);
+
+                                    // Gather active mapping type
+                                    const activeValue = (row.values || []).find((val: any) => val && val.type && val.type !== 'TEXT');
+                                    const matchTypeLabel = activeValue ? activeValue.type : 'EXACT';
+
+                                    // Translate labels to human readable formats
+                                    const finalMatchType = matchTypeLabel === 'CONDITIONAL' ? 'Conditional' :
+                                                           matchTypeLabel === 'BILINGUAL' ? 'Bilingual' :
+                                                           matchTypeLabel === 'NUMBER_WORD' ? 'Number' :
+                                                           matchTypeLabel === 'MASTER_LOOKUP' ? 'Master Lookup' :
+                                                           matchTypeLabel === 'DATE_NORMALIZATION' ? 'Date' :
+                                                           matchTypeLabel === 'CROSS_FLOW_CARRY' ? 'Cross Carry' :
+                                                           'Exact';
+
+                                    const docChain = involvedDocs.length > 0 ? involvedDocs.join(' vs ') : (language === 'TH' ? 'ไม่มีการเปรียบเทียบ' : 'No Comparison');
+
+                                    return (
+                                      <div key={row.id} className="flex justify-between items-center py-2 text-[11px] font-bold">
+                                        <div className="text-slate-700 truncate max-w-[150px]" title={rowLabel}>
+                                          {rowLabel}
+                                        </div>
+                                        <div className="flex items-center gap-1.5 text-right">
+                                          <span className="text-[10px] text-slate-400 font-medium">{docChain}</span>
+                                          <span className="text-[9px] font-black text-[#16EA9E] bg-[#16EA9E]/10 px-1 py-0.5 rounded uppercase tracking-tight" style={{ borderRadius: '3px' }}>
+                                            {finalMatchType}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    );
+                                  })
+                                )}
+                              </div>
                             </div>
                           </div>
                         );
                       })()
                     )}
+
+                    {/* Section 2: Allow review toggle */}
+                    <div className="pt-4 border-t border-slate-100 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                           <label className="block text-xs font-black text-slate-700 uppercase tracking-wide">
+                             {language === 'TH' ? 'เปิดให้เจ้าหน้าที่ตรวจสอบ (Allow Review)' : 'Allow Review'}
+                           </label>
+                           <p className="text-[11px] text-slate-400 mt-0.5 leading-normal">
+                             {language === 'TH' 
+                               ? 'เปิดการขอทบทวนโดยเจ้าหน้าที่หากข้อมูลไม่คลาดเคลื่อนหรือความกังขา' 
+                               : 'Enable dynamic paused queues for physical operator verification.'}
+                           </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const currentVal = node.data?.allowReview !== false; // default = true
+                            updateNodeData(node.id, { allowReview: !currentVal });
+                          }}
+                          className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                            (node.data?.allowReview !== false) ? 'bg-[#16EA9E]' : 'bg-slate-200'
+                          }`}
+                          style={{ borderRadius: '9999px' }}
+                        >
+                          <span
+                            className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                              (node.data?.allowReview !== false) ? 'translate-x-5' : 'translate-x-0'
+                            }`}
+                            style={{ borderRadius: '50%' }}
+                          />
+                        </button>
+                      </div>
+
+                      {/* Informational description box based on Toggle Status */}
+                      <div className="p-3 bg-slate-50/80 rounded border border-slate-100 text-[11px] text-slate-500 leading-relaxed" style={{ borderRadius: '8px' }}>
+                        {(node.data?.allowReview !== false) ? (
+                          <p>
+                            {language === 'TH'
+                              ? '💡 หากพบข้อมูลไม่ตรงกัน (Mismatch) หรือความน่าจะเป็นต่ำ ระบบจะระงับเวิร์กโฟลว์ชั่วคราวเพื่อให้เจ้าหน้าที่ตรวจสอบและตัดสินใจเลือกค่าที่ถูกต้องในส่วน "Compare review"'
+                              : '💡 When differences or mismatch issues occur, files will be held in the paused queue for user selection inside "Compare review".'}
+                          </p>
+                        ) : (
+                          <p className="text-amber-600 font-bold">
+                            {language === 'TH'
+                              ? '⚠️ ถ้าผลลัพธ์ไม่คลาดเคลื่อนหรือเกิดความไม่ลงตัว ระบบจะเลือกใช้ค่าจากเอกสารประเภทแรก (First Document Type / Main) เป็นเกณฑ์หลักในการตรวจสอบ และดำเนินสเต็ปทำงานต่อไปทันทีโดยไม่หยุดรอ'
+                              : '⚠️ If mismatches arise, the validation flow automatically processes values from the main/first document type specified in the rule and proceeds immediately.'}
+                          </p>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 )}
 

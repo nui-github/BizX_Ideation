@@ -325,17 +325,6 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentUserRole, onTog
                   </button>
                   <button 
                     onClick={() => {
-                      onNavigate('SETTINGS_LABEL_SCHEMA');
-                      setActiveMenu('settings_label_schema');
-                      setProfileOpen(false);
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 flex items-center gap-2"
-                  >
-                    <Layers size={16} className="text-slate-400" /> 
-                    <span>{language === 'TH' ? 'ตั้งค่า Label schema' : 'Label Schema Settings'}</span>
-                  </button>
-                  <button 
-                    onClick={() => {
                       onNavigate('SETTINGS_MASTER_DATA');
                       setActiveMenu('settings_master_data');
                       setProfileOpen(false);

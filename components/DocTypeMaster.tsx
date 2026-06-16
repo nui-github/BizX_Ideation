@@ -4,10 +4,11 @@ import { Select, Input } from 'antd';
 import { 
   FileText, Plus, Trash2, Edit3, AlertCircle, ArrowLeft, 
   Settings, Check, Search, Sparkles, X, Info, FileCode,
-  LayoutGrid, List, Database
+  LayoutGrid, List, Database, Layers
  } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { DocType, Language, DocTypeSchemaField, Workflow } from '../types';
+import { LabelSchemaSettings } from './LabelSchemaSettings';
 
 const getFieldTypeLabel = (type: string, masterData?: string, lang: Language = 'TH'): string => {
   switch (type) {
@@ -51,6 +52,8 @@ interface DocTypeMasterProps {
   docTypes: DocType[];
   workflows?: Workflow[];
   comparisonWorkflows?: Workflow[];
+  setComparisonWorkflows?: React.Dispatch<React.SetStateAction<Workflow[]>>;
+  initialTab?: 'doctype' | 'schema';
   onAddDocType: (newType: DocType) => void;
   onUpdateDocType: (updatedType: DocType) => void;
   onDeleteDocType: (id: string) => void;
@@ -62,11 +65,21 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
   docTypes,
   workflows = [],
   comparisonWorkflows = [],
+  setComparisonWorkflows,
+  initialTab = 'doctype',
   onAddDocType,
   onUpdateDocType,
   onDeleteDocType,
   onBack
 }) => {
+  const [activeTab, setActiveTab] = useState<'doctype' | 'schema'>(initialTab);
+
+  React.useEffect(() => {
+    if (initialTab) {
+      setActiveTab(initialTab);
+    }
+  }, [initialTab]);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editingDocType, setEditingDocType] = useState<DocType | null>(null);
@@ -373,27 +386,72 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
               </button>
             )}
             <h1 className="text-xl md:text-2xl font-black text-slate-800 tracking-tight flex items-center gap-2">
-              <Settings className="text-blue-600 animate-spin-slow" size={22} />
-              {text.title}
+              {activeTab === 'doctype' ? (
+                <>
+                  <Settings className="text-blue-600 animate-spin-slow" size={22} />
+                  {text.title}
+                </>
+              ) : (
+                <>
+                  <Layers className="text-blue-600 animate-pulse" size={22} />
+                  {language === 'TH' ? 'ตั้งค่า Label schema' : 'Label Schema Settings'}
+                </>
+              )}
             </h1>
           </div>
           <p className="text-xs md:text-sm text-slate-500 font-medium leading-relaxed">
-            {text.subtitle}
+            {activeTab === 'doctype' 
+              ? text.subtitle 
+              : (language === 'TH' 
+                  ? 'ตรวจสอบและกำหนดโครงสร้างข้อมูลสคีมาป้ายระบุ (Label Schema) สำหรับการจับคู่ฟิลด์เอกสารร่วมกันในแต่ละเวิร์กโฟลว์' 
+                  : 'Maintain structured data extraction schemas and check for field match configurations across your workflows')}
           </p>
         </div>
 
-        <div className="flex items-center gap-3 self-end md:self-center">
-          <button
-            onClick={handleOpenAddModal}
-            className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md shadow-blue-500/10 flex items-center gap-2 transition cursor-pointer"
-          >
-            <Plus size={16} strokeWidth={2.5} />
-            <span>{text.addBtn}</span>
-          </button>
-        </div>
+        {activeTab === 'doctype' && (
+          <div className="flex items-center gap-3 self-end md:self-center">
+            <button
+              onClick={handleOpenAddModal}
+              className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md shadow-blue-500/10 flex items-center gap-2 transition cursor-pointer"
+            >
+              <Plus size={16} strokeWidth={2.5} />
+              <span>{text.addBtn}</span>
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Control Filter row & total display */}
+      {/* Tab Switcher */}
+      <div className="flex border-b border-slate-100 pb-px">
+        <button
+          type="button"
+          onClick={() => setActiveTab('doctype')}
+          className={`flex items-center gap-2 px-5 py-3 text-xs md:text-sm font-black uppercase tracking-wider transition-all border-b-2 -mb-px cursor-pointer ${
+            activeTab === 'doctype'
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent text-slate-400 hover:text-slate-600'
+          }`}
+        >
+          <Settings size={16} />
+          <span>{language === 'TH' ? 'ตั้งค่าประเภทเอกสาร (Doc Type)' : 'Doc Type Settings'}</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('schema')}
+          className={`flex items-center gap-2 px-5 py-3 text-xs md:text-sm font-black uppercase tracking-wider transition-all border-b-2 -mb-px cursor-pointer ${
+            activeTab === 'schema'
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent text-slate-400 hover:text-slate-600'
+          }`}
+        >
+          <Layers size={16} />
+          <span>{language === 'TH' ? 'ตั้งค่า Label schema' : 'Label Schema Settings'}</span>
+        </button>
+      </div>
+
+      {activeTab === 'doctype' ? (
+        <>
+          {/* Control Filter row & total display */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/80 p-1.5 rounded-2xl border border-slate-200/35">
         <div className="relative flex-1 max-w-md animate-in fade-in duration-300">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
@@ -688,6 +746,17 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
             </tbody>
           </table>
         </div>
+      )}
+        </>
+      ) : (
+        <LabelSchemaSettings
+          language={language}
+          docTypes={docTypes}
+          workflows={workflows}
+          comparisonWorkflows={comparisonWorkflows}
+          setComparisonWorkflows={setComparisonWorkflows}
+          hideHeader={true}
+        />
       )}
 
       {/* Slide-In Form Drawer */}

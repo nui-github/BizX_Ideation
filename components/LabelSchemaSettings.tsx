@@ -16,6 +16,7 @@ export interface SchemaLabel {
   compare: boolean; // default: false (Compare node)
   type?: string; // e.g. string, number, boolean, date, array
   subLabels?: SchemaLabel[];
+  section?: 'Header' | 'Description' | 'Footer';
 }
 
 export interface DocTypeSchemaConfig {
@@ -42,6 +43,7 @@ interface LabelSchemaSettingsProps {
   comparisonWorkflows: Workflow[];
   onBack?: () => void;
   setComparisonWorkflows?: React.Dispatch<React.SetStateAction<Workflow[]>>;
+  hideHeader?: boolean;
 }
 
 export const DEFAULT_SCHEMAS: LabelSchema[] = [
@@ -57,24 +59,69 @@ export const DEFAULT_SCHEMAS: LabelSchema[] = [
       {
         docTypeId: 'INV',
         labels: [
-          { id: 'l-1', name: 'Invoice#', required: true, compare: true },
-          { id: 'l-2', name: 'Total Value', required: true, compare: true },
-          { id: 'l-3', name: 'Quantity', required: true, compare: false }
+          { id: 'l-1', name: 'Invoice#', required: true, compare: true, section: 'Header', type: 'string' },
+          { id: 'l-1-date', name: 'Invoice Date', required: true, compare: true, section: 'Header', type: 'date' },
+          { id: 'l-1-cust', name: 'Customer Name', required: true, compare: false, section: 'Header', type: 'string' },
+          { 
+            id: 'l-3', 
+            name: 'Line Items', 
+            required: true, 
+            compare: false, 
+            section: 'Description', 
+            type: 'array',
+            subLabels: [
+              { id: 'l-3-sub-1', name: 'Item Code', required: true, type: 'string', compare: false },
+              { id: 'l-3-sub-2', name: 'Product Name', required: true, type: 'string', compare: false },
+              { id: 'l-3-sub-3', name: 'Quantity', required: true, type: 'number', compare: false },
+              { id: 'l-3-sub-4', name: 'Unit Price', required: true, type: 'number', compare: false }
+            ]
+          },
+          { id: 'l-2', name: 'Total Value', required: true, compare: true, section: 'Footer', type: 'number' },
+          { id: 'l-2-tax', name: 'VAT (7%)', required: false, compare: false, section: 'Footer', type: 'number' }
         ]
       },
       {
         docTypeId: 'BL',
         labels: [
-          { id: 'l-4', name: 'B/L No', required: true, compare: true },
-          { id: 'l-5', name: 'Shipper', required: true, compare: false },
-          { id: 'l-6', name: 'Consignee', required: false, compare: false }
+          { id: 'l-4', name: 'B/L No', required: true, compare: true, section: 'Header', type: 'string' },
+          { id: 'l-5', name: 'Shipper', required: true, compare: false, section: 'Header', type: 'string' },
+          { id: 'l-6', name: 'Consignee', required: false, compare: false, section: 'Header', type: 'string' },
+          { 
+            id: 'l-bl-desc-items', 
+            name: 'Containers', 
+            required: true, 
+            compare: false, 
+            section: 'Description', 
+            type: 'array',
+            subLabels: [
+              { id: 'l-bl-sub-1', name: 'Container No', required: true, type: 'string', compare: false },
+              { id: 'l-bl-sub-2', name: 'Seal No', required: true, type: 'string', compare: false },
+              { id: 'l-bl-sub-3', name: 'Weight (KGS)', required: true, type: 'number', compare: false }
+            ]
+          },
+          { id: 'l-bl-footer-weight', name: 'Total Gross Weight', required: true, compare: true, section: 'Footer', type: 'number' }
         ]
       },
       {
         docTypeId: 'PL',
         labels: [
-          { id: 'l-7', name: 'Packing#', required: true, compare: true },
-          { id: 'l-8', name: 'Weight', required: false, compare: false }
+          { id: 'l-7', name: 'Packing#', required: true, compare: true, section: 'Header', type: 'string' },
+          { id: 'l-pl-header-date', name: 'Packing List Date', required: true, compare: false, section: 'Header', type: 'date' },
+          { 
+            id: 'l-pl-desc-items', 
+            name: 'Packed Goods List', 
+            required: true, 
+            compare: false, 
+            section: 'Description', 
+            type: 'array',
+            subLabels: [
+              { id: 'l-pl-sub-1', name: 'Package No', required: true, type: 'string', compare: false },
+              { id: 'l-pl-sub-2', name: 'Description of Goods', required: true, type: 'string', compare: false },
+              { id: 'l-pl-sub-3', name: 'Quantity Limit', required: true, type: 'number', compare: false }
+            ]
+          },
+          { id: 'l-8', name: 'Weight', required: false, compare: false, section: 'Footer', type: 'number' },
+          { id: 'l-pl-footer-packages', name: 'Total Packages', required: true, compare: true, section: 'Footer', type: 'number' }
         ]
       }
     ]
@@ -91,15 +138,27 @@ export const DEFAULT_SCHEMAS: LabelSchema[] = [
       {
         docTypeId: 'PO',
         labels: [
-          { id: 'l-9', name: 'PO No', required: true, compare: true },
-          { id: 'l-10', name: 'HS Code Group', required: true, compare: true }
+          { id: 'l-9', name: 'PO No', required: true, compare: true, section: 'Header', type: 'string' },
+          { id: 'l-po-header-date', name: 'PO Date', required: true, compare: false, section: 'Header', type: 'date' },
+          { 
+            id: 'l-10', 
+            name: 'HS Code Group', 
+            required: true, 
+            compare: true, 
+            section: 'Description', 
+            type: 'array',
+            subLabels: [
+              { id: 'l-po-sub-1', name: 'Harmonized Code', required: true, type: 'string', compare: false },
+              { id: 'l-po-sub-2', name: 'Category Label', required: false, type: 'string', compare: false }
+            ]
+          }
         ]
       },
       {
         docTypeId: 'CO',
         labels: [
-          { id: 'l-11', name: 'Certificate No', required: true, compare: true },
-          { id: 'l-12', name: 'Origin Country', required: true, compare: true }
+          { id: 'l-11', name: 'Certificate No', required: true, compare: true, section: 'Header', type: 'string' },
+          { id: 'l-12', name: 'Origin Country', required: true, compare: true, section: 'Header', type: 'string' }
         ]
       }
     ]
@@ -116,23 +175,23 @@ export const DEFAULT_SCHEMAS: LabelSchema[] = [
       {
         docTypeId: 'INV',
         labels: [
-          { id: 'l-13', name: 'Premium Inv#', required: true, compare: true },
-          { id: 'l-14', name: 'Discount Checked', required: false, compare: false },
-          { id: 'l-15', name: 'VAT Total', required: true, compare: true }
+          { id: 'l-13', name: 'Premium Inv#', required: true, compare: true, section: 'Header', type: 'string' },
+          { id: 'l-14', name: 'Discount Checked', required: false, compare: false, section: 'Description', type: 'boolean' },
+          { id: 'l-15', name: 'VAT Total', required: true, compare: true, section: 'Footer', type: 'number' }
         ]
       },
       {
         docTypeId: 'BL',
         labels: [
-          { id: 'l-16', name: 'Vessel Voyage', required: true, compare: true },
-          { id: 'l-17', name: 'BL Special No', required: true, compare: true }
+          { id: 'l-16', name: 'Vessel Voyage', required: true, compare: true, section: 'Footer', type: 'string' },
+          { id: 'l-17', name: 'BL Special No', required: true, compare: true, section: 'Header', type: 'string' }
         ]
       },
       {
         docTypeId: 'PL',
         labels: [
-          { id: 'l-18', name: 'PL Package Count', required: true, compare: true },
-          { id: 'l-19', name: 'Gross Weight CBM', required: false, compare: false }
+          { id: 'l-18', name: 'PL Package Count', required: true, compare: true, section: 'Description', type: 'number' },
+          { id: 'l-19', name: 'Gross Weight CBM', required: false, compare: false, section: 'Footer', type: 'number' }
         ]
       }
     ]
@@ -145,10 +204,11 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
   workflows = [],
   comparisonWorkflows = [],
   onBack,
-  setComparisonWorkflows
+  setComparisonWorkflows,
+  hideHeader = false
 }) => {
   const [schemas, setSchemas] = useState<LabelSchema[]>(() => {
-    const saved = typeof window !== 'undefined' ? localStorage.getItem('bizx_label_schemas') : null;
+    const saved = typeof window !== 'undefined' ? localStorage.getItem('bizx_label_schemas_v3') : null;
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -161,7 +221,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
 
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('bizx_label_schemas', JSON.stringify(schemas));
+      localStorage.setItem('bizx_label_schemas_v3', JSON.stringify(schemas));
     }
   }, [schemas]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -299,7 +359,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
   };
 
   // Add Label to a specific docType configuration table
-  const handleAddLabelRow = (docTypeId: string) => {
+  const handleAddLabelRow = (docTypeId: string, section?: 'Header' | 'Description' | 'Footer') => {
     setFormConfigs(prevConfigs => 
       prevConfigs.map(cfg => {
         if (cfg.docTypeId === docTypeId) {
@@ -312,6 +372,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
                 name: '',
                 required: true,
                 type: 'string',
+                section: section || 'Header',
                 compare: false
               }
             ]
@@ -543,45 +604,47 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
   };
 
   return (
-    <div className="bg-white border border-slate-200/80 rounded-[16px] p-6 shadow-sm space-y-6" id="label-schema-settings-wrapper">
+    <div className={hideHeader ? "space-y-6" : "bg-white border border-slate-200/80 rounded-[16px] p-6 shadow-sm space-y-6"} id="label-schema-settings-wrapper">
       {/* Header breadcrumb */}
-      <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-        <div className="flex items-center gap-3">
-          <button 
-            onClick={onBack}
-            className="p-2 hover:bg-slate-100 rounded-[4px] text-slate-600 transition-colors"
-          >
-            <ArrowLeft size={18} />
-          </button>
-          <div>
-            <div className="text-xs text-slate-500 font-bold uppercase tracking-wider flex items-center gap-1.5 mb-1">
-              <span>{isTh ? 'การตั้งค่าระบบ' : 'SYSTEM SETTINGS'}</span>
-              <ChevronRight size={12} className="text-slate-300" />
-              <span className="text-[#0463EF]">{isTh ? 'สคีมาป้ายระบุ' : 'LABEL SCHEMA'}</span>
+      {!hideHeader && (
+        <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={onBack}
+              className="p-2 hover:bg-slate-100 rounded-[4px] text-slate-600 transition-colors"
+            >
+              <ArrowLeft size={18} />
+            </button>
+            <div>
+              <div className="text-xs text-slate-500 font-bold uppercase tracking-wider flex items-center gap-1.5 mb-1">
+                <span>{isTh ? 'การตั้งค่าระบบ' : 'SYSTEM SETTINGS'}</span>
+                <ChevronRight size={12} className="text-slate-300" />
+                <span className="text-[#0463EF]">{isTh ? 'สคีมาป้ายระบุ' : 'LABEL SCHEMA'}</span>
+              </div>
+              <h1 className="text-2xl font-black text-[#010136] tracking-tight">
+                {isTh ? 'ตั้งค่า Label schema' : 'Label Schema Settings'}
+              </h1>
             </div>
-            <h1 className="text-2xl font-black text-[#010136] tracking-tight">
-              {isTh ? 'ตั้งค่า Label schema' : 'Label Schema Settings'}
-            </h1>
           </div>
-        </div>
 
-        {schemas.length > 0 && (
-          <button
-            onClick={handleOpenCreate}
-            className="px-5 py-2.5 bg-[#0463EF] hover:bg-[#0352cc] text-white font-black text-sm uppercase tracking-wider rounded-[4px] shadow-md shadow-blue-500/15 flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
-          >
-            <Plus size={16} />
-            <span>{isTh ? 'สร้างสคีมาใหม่' : 'Create Schema'}</span>
-          </button>
-        )}
-      </div>
+          {schemas.length > 0 && (
+            <button
+              onClick={handleOpenCreate}
+              className="px-5 py-2.5 bg-[#0463EF] hover:bg-[#0352cc] text-white font-black text-sm uppercase tracking-wider rounded-[4px] shadow-md shadow-blue-500/15 flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
+            >
+              <Plus size={16} />
+              <span>{isTh ? 'สร้างสคีมาใหม่' : 'Create Schema'}</span>
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Main Box */}
       {schemas.length === 0 ? (
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white border border-slate-200/80 rounded-[16px] p-12 text-center shadow-sm flex flex-col items-center justify-center min-h-[400px]"
+          className={hideHeader ? "p-12 text-center flex flex-col items-center justify-center min-h-[400px]" : "bg-white border border-slate-200/80 rounded-[16px] p-12 text-center shadow-sm flex flex-col items-center justify-center min-h-[400px]"}
         >
           <div className="w-20 h-20 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mb-6 border border-slate-100">
             <Layers size={36} />
@@ -656,6 +719,17 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
                   <span>List</span>
                 </button>
               </div>
+
+              {hideHeader && (
+                <button
+                  type="button"
+                  onClick={handleOpenCreate}
+                  className="px-4 py-2 bg-[#0463EF] hover:bg-[#0352cc] text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md shadow-blue-500/15 flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer ml-1"
+                >
+                  <Plus size={14} />
+                  <span>{isTh ? 'สร้างสคีมาใหม่' : 'Create Schema'}</span>
+                </button>
+              )}
             </div>
           </div>
 
@@ -1190,180 +1264,219 @@ Your task is to highly accurately extract structured elements from the uploaded 
                             transition={{ duration: 0.25, ease: [0.04, 0.62, 0.23, 0.98] }}
                             className="overflow-hidden"
                           >
-                            {/* Schema Fields Section Header */}
-                            <div className="p-4 pb-1 flex items-center justify-between">
-                              <h4 className="text-sm font-black text-slate-800 tracking-tight mb-0">
-                                {isTh ? 'Schema Fields' : 'Schema Fields'}
-                              </h4>
-                              <button
-                                type="button"
-                                onClick={() => handleAddLabelRow(config.docTypeId)}
-                                className="px-3 py-1.5 border border-dashed border-[#0463EF]/40 hover:border-[#0463EF]/70 hover:bg-[#0463EF]/5 hover:text-[#0463EF] text-[#0463EF]/80 font-bold text-xs rounded-lg transition-all flex items-center gap-1 bg-white cursor-pointer active:scale-98"
-                              >
-                                <Plus size={14} className="text-[#0463EF]" />
-                                <span>{isTh ? '+ เพิ่ม Field' : '+ Add Field'}</span>
-                              </button>
-                            </div>
-
-                            {/* Schema Fields List */}
-                            <div className="p-4 pt-2 space-y-4">
-                              {config.labels.length === 0 ? (
-                                <div className="py-6 text-center text-slate-400 text-xs font-medium">
-                                  {isTh ? 'ยังไม่ได้ระบุ Label สำหรับประเภทเอกสารนี้' : 'No labels defined. Click "+ เพิ่ม Field" to begin.'}
-                                </div>
-                              ) : (
-                                <div className="space-y-4 animate-in fade-in duration-200">
-                                  {config.labels.map((label) => (
-                                    <div key={label.id} className="p-4 bg-slate-50/50 rounded-2xl border border-slate-200/50 space-y-3.5 transition-all">
-                                      {/* Main Row */}
-                                      <div className="flex gap-4 items-center w-full">
-                                        {/* Field Name Input */}
-                                        <div className="flex-1 min-w-0">
-                                          <input 
-                                            type="text"
-                                            value={label.name}
-                                            onChange={(e) => handleUpdateLabelRow(config.docTypeId, label.id, { name: e.target.value })}
-                                            placeholder={isTh ? 'ชื่อ field' : 'field name'}
-                                            className={`w-full px-3.5 py-2 font-mono bg-white text-slate-800 font-semibold border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0463EF]/10 text-sm h-[40px] transition-all border-slate-200 hover:border-slate-300 focus:border-[#0463EF]`}
-                                          />
-                                        </div>
-
-                                        {/* Select Field Type */}
-                                        <div className="relative w-36">
-                                          <select
-                                            value={label.type || 'string'}
-                                            onChange={(e) => {
-                                              const newType = e.target.value;
-                                              if (newType === 'array' && !label.subLabels) {
-                                                handleUpdateLabelRow(config.docTypeId, label.id, { type: newType, subLabels: [] });
-                                              } else {
-                                                handleUpdateLabelRow(config.docTypeId, label.id, { type: newType });
-                                              }
-                                            }}
-                                            className="w-full pl-3.5 pr-8 py-2 bg-white text-slate-700 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0463EF]/10 text-sm font-semibold h-[40px] appearance-none cursor-pointer"
-                                          >
-                                            <option value="string">string</option>
-                                            <option value="number">number</option>
-                                            <option value="boolean">boolean</option>
-                                            <option value="date">date</option>
-                                            <option value="array">array</option>
-                                          </select>
-                                          <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
-                                            <ChevronDown size={14} />
-                                          </div>
-                                        </div>
-
-                                        {/* Required Checkbox */}
-                                        <div className="flex items-center min-w-[100px]">
-                                          <label className="flex items-center gap-2 select-none cursor-pointer text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors">
-                                            <input 
-                                              type="checkbox"
-                                              checked={label.required}
-                                              onChange={(e) => handleUpdateLabelRow(config.docTypeId, label.id, { required: e.target.checked })}
-                                              className="w-4.5 h-4.5 rounded border-slate-300 text-[#0463EF] focus:ring-[#0463EF]/20 cursor-pointer"
-                                            />
-                                            <span>Required</span>
-                                          </label>
-                                        </div>
-
-                                        {/* Dangerously delete label field */}
-                                        <button
-                                          type="button"
-                                          onClick={() => handleRemoveLabelRow(config.docTypeId, label.id)}
-                                          className="p-2 text-rose-500 hover:text-rose-750 hover:bg-rose-50 active:scale-95 border border-transparent rounded-lg transition-all cursor-pointer flex items-center justify-center h-[40px] w-[40px]"
-                                          title={isTh ? 'ลบ Field' : 'Delete field'}
-                                        >
-                                          <Trash2 size={16} />
-                                        </button>
+                            {/* 3 Sections (Header, Description, Footer) */}
+                            <div className="p-4 pt-2 space-y-6">
+                              {[
+                                {
+                                  key: 'Header' as const,
+                                  titleTh: 'ส่วนหัว (Header)',
+                                  titleEn: 'Header',
+                                  color: 'bg-blue-600',
+                                  textColor: 'text-blue-700'
+                                },
+                                {
+                                  key: 'Description' as const,
+                                  titleTh: 'คำอธิบาย (Description)',
+                                  titleEn: 'Description',
+                                  color: 'bg-emerald-500',
+                                  textColor: 'text-emerald-700'
+                                },
+                                {
+                                  key: 'Footer' as const,
+                                  titleTh: 'ส่วนท้าย (Footer)',
+                                  titleEn: 'Footer',
+                                  color: 'bg-purple-600',
+                                  textColor: 'text-purple-700'
+                                }
+                              ].map((sect) => {
+                                const sectionLabels = config.labels.filter(label => (label.section || 'Header') === sect.key);
+                                return (
+                                  <div key={sect.key} className="border border-slate-200 rounded-2xl p-4 bg-white space-y-4 shadow-3xs">
+                                    {/* Section Sub-Header */}
+                                    <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                                      <div className="flex items-center gap-2">
+                                        <span className={`w-2.5 h-2.5 rounded-full ${sect.color}`} />
+                                        <h5 className="text-xs font-black text-slate-800 tracking-tight uppercase mb-0">
+                                          {isTh ? sect.titleTh : sect.titleEn}
+                                        </h5>
+                                        <span className="px-2 py-0.5 text-[10px] font-bold bg-slate-100 text-slate-500 rounded-md">
+                                          {sectionLabels.length} {isTh ? 'ฟิลด์' : 'fields'}
+                                        </span>
                                       </div>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleAddLabelRow(config.docTypeId, sect.key)}
+                                        className="px-3 py-1.5 border border-dashed border-[#0463EF]/40 hover:border-[#0463EF]/70 hover:bg-[#0463EF]/5 hover:text-[#0463EF] text-[#0463EF]/80 font-black text-xs rounded-lg transition-all flex items-center gap-1 bg-white cursor-pointer active:scale-98"
+                                      >
+                                        <Plus size={12} className="text-[#0463EF]" />
+                                        <span>{isTh ? '+ เพิ่ม Field' : '+ Add Field'}</span>
+                                      </button>
+                                    </div>
 
-                                      {/* Sub-fields block for array type */}
-                                      {label.type === 'array' && (
-                                        <div className="pl-6 border-l-2 border-dashed border-[#0463EF]/40 space-y-3 pt-1">
-                                          <div className="flex items-center justify-between">
-                                            <span className="text-[11px] font-black text-[#010136]/75 uppercase tracking-wider flex items-center gap-1.5 label-section-title">
-                                              <span className="w-1.5 h-1.5 rounded-full bg-[#16EA9E]" />
-                                              {isTh ? `ฟิลด์ย่อย (Array Items: ${label.name || '?'})` : `Sub-Fields for Array Items: ${label.name || '?'}`}
-                                            </span>
-                                            <Button
-                                              type="dashed"
-                                              onClick={() => handleAddSubLabelRow(config.docTypeId, label.id)}
-                                              className="border-dashed border-[#0463EF]/50 text-[#0463EF] hover:text-[#0352cc] hover:border-[#0352cc] text-[11px] h-[26px] py-0 px-2.5 rounded-md flex items-center font-bold"
-                                            >
-                                              <Plus size={12} className="mr-1" />
-                                              {isTh ? 'เพิ่ม Field ย่อย' : 'Add Sub Field'}
-                                            </Button>
-                                          </div>
-
-                                          {/* Sub-fields list */}
-                                          {(!label.subLabels || label.subLabels.length === 0) ? (
-                                            <div className="p-4 text-center text-slate-400 text-xs font-semibold bg-white/70 border border-dashed border-slate-200/80 rounded-xl">
-                                              {isTh ? 'ยังไม่มีฟิลด์ย่อย กดปุ่ม "เพิ่ม Field ย่อย" เพื่อเริ่มกำหนดค่า' : 'No nested fields yet. Click "Add Sub Field" to begin.'}
-                                            </div>
-                                          ) : (
-                                            <div className="space-y-2.5">
-                                              {label.subLabels.map((subLabel) => (
-                                                <div key={subLabel.id} className="flex gap-3 items-center w-full bg-white p-2.5 rounded-xl border border-slate-200/60 shadow-3xs hover:shadow-2xs transition-all animate-in slide-in-from-top-1 duration-150">
-                                                  {/* Sub-Field Name Input */}
-                                                  <div className="flex-1 min-w-0">
-                                                    <input 
-                                                      type="text"
-                                                      value={subLabel.name}
-                                                      onChange={(e) => handleUpdateSubLabelRow(config.docTypeId, label.id, subLabel.id, { name: e.target.value })}
-                                                      placeholder={isTh ? 'ชื่อ field ย่อย' : 'sub-field name'}
-                                                      className="w-full px-3 py-1.5 font-mono bg-white text-slate-800 font-semibold border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0463EF]/10 text-xs h-[36px] transition-all hover:border-slate-300 focus:border-[#0463EF]"
-                                                    />
-                                                  </div>
-
-                                                  {/* Sub-Field Type Selector */}
-                                                  <div className="relative w-32">
-                                                    <select
-                                                      value={subLabel.type || 'string'}
-                                                      onChange={(e) => handleUpdateSubLabelRow(config.docTypeId, label.id, subLabel.id, { type: e.target.value })}
-                                                      className="w-full pl-3 pr-8 py-1.5 bg-white text-slate-700 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0463EF]/10 text-xs font-semibold h-[36px] appearance-none cursor-pointer"
-                                                    >
-                                                      <option value="string">string</option>
-                                                      <option value="number">number</option>
-                                                      <option value="boolean">boolean</option>
-                                                      <option value="date">date</option>
-                                                    </select>
-                                                    <div className="pointer-events-none absolute inset-y-0 right-2 w-4 flex items-center text-slate-400">
-                                                      <ChevronDown size={12} />
-                                                    </div>
-                                                  </div>
-
-                                                  {/* Sub-Field Required */}
-                                                  <div className="flex items-center min-w-[90px] pl-1">
-                                                    <label className="flex items-center gap-1.5 select-none cursor-pointer text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors">
-                                                      <input 
-                                                        type="checkbox"
-                                                        checked={subLabel.required}
-                                                        onChange={(e) => handleUpdateSubLabelRow(config.docTypeId, label.id, subLabel.id, { required: e.target.checked })}
-                                                        className="w-3.5 h-3.5 rounded border-slate-300 text-[#0463EF] focus:ring-[#0463EF]/20 cursor-pointer"
-                                                      />
-                                                      <span>Required</span>
-                                                    </label>
-                                                  </div>
-
-                                                  {/* Delete Sub-Field */}
-                                                  <button
-                                                    type="button"
-                                                    onClick={() => handleRemoveSubLabelRow(config.docTypeId, label.id, subLabel.id)}
-                                                    className="p-1.5 text-rose-500 hover:text-rose-750 hover:bg-rose-50 active:scale-95 border border-transparent rounded-lg transition-all cursor-pointer flex items-center justify-center h-[32px] w-[32px]"
-                                                    title={isTh ? 'ลบ field ย่อย' : 'Delete sub-field'}
-                                                  >
-                                                    <Trash2 size={13} />
-                                                  </button>
+                                    {/* Fields List */}
+                                    <div className="space-y-3.5">
+                                      {sectionLabels.length === 0 ? (
+                                        <div className="py-6 text-center text-slate-400 text-xs font-medium border border-dashed border-slate-100 rounded-xl bg-slate-50/20">
+                                          {isTh ? 'ยังไม่มีฟิลด์ในส่วนนี้' : 'No fields defined. Click "+ เพิ่ม Field" to begin.'}
+                                        </div>
+                                      ) : (
+                                        <div className="space-y-4 animate-in fade-in duration-200">
+                                          {sectionLabels.map((label) => (
+                                            <div key={label.id} className="p-4 bg-slate-50/50 rounded-2xl border border-slate-200/50 space-y-3.5 transition-all">
+                                              {/* Main Row */}
+                                              <div className="flex gap-4 items-center w-full">
+                                                {/* Field Name Input */}
+                                                <div className="flex-1 min-w-0">
+                                                  <input 
+                                                    type="text"
+                                                    value={label.name}
+                                                    onChange={(e) => handleUpdateLabelRow(config.docTypeId, label.id, { name: e.target.value })}
+                                                    placeholder={isTh ? 'ชื่อ field' : 'field name'}
+                                                    className="w-full px-3.5 py-2 font-mono bg-white text-slate-800 font-semibold border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0463EF]/10 text-sm h-[40px] transition-all border-slate-200 hover:border-slate-300 focus:border-[#0463EF]"
+                                                  />
                                                 </div>
-                                              ))}
+
+                                                {/* Select Field Type */}
+                                                <div className="relative w-36">
+                                                  <select
+                                                    value={label.type || 'string'}
+                                                    onChange={(e) => {
+                                                      const newType = e.target.value;
+                                                      if (newType === 'array' && !label.subLabels) {
+                                                        handleUpdateLabelRow(config.docTypeId, label.id, { type: newType, subLabels: [] });
+                                                      } else {
+                                                        handleUpdateLabelRow(config.docTypeId, label.id, { type: newType });
+                                                      }
+                                                    }}
+                                                    className="w-full pl-3.5 pr-8 py-2 bg-white text-slate-700 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0463EF]/10 text-sm font-semibold h-[40px] appearance-none cursor-pointer"
+                                                  >
+                                                    <option value="string">string</option>
+                                                    <option value="number">number</option>
+                                                    <option value="boolean">boolean</option>
+                                                    <option value="date">date</option>
+                                                    <option value="array">array</option>
+                                                  </select>
+                                                  <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
+                                                    <ChevronDown size={14} />
+                                                  </div>
+                                                </div>
+
+                                                {/* Required Checkbox */}
+                                                <div className="flex items-center min-w-[100px]">
+                                                  <label className="flex items-center gap-2 select-none cursor-pointer text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors">
+                                                    <input 
+                                                      type="checkbox"
+                                                      checked={label.required}
+                                                      onChange={(e) => handleUpdateLabelRow(config.docTypeId, label.id, { required: e.target.checked })}
+                                                      className="w-4.5 h-4.5 rounded border-slate-300 text-[#0463EF] focus:ring-[#0463EF]/20 cursor-pointer"
+                                                    />
+                                                    <span>Required</span>
+                                                  </label>
+                                                </div>
+
+                                                {/* Dangerously delete label field */}
+                                                <button
+                                                  type="button"
+                                                  onClick={() => handleRemoveLabelRow(config.docTypeId, label.id)}
+                                                  className="p-2 text-rose-500 hover:text-rose-750 hover:bg-rose-50 active:scale-95 border border-transparent rounded-lg transition-all cursor-pointer flex items-center justify-center h-[40px] w-[40px]"
+                                                  title={isTh ? 'ลบ Field' : 'Delete field'}
+                                                >
+                                                  <Trash2 size={16} />
+                                                </button>
+                                              </div>
+
+                                              {/* Sub-fields block for array type */}
+                                              {label.type === 'array' && (
+                                                <div className="pl-6 border-l-2 border-dashed border-[#0463EF]/40 space-y-3 pt-1">
+                                                  <div className="flex items-center justify-between">
+                                                    <span className="text-[11px] font-black text-[#010136]/75 uppercase tracking-wider flex items-center gap-1.5 label-section-title">
+                                                      <span className="w-1.5 h-1.5 rounded-full bg-[#16EA9E]" />
+                                                      {isTh ? `ฟิลด์ย่อย (Array Items: ${label.name || '?'})` : `Sub-Fields for Array Items: ${label.name || '?'}`}
+                                                    </span>
+                                                    <Button
+                                                      type="dashed"
+                                                      onClick={() => handleAddSubLabelRow(config.docTypeId, label.id)}
+                                                      className="border-dashed border-[#0463EF]/50 text-[#0463EF] hover:text-[#0352cc] hover:border-[#0352cc] text-[11px] h-[26px] py-0 px-2.5 rounded-md flex items-center font-bold"
+                                                    >
+                                                      <Plus size={12} className="mr-1" />
+                                                      {isTh ? 'เพิ่ม Field ย่อย' : 'Add Sub Field'}
+                                                    </Button>
+                                                  </div>
+
+                                                  {/* Sub-fields list */}
+                                                  {(!label.subLabels || label.subLabels.length === 0) ? (
+                                                    <div className="p-4 text-center text-slate-400 text-xs font-semibold bg-white/70 border border-dashed border-slate-200/80 rounded-xl">
+                                                      {isTh ? 'ยังไม่มีฟิลด์ย่อย กดปุ่ม "เพิ่ม Field ย่อย" เพื่อเริ่มกำหนดค่า' : 'No nested fields yet. Click "Add Sub Field" to begin.'}
+                                                    </div>
+                                                  ) : (
+                                                    <div className="space-y-2.5">
+                                                      {label.subLabels.map((subLabel) => (
+                                                        <div key={subLabel.id} className="flex gap-3 items-center w-full bg-white p-2.5 rounded-xl border border-slate-200/60 shadow-3xs hover:shadow-2xs transition-all animate-in slide-in-from-top-1 duration-150">
+                                                          {/* Sub-Field Name Input */}
+                                                          <div className="flex-1 min-w-0">
+                                                            <input 
+                                                              type="text"
+                                                              value={subLabel.name}
+                                                              onChange={(e) => handleUpdateSubLabelRow(config.docTypeId, label.id, subLabel.id, { name: e.target.value })}
+                                                              placeholder={isTh ? 'ชื่อ field ย่อย' : 'sub-field name'}
+                                                              className="w-full px-3 py-1.5 font-mono bg-white text-slate-800 font-semibold border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0463EF]/10 text-xs h-[36px] transition-all hover:border-slate-300 focus:border-[#0463EF]"
+                                                            />
+                                                          </div>
+
+                                                          {/* Sub-Field Type Selector */}
+                                                          <div className="relative w-32">
+                                                            <select
+                                                              value={subLabel.type || 'string'}
+                                                              onChange={(e) => handleUpdateSubLabelRow(config.docTypeId, label.id, subLabel.id, { type: e.target.value })}
+                                                              className="w-full pl-3 pr-8 py-1.5 bg-white text-slate-700 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0463EF]/10 text-xs font-semibold h-[36px] appearance-none cursor-pointer"
+                                                            >
+                                                              <option value="string">string</option>
+                                                              <option value="number">number</option>
+                                                              <option value="boolean">boolean</option>
+                                                              <option value="date">date</option>
+                                                            </select>
+                                                            <div className="pointer-events-none absolute inset-y-0 right-2 w-4 flex items-center text-slate-400">
+                                                              <ChevronDown size={12} />
+                                                            </div>
+                                                          </div>
+
+                                                          {/* Sub-Field Required */}
+                                                          <div className="flex items-center min-w-[90px] pl-1">
+                                                            <label className="flex items-center gap-1.5 select-none cursor-pointer text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors">
+                                                              <input 
+                                                                type="checkbox"
+                                                                checked={subLabel.required}
+                                                                onChange={(e) => handleUpdateSubLabelRow(config.docTypeId, label.id, subLabel.id, { required: e.target.checked })}
+                                                                className="w-3.5 h-3.5 rounded border-slate-300 text-[#0463EF] focus:ring-[#0463EF]/20 cursor-pointer"
+                                                              />
+                                                              <span>Required</span>
+                                                            </label>
+                                                          </div>
+
+                                                          {/* Delete Sub-Field */}
+                                                          <button
+                                                            type="button"
+                                                            onClick={() => handleRemoveSubLabelRow(config.docTypeId, label.id, subLabel.id)}
+                                                            className="p-1.5 text-rose-500 hover:text-rose-750 hover:bg-rose-50 active:scale-95 border border-transparent rounded-lg transition-all cursor-pointer flex items-center justify-center h-[32px] w-[32px]"
+                                                            title={isTh ? 'ลบ field ย่อย' : 'Delete sub-field'}
+                                                          >
+                                                            <Trash2 size={13} />
+                                                          </button>
+                                                        </div>
+                                                      ))}
+                                                    </div>
+                                                  )}
+                                                </div>
+                                              )}
                                             </div>
-                                          )}
+                                          ))}
                                         </div>
                                       )}
                                     </div>
-                                  ))}
-                                </div>
-                              )}
+                                  </div>
+                                );
+                              })}
+                            </div>
 
                               {/* JSON PREVIEW card matching layout of reference image */}
                               <div className="mt-6 pt-4 border-t border-slate-100">
@@ -1392,7 +1505,6 @@ Your task is to highly accurately extract structured elements from the uploaded 
                                   </pre>
                                 </div>
                               </div>
-                            </div>
                           </motion.div>
                         )}
                       </AnimatePresence>

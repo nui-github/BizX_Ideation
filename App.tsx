@@ -1155,8 +1155,10 @@ function App() {
            />
         )}
 
-        {currentView === 'SETTINGS_DOC_TYPE_MASTER' && (
+        {(currentView === 'SETTINGS_DOC_TYPE_MASTER' || currentView === 'SETTINGS_LABEL_SCHEMA') && (
            <DocTypeMaster 
+             initialTab={currentView === 'SETTINGS_LABEL_SCHEMA' ? 'schema' : 'doctype'}
+             setComparisonWorkflows={setComparisonWorkflows}
              language={language}
              docTypes={docTypes}
              workflows={workflows}
@@ -1251,7 +1253,7 @@ function App() {
            />
         )}
 
-        {currentView === 'SETTINGS_LABEL_SCHEMA' && (
+        {false && (
            <LabelSchemaSettings 
              language={language}
              docTypes={docTypes}
