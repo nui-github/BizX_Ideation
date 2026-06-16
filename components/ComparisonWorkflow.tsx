@@ -108,37 +108,6 @@ export const ComparisonWorkflow: React.FC<ComparisonWorkflowProps> = ({
         </button>
       </div>
 
-      {/* Stats overview specific to comparison workflows */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex items-center gap-4">
-           <div className="w-14 h-14 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shadow-inner">
-              <ArrowLeftRight size={28} />
-           </div>
-           <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1.5">Active Rulesets</p>
-              <h3 className="text-2xl font-black text-slate-800 leading-none">{workflows.filter(w=>w.status==='ACTIVE').length}</h3>
-           </div>
-        </div>
-        <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex items-center gap-4">
-           <div className="w-14 h-14 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-inner">
-              <Play size={28} />
-           </div>
-           <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1.5">Jobs Processed</p>
-              <h3 className="text-2xl font-black text-slate-800 leading-none">1,452</h3>
-           </div>
-        </div>
-        <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex items-center gap-4">
-           <div className="w-14 h-14 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center shadow-inner">
-              <Box size={28} />
-           </div>
-           <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1.5">Connected Docs</p>
-              <h3 className="text-2xl font-black text-slate-800 leading-none">4,890</h3>
-           </div>
-        </div>
-      </div>
-
       {workflows.length === 0 ? (
         <div className="bg-white rounded-lg border border-slate-200 shadow-sm flex flex-col items-center justify-center py-20 px-4 text-center">
           <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mb-6">
@@ -159,20 +128,21 @@ export const ComparisonWorkflow: React.FC<ComparisonWorkflowProps> = ({
           </button>
         </div>
       ) : (
-        <div className="bg-white rounded-lg border border-slate-200 shadow-sm flex flex-col overflow-hidden">
-          <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="relative flex-1 w-full max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 py-1">
+            <div className="relative flex-1 w-full max-w-md animate-in fade-in slide-in-from-left duration-300">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
               <input 
                 type="text"
                 placeholder={t.phSearch || 'Search workflows...'}
-                className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 focus:ring-2 focus:ring-blue-500 transition-all outline-none placeholder:font-medium"
+                className="w-full pl-11 pr-4 py-2.5 bg-white border border-slate-200/80 rounded-xl text-sm font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all outline-none placeholder:font-medium"
+                style={{ borderRadius: '8px' }}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
             
-            <div className="flex bg-slate-100 p-1 rounded-xl">
+            <div className="flex bg-slate-200/60 p-1 rounded-xl shadow-inner border border-slate-200/40 animate-in fade-in slide-in-from-right duration-300" style={{ borderRadius: '8px' }}>
               {['ALL', 'ACTIVE', 'INACTIVE'].map((status) => (
                 <button
                   key={status}
@@ -180,8 +150,9 @@ export const ComparisonWorkflow: React.FC<ComparisonWorkflowProps> = ({
                   className={`px-4 py-1.5 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${
                     statusFilter === status 
                       ? 'bg-white text-blue-600 shadow-sm' 
-                      : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'
+                      : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/20'
                   }`}
+                  style={{ borderRadius: '6px' }}
                 >
                   {status === 'ALL' ? (language === 'TH' ? 'ทั้งหมด' : 'All') : 
                    status === 'ACTIVE' ? t.statusActive : 
@@ -192,9 +163,9 @@ export const ComparisonWorkflow: React.FC<ComparisonWorkflowProps> = ({
             </div>
           </div>
 
-          <div className="divide-y divide-slate-100">
+          <div className="flex flex-col gap-4">
             {filteredWorkflows.length === 0 ? (
-              <div className="py-16 flex flex-col items-center justify-center text-center">
+              <div className="bg-white rounded-lg border border-slate-200 shadow-sm py-16 flex flex-col items-center justify-center text-center">
                  <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
                    <Filter size={24} className="text-slate-400" />
                  </div>
@@ -207,7 +178,7 @@ export const ComparisonWorkflow: React.FC<ComparisonWorkflowProps> = ({
               </div>
             ) : (
               filteredWorkflows.map((workflow) => (
-                <div key={workflow.id} className="p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50/80 transition-all group">
+                <div key={workflow.id} className="bg-white rounded-lg p-5 border border-slate-200 shadow-sm hover:shadow-md hover:border-blue-300 transition-all group flex flex-col md:flex-row md:items-center justify-between gap-4 relative overflow-hidden">
                   <div className="flex items-start md:items-center gap-4">
                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 transition-all shadow-sm border border-transparent group-hover:border-white group-hover:shadow-md
                         ${workflow.status === 'ACTIVE' ? 'bg-blue-50 text-blue-600' : 'bg-slate-100 text-slate-400'}`}>
