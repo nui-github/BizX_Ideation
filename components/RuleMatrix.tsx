@@ -833,7 +833,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                                     )}
                                     {(() => {
                                       const type = val?.type;
-                                      if (!type || type === 'NONE') return null;
+                                      if (val?.isMain || !type || type === 'NONE') return null;
 
                                       switch (type) {
                                         case 'BILINGUAL':

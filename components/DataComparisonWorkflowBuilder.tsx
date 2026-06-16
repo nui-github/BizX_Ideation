@@ -206,7 +206,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
   const t = TRANSLATIONS[language];
   // Sync comparing rules cleanly from localStorage if present
   const localRules = typeof window !== 'undefined' ? (() => {
-    const saved = localStorage.getItem('bizx_compare_rules');
+    const saved = localStorage.getItem('bizx_compare_rules_v4');
     if (saved) {
       try {
         return JSON.parse(saved);

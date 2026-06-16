@@ -53,7 +53,7 @@ export const ManageRule: React.FC<ManageRuleProps> = ({ language, comparisonWork
   // Mock Rules Data
   const [rules, setRules] = useState(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('bizx_compare_rules');
+      const saved = localStorage.getItem('bizx_compare_rules_v4');
       if (saved) {
         try {
           return JSON.parse(saved);
@@ -84,7 +84,7 @@ export const ManageRule: React.FC<ManageRuleProps> = ({ language, comparisonWork
               { id: 'h1', detail: 'Seller Name', detailTh: 'ชื่อผู้ขาย (Seller Name)', values: [
                 {type: 'CONDITIONAL', schemaId: 'ls-1', schemaField: 'Total Value', condField: 'Invoice#', condValue: 'L/C', condSource: 'L/C No.'},
                 {type: 'BILINGUAL', schemaId: 'ls-2', schemaField: 'PO No'},
-                {type: 'BILINGUAL', schemaId: 'ls-1', schemaField: 'Invoice#', isMain: true},
+                {type: '', schemaId: 'ls-1', schemaField: 'Invoice#', isMain: true},
                 {type: 'BILINGUAL', schemaId: 'ls-1', schemaField: 'Packing#'},
                 {type: 'BILINGUAL', schemaId: 'ls-1', schemaField: 'B/L No'},
                 {type: 'TEXT', text: ''}
@@ -92,7 +92,7 @@ export const ManageRule: React.FC<ManageRuleProps> = ({ language, comparisonWork
               { id: 'h2', detail: 'Seller Address', detailTh: 'ที่อยู่ผู้ขาย (Seller Address)', values: [
                 {type: 'BILINGUAL', schemaId: 'ls-1', schemaField: 'Invoice#'},
                 {type: 'BILINGUAL', schemaId: 'ls-2', schemaField: 'PO No'},
-                {type: 'BILINGUAL', schemaId: 'ls-1', schemaField: 'Invoice#', isMain: true},
+                {type: '', schemaId: 'ls-1', schemaField: 'Invoice#', isMain: true},
                 {type: 'BILINGUAL', schemaId: 'ls-1', schemaField: 'Packing#'},
                 {type: 'BILINGUAL', schemaId: 'ls-1', schemaField: 'B/L No'},
                 {type: 'TEXT', text: ''}
@@ -100,7 +100,7 @@ export const ManageRule: React.FC<ManageRuleProps> = ({ language, comparisonWork
               { id: 'h3', detail: 'Buyer Name', detailTh: 'ชื่อผู้ซื้อ (Buyer Name)', values: [
                 {type: 'MASTER_LOOKUP', schemaId: 'ls-1', schemaField: 'Invoice#', masterDb: 'Customers'},
                 {type: 'MASTER_LOOKUP', schemaId: 'ls-2', schemaField: 'PO No', masterDb: 'Customers'},
-                {type: 'MASTER_LOOKUP', schemaId: 'ls-1', schemaField: 'Invoice#', isMain: true, masterDb: 'Customers'},
+                {type: '', schemaId: 'ls-1', schemaField: 'Invoice#', isMain: true, masterDb: 'Customers'},
                 {type: 'MASTER_LOOKUP', schemaId: 'ls-1', schemaField: 'Packing#', masterDb: 'Customers'},
                 {type: 'MASTER_LOOKUP', schemaId: 'ls-1', schemaField: 'B/L No', masterDb: 'Customers'},
                 {type: 'TEXT', text: ''}
@@ -108,7 +108,7 @@ export const ManageRule: React.FC<ManageRuleProps> = ({ language, comparisonWork
               { id: 'h4', detail: 'Invoice No.', detailTh: 'เลขที่ใบแจ้งหนี้ (Invoice No.)', values: [
                 {type: 'EXACT', schemaId: 'ls-1', schemaField: 'Invoice#'},
                 {type: 'EXACT', schemaId: 'ls-2', schemaField: 'PO No'},
-                {type: 'EXACT', schemaId: 'ls-1', schemaField: 'Invoice#', isMain: true},
+                {type: '', schemaId: 'ls-1', schemaField: 'Invoice#', isMain: true},
                 {type: 'EXACT', schemaId: 'ls-1', schemaField: 'Packing#'},
                 {type: 'EXACT', schemaId: 'ls-1', schemaField: 'B/L No'},
                 {type: 'TEXT', text: ''}
@@ -116,17 +116,17 @@ export const ManageRule: React.FC<ManageRuleProps> = ({ language, comparisonWork
               { id: 'h_date', detail: 'Invoice Date', detailTh: 'วันที่ออกใบแจ้งหนี้ (Invoice Date)', values: [
                 {type: 'DATE_NORMALIZATION', schemaId: 'ls-1', schemaField: 'Invoice#', dateBuddhist: true, dateADToBE: false},
                 {type: 'DATE_NORMALIZATION', schemaId: 'ls-2', schemaField: 'PO No', dateBuddhist: false, dateADToBE: false},
-                {type: 'DATE_NORMALIZATION', schemaId: 'ls-1', schemaField: 'Invoice#', isMain: true, dateBuddhist: false, dateADToBE: false},
+                {type: '', schemaId: 'ls-1', schemaField: 'Invoice#', isMain: true, dateBuddhist: false, dateADToBE: false},
                 {type: 'DATE_NORMALIZATION', schemaId: 'ls-1', schemaField: 'Packing#', dateBuddhist: false, dateADToBE: false},
                 {type: 'DATE_NORMALIZATION', schemaId: 'ls-1', schemaField: 'B/L No', dateBuddhist: false, dateADToBE: false},
                 {type: 'TEXT', text: ''}
               ] },
               { id: 'h5', detail: 'Internal Code', detailTh: 'รหัสควบคุมภายใน (Internal Code)', values: [
-                {type: 'CROSS_FLOW_CARRY', schemaId: 'ls-1', schemaField: 'Invoice#', carryRule: 'PO Verifier Flow', carryField: 'Total Pieces'},
-                {type: 'CROSS_FLOW_CARRY', schemaId: 'ls-2', schemaField: 'PO No', carryRule: 'PO Verifier Flow', carryField: 'Total Pieces'},
-                {type: 'CROSS_FLOW_CARRY', schemaId: 'ls-1', schemaField: 'Invoice#', isMain: true, carryRule: 'PO Verifier Flow', carryField: 'Total Pieces'},
-                {type: 'CROSS_FLOW_CARRY', schemaId: 'ls-1', schemaField: 'Packing#', carryRule: 'PO Verifier Flow', carryField: 'Total Pieces'},
-                {type: 'CROSS_FLOW_CARRY', schemaId: 'ls-1', schemaField: 'B/L No', carryRule: 'PO Verifier Flow', carryField: 'Total Pieces'},
+                {type: 'EXACT', schemaId: 'ls-1', schemaField: 'Invoice#'},
+                {type: 'EXACT', schemaId: 'ls-2', schemaField: 'PO No'},
+                {type: '', schemaId: 'ls-1', schemaField: 'Invoice#', isMain: true},
+                {type: 'EXACT', schemaId: 'ls-1', schemaField: 'Packing#'},
+                {type: 'EXACT', schemaId: 'ls-1', schemaField: 'B/L No'},
                 {type: 'TEXT', text: ''}
               ] },
             ]
@@ -137,7 +137,7 @@ export const ManageRule: React.FC<ManageRuleProps> = ({ language, comparisonWork
               { id: 'd1', detail: 'Product Description', detailTh: 'คำอธิบายสินค้า (Product Description)', values: [
                 {type: 'BILINGUAL', schemaId: 'ls-1', schemaField: 'Invoice#'},
                 {type: 'BILINGUAL', schemaId: 'ls-2', schemaField: 'PO No'},
-                {type: 'BILINGUAL', schemaId: 'ls-1', schemaField: 'Invoice#', isMain: true},
+                {type: '', schemaId: 'ls-1', schemaField: 'Invoice#', isMain: true},
                 {type: 'BILINGUAL', schemaId: 'ls-1', schemaField: 'Packing#'},
                 {type: 'BILINGUAL', schemaId: 'ls-1', schemaField: 'B/L No'},
                 {type: 'TEXT', text: ''}
@@ -145,7 +145,7 @@ export const ManageRule: React.FC<ManageRuleProps> = ({ language, comparisonWork
               { id: 'd2', detail: 'Item No. / Model No. (SKU)', detailTh: 'รหัสสินค้า / รุ่น (SKU)', values: [
                 {type: 'EXACT', schemaId: 'ls-1', schemaField: 'Invoice#'},
                 {type: 'EXACT', schemaId: 'ls-2', schemaField: 'PO No'},
-                {type: 'EXACT', schemaId: 'ls-1', schemaField: 'Invoice#', isMain: true},
+                {type: '', schemaId: 'ls-1', schemaField: 'Invoice#', isMain: true},
                 {type: 'EXACT', schemaId: 'ls-1', schemaField: 'Packing#'},
                 {type: 'EXACT', schemaId: 'ls-1', schemaField: 'B/L No'},
                 {type: 'TEXT', text: ''}
@@ -153,7 +153,7 @@ export const ManageRule: React.FC<ManageRuleProps> = ({ language, comparisonWork
               { id: 'd3', detail: "Q'ty by line", detailTh: 'จำนวนสินค้าตามรายการสินค้า', values: [
                 {type: 'NUMBER_WORD', schemaId: 'ls-1', schemaField: 'Quantity'},
                 {type: 'NUMBER_WORD', schemaId: 'ls-2', schemaField: 'PO No'},
-                {type: 'NUMBER_WORD', schemaId: 'ls-1', schemaField: 'Quantity', isMain: true},
+                {type: '', schemaId: 'ls-1', schemaField: 'Quantity', isMain: true},
                 {type: 'NUMBER_WORD', schemaId: 'ls-1', schemaField: 'Packing#'},
                 {type: 'NUMBER_WORD', schemaId: 'ls-1', schemaField: 'B/L No'},
                 {type: 'TEXT', text: ''}
@@ -161,7 +161,7 @@ export const ManageRule: React.FC<ManageRuleProps> = ({ language, comparisonWork
               { id: 'd4', detail: 'UOM', detailTh: 'หน่วยนับสินค้า (UOM)', values: [
                 {type: 'EXACT', schemaId: 'ls-1', schemaField: 'Invoice#'},
                 {type: 'EXACT', schemaId: 'ls-2', schemaField: 'PO No'},
-                {type: 'EXACT', schemaId: 'ls-1', schemaField: 'Invoice#', isMain: true},
+                {type: '', schemaId: 'ls-1', schemaField: 'Invoice#', isMain: true},
                 {type: 'EXACT', schemaId: 'ls-1', schemaField: 'Packing#'},
                 {type: 'EXACT', schemaId: 'ls-1', schemaField: 'B/L No'},
                 {type: 'TEXT', text: ''}
@@ -169,7 +169,7 @@ export const ManageRule: React.FC<ManageRuleProps> = ({ language, comparisonWork
               { id: 'd5', detail: "Total Q'ty", detailTh: 'จำนวนสินค้ารวมทั้งหมด', values: [
                 {type: 'NUMBER_WORD', schemaId: 'ls-1', schemaField: 'Quantity'},
                 {type: 'NUMBER_WORD', schemaId: 'ls-2', schemaField: 'PO No'},
-                {type: 'NUMBER_WORD', schemaId: 'ls-1', schemaField: 'Quantity', isMain: true},
+                {type: '', schemaId: 'ls-1', schemaField: 'Quantity', isMain: true},
                 {type: 'NUMBER_WORD', schemaId: 'ls-1', schemaField: 'Packing#'},
                 {type: 'NUMBER_WORD', schemaId: 'ls-1', schemaField: 'B/L No'},
                 {type: 'TEXT', text: ''}
@@ -190,7 +190,7 @@ export const ManageRule: React.FC<ManageRuleProps> = ({ language, comparisonWork
               { id: 'f1', detail: 'Company Stamp', detailTh: 'ตราประทับบริษัท', values: [
                 {type: 'EXISTENCE', schemaId: 'ls-1', schemaField: 'Invoice#'},
                 {type: 'EXISTENCE', schemaId: 'ls-2', schemaField: 'PO No'},
-                {type: 'EXISTENCE', schemaId: 'ls-1', schemaField: 'Invoice#', isMain: true},
+                {type: '', schemaId: 'ls-1', schemaField: 'Invoice#', isMain: true},
                 {type: 'EXISTENCE', schemaId: 'ls-1', schemaField: 'Packing#'},
                 {type: 'EXISTENCE', schemaId: 'ls-1', schemaField: 'B/L No'},
                 {type: 'TEXT', text: ''}
@@ -198,7 +198,7 @@ export const ManageRule: React.FC<ManageRuleProps> = ({ language, comparisonWork
               { id: 'f2', detail: 'Human Sign', detailTh: 'ลายเซ็นบุคคล', values: [
                 {type: 'EXISTENCE', schemaId: 'ls-1', schemaField: 'Invoice#'},
                 {type: 'EXISTENCE', schemaId: 'ls-2', schemaField: 'PO No'},
-                {type: 'EXISTENCE', schemaId: 'ls-1', schemaField: 'Invoice#', isMain: true},
+                {type: '', schemaId: 'ls-1', schemaField: 'Invoice#', isMain: true},
                 {type: 'EXISTENCE', schemaId: 'ls-1', schemaField: 'Packing#'},
                 {type: 'EXISTENCE', schemaId: 'ls-1', schemaField: 'B/L No'},
                 {type: 'TEXT', text: ''}
@@ -225,14 +225,14 @@ export const ManageRule: React.FC<ManageRuleProps> = ({ language, comparisonWork
               { id: 'h1_2', detail: 'Shipper', detailTh: 'ผู้ส่งสินค้า (Shipper)', values: [
                 {type: 'BILINGUAL', schemaId: 'ls-1', schemaField: 'Invoice#'},
                 {type: 'BILINGUAL', schemaId: 'ls-1', schemaField: 'Packing#'},
-                {type: 'BILINGUAL', schemaId: 'ls-1', schemaField: 'B/L No', isMain: true},
+                {type: '', schemaId: 'ls-1', schemaField: 'B/L No', isMain: true},
                 {type: 'BILINGUAL', schemaId: 'ls-2', schemaField: 'PO No'},
                 {type: 'TEXT', text: ''}
               ] },
               { id: 'h2_2', detail: 'Consignee', detailTh: 'ผู้รับสินค้า (Consignee)', values: [
                 {type: 'BILINGUAL', schemaId: 'ls-1', schemaField: 'Invoice#'},
                 {type: 'BILINGUAL', schemaId: 'ls-1', schemaField: 'Packing#'},
-                {type: 'BILINGUAL', schemaId: 'ls-1', schemaField: 'B/L No', isMain: true},
+                {type: '', schemaId: 'ls-1', schemaField: 'B/L No', isMain: true},
                 {type: 'BILINGUAL', schemaId: 'ls-2', schemaField: 'PO No'},
                 {type: 'TEXT', text: ''}
               ] },
@@ -427,7 +427,7 @@ export const ManageRule: React.FC<ManageRuleProps> = ({ language, comparisonWork
 
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('bizx_compare_rules', JSON.stringify(rules));
+      localStorage.setItem('bizx_compare_rules_v4', JSON.stringify(rules));
     }
   }, [rules]);
 
