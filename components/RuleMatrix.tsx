@@ -637,7 +637,8 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                                           const checked = e.target.checked;
                                           const newValues = editFormData.values.map((v: any, index: number) => ({
                                             ...v,
-                                            isMain: index === vIdx ? checked : false
+                                            isMain: index === vIdx ? checked : false,
+                                            type: index === vIdx && checked ? '' : v.type
                                           }));
                                           setEditFormData({...editFormData, values: newValues});
                                         }}
@@ -723,7 +724,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                                         </>
                                       );
                                     })()}
-                                    {!!currentVal?.schemaField && (
+                                    {!!currentVal?.schemaField && !currentVal?.isMain && (
                                       <div className="flex items-center gap-1.5 w-full animate-in fade-in slide-in-from-top-1 duration-200">
                                         <select 
                                           className="flex-1 min-w-0 bg-slate-50 border border-slate-200 rounded px-2 py-1.5 text-[10px] font-bold text-slate-700 focus:border-blue-400 outline-none transition-colors"
@@ -799,17 +800,22 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                                     </div>
                                   ) : (
                                   <div className="flex flex-col gap-1 items-center justify-center relative w-full px-2">
-                                    {val?.schemaField && val?.type !== 'NONE' && val?.type && (
+                                    {val?.schemaField && (val?.isMain || (val?.type !== 'NONE' && val?.type)) && (
                                       <div className="w-full text-center px-1.5 py-0.5 rounded border border-slate-200 bg-slate-50 mb-1 max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
                                         <span className="text-[9px] font-bold text-slate-600 block">{val.schemaField}</span>
                                       </div>
                                     )}
-                                    {val?.isMain && val?.type !== 'NONE' && val?.type && (
+                                    {val?.isMain && (
                                       <div className="absolute -top-3 right-0 bg-blue-100 text-blue-700 px-1.5 rounded text-[8px] font-black border border-blue-200">
                                         MAIN
                                       </div>
                                     )}
-                                    <div className={`inline-flex items-center justify-center w-full min-w-[100px] px-2 py-1.5 rounded-md text-[9px] font-bold tracking-tight uppercase ${
+                                    {val?.isMain ? (
+                                      <div className="inline-flex items-center justify-center w-full min-w-[100px] px-2 py-1.5 rounded bg-blue-50 text-blue-700 border border-blue-200 text-[9px] font-black tracking-tight uppercase shadow-sm">
+                                        {language === 'TH' ? 'เอกสารหลัก' : 'MAIN DOC'}
+                                      </div>
+                                    ) : (
+                                      <div className={`inline-flex items-center justify-center w-full min-w-[100px] px-2 py-1.5 rounded-md text-[9px] font-bold tracking-tight uppercase ${
                                       val?.type === 'EXACT' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
                                       val?.type === 'BILINGUAL' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' :
                                       (val?.type === 'SYNONYM' || val?.type === 'NEARLY') ? 'bg-amber-50 text-amber-700 border-amber-200' : 
@@ -824,6 +830,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                                     } border`}>
                                       {getTypeLabel(val?.type ?? '')}
                                     </div>
+                                    )}
                                     {(() => {
                                       const type = val?.type;
                                       if (!type || type === 'NONE') return null;
