@@ -2843,23 +2843,8 @@ const mockWorkflows: Workflow[] = [
                     <td className="px-8 py-5">
                       {getStatusBadge(job.status)}
                     </td>
-                    <td className="px-8 py-5 text-right">
+                    <td className="px-8 py-5 text-right w-[160px]">
                       <div className="flex items-center justify-end gap-2">
-                        <Tooltip content={isProcessing ? t.ttComparing : (hasOngoingOCR ? t.statusReceived + '...' : t.ttStartComparison)}>
-                          <button 
-                            disabled={job.status === JobStatus.READY || job.status === JobStatus.DONE || isProcessing || hasOngoingOCR}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if(window.confirm(t.confirmStartComparison)) {
-                                handleStartComparison(job.id);
-                              }
-                            }}
-                            className={`p-2.5 rounded-xl transition-all ${job.status === JobStatus.READY || job.status === JobStatus.DONE || isProcessing || hasOngoingOCR ? 'text-slate-200 cursor-not-allowed' : 'text-[#0463EF] hover:bg-blue-50'}`}
-                          >
-                            <Bot size={20} className={isProcessing ? 'animate-bounce' : ''} />
-                          </button>
-                        </Tooltip>
-
                         <Tooltip content={t.ttViewCompare}>
                           <button 
                             disabled={isProcessing}
