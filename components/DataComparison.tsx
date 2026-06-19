@@ -1535,14 +1535,6 @@ const mockWorkflows: Workflow[] = [
               }
             }
 
-            // Trigger prompt if all good
-            const results = getMockComparisonResults({ ...job, docs: updatedDocs });
-            const allGood = results.every(r => r.targets.every(t => (t.status as string) === 'MATCH' || (t.status as string) === 'SYNONYM' || (t.status as string) === 'NA'));
-
-            if (allGood && found === job.totalDocs && step === 1) {
-              setShowLockPrompt(true);
-            }
-
             const finalJob = { 
               ...job, 
               status: newStatus,
@@ -1587,6 +1579,7 @@ const mockWorkflows: Workflow[] = [
 
     // 2. Wait 5 seconds
     setTimeout(() => {
+      let shouldAutoCompare = false;
       setJobs(prev => prev.map(job => {
         if (job.id === jobId) {
           const updatedDocs = { ...job.docs };
@@ -1596,11 +1589,27 @@ const mockWorkflows: Workflow[] = [
             }
           });
           const finalJob = { ...job, docs: updatedDocs };
+          
+          const extractedCount = Object.values(updatedDocs).filter(s => 
+            s !== ComparisonDocStatus.MISSING && 
+            s !== ComparisonDocStatus.RECEIVED && 
+            s !== ComparisonDocStatus.EXTRACTING && 
+            s !== ComparisonDocStatus.ERROR
+          ).length;
+          
+          if (extractedCount >= 2) {
+             shouldAutoCompare = true;
+          }
+          
           if (selectedJob?.id === jobId) setSelectedJob(finalJob);
           return finalJob;
         }
         return job;
       }));
+
+      if (shouldAutoCompare) {
+         handleStartComparison(jobId);
+      }
     }, 5000); // 5 seconds
   };
 
@@ -2004,10 +2013,10 @@ const mockWorkflows: Workflow[] = [
           status = 'NA';
           value = '-';
         } 
-        // If file is missing or error
-        else if (docStatus === ComparisonDocStatus.MISSING || docStatus === ComparisonDocStatus.ERROR) {
+        // If file is received (not read yet), missing, or error
+        else if (docStatus === ComparisonDocStatus.RECEIVED || docStatus === ComparisonDocStatus.MISSING || docStatus === ComparisonDocStatus.ERROR) {
           status = 'NA';
-          value = language === 'TH' ? 'รอข้อมูล' : 'WAITING';
+          value = '-';
         }
         else {
           // Specific overrides for demonstration
@@ -3025,9 +3034,10 @@ const mockWorkflows: Workflow[] = [
 
   const comparedDocs = React.useMemo(() => {
     if (!selectedJob) return [];
+
     // Show all visible docs as columns to avoid losing info when sidebar is collapsed, excluding hidden locked docs
     return Object.keys(selectedJob.docs).filter(docName => 
-      selectedJob.docs[docName] !== ComparisonDocStatus.MISSING &&
+      (selectedJob.status === JobStatus.NEW || selectedJob.docs[docName] !== ComparisonDocStatus.MISSING) &&
       !hiddenLockedDocs.includes(docName)
     );
   }, [selectedJob, hiddenLockedDocs]);
@@ -3047,6 +3057,18 @@ const mockWorkflows: Workflow[] = [
 
   const comparisonResults = React.useMemo(() => {
     if (!selectedJob) return [];
+    
+    // Check if at least one file has been successfully read
+    const hasAnyFileRead = Object.values(selectedJob.docs).some(status => 
+      status !== ComparisonDocStatus.MISSING && 
+      status !== ComparisonDocStatus.RECEIVED && 
+      status !== ComparisonDocStatus.EXTRACTING &&
+      status !== ComparisonDocStatus.ERROR
+    );
+
+    // If no files have been successfully read, there should be no comparison data rows filled.
+    if (!hasAnyFileRead) return [];
+
     const baseResults = getMockComparisonResults(selectedJob);
     
     // Filter targets to only include docs that are actually compared
@@ -3061,6 +3083,18 @@ const mockWorkflows: Workflow[] = [
 
   const allComparisonResults = React.useMemo(() => {
     if (!selectedJob) return [];
+    
+    // Check if at least one file has been successfully read
+    const hasAnyFileRead = Object.values(selectedJob.docs).some(status => 
+      status !== ComparisonDocStatus.MISSING && 
+      status !== ComparisonDocStatus.RECEIVED && 
+      status !== ComparisonDocStatus.EXTRACTING &&
+      status !== ComparisonDocStatus.ERROR
+    );
+
+    // If no files have been successfully read, there should be no comparison data rows filled.
+    if (!hasAnyFileRead) return [];
+
     const baseResults = getMockComparisonResults(selectedJob);
     return baseResults.map(res => ({
       ...res,
@@ -5060,22 +5094,6 @@ const mockWorkflows: Workflow[] = [
 
                   <div className="w-px h-6 bg-slate-200 mx-0.5"></div>
 
-                  {/* 2. Upload/Group Files Workspace */}
-                  <Tooltip content={language === 'TH' ? 'อัปโหลดและจัดกลุ่มไฟล์' : LOCAL_T[language].btnOpenWorkspace}>
-                    <button
-                      disabled={isUnassigned || selectedJob.status === JobStatus.DONE}
-                      onClick={() => setShowUploadModal(true)}
-                      className={`p-2.5 rounded-xl transition-all flex items-center justify-center border cursor-pointer ${
-                        selectedJob.status === JobStatus.DONE 
-                          ? 'bg-slate-100 border-slate-200 text-slate-400 opacity-50 cursor-not-allowed' 
-                          : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-500/10 hover:shadow-indigo-500/20 border-indigo-700/20 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-indigo-600 disabled:hover:shadow-indigo-500/10'
-                      }`}
-                      id="trigger-upload-modal-btn"
-                    >
-                      <Upload size={15} strokeWidth={2.5} className="shrink-0" />
-                    </button>
-                  </Tooltip>
-
                   {/* 3. Bulk OCR - Read All files (only visible conditionally) */}
                   {selectedJob.status !== JobStatus.DONE && Object.values(selectedJob.docs).some(s => s === ComparisonDocStatus.RECEIVED) && (
                     <Tooltip content={t.btnBulkOCR}>
@@ -5093,52 +5111,6 @@ const mockWorkflows: Workflow[] = [
                       </button>
                     </Tooltip>
                   )}
-
-                  {/* 4. Compare / Validation Button */}
-                  <Tooltip content={selectedJob.status === JobStatus.PROCESSING ? t.validating : t.runValidation}>
-                    <button 
-                      disabled={
-                        isUnassigned || 
-                        selectedJob.status === JobStatus.READY || 
-                        selectedJob.status === JobStatus.DONE || 
-                        selectedJob.status === JobStatus.PROCESSING ||
-                        Object.values(selectedJob.docs).some(s => s === ComparisonDocStatus.RECEIVED || s === ComparisonDocStatus.EXTRACTING) ||
-                        (selectedJob.status === JobStatus.NEW && 
-                          Object.values(selectedJob.docs).filter(s => 
-                             s !== ComparisonDocStatus.MISSING && 
-                             s !== ComparisonDocStatus.RECEIVED && 
-                             s !== ComparisonDocStatus.EXTRACTING
-                          ).length < 2)
-                      }
-                      onClick={() => {
-                        if(window.confirm(t.confirmRunValidation)) {
-                           handleStartComparison(selectedJob.id);
-                        }
-                      }}
-                      className={`p-2.5 rounded-xl transition-all shadow-md flex items-center justify-center border disabled:opacity-30 disabled:cursor-not-allowed ${
-                        selectedJob.status === JobStatus.PROCESSING 
-                          ? 'bg-blue-50 text-blue-600 border-blue-200 animate-pulse' 
-                          : 'bg-blue-600 text-white border-blue-700/20 hover:bg-blue-700 shadow-blue-500/10'
-                      }`}
-                    >
-                      <Bot size={15} strokeWidth={2.5} className={selectedJob.status === JobStatus.PROCESSING ? 'animate-spin' : ''} /> 
-                    </button>
-                  </Tooltip>
-
-                  {/* 5. Lock / Unlock Item */}
-                  <Tooltip content={selectedJob.status === JobStatus.READY ? t.unlockJob : t.lockJob}>
-                    <button 
-                       disabled={isUnassigned || (!areAllFilesLocked && selectedJob.status !== JobStatus.READY) || selectedJob.status === JobStatus.DONE}
-                       onClick={handleForceLock}
-                       className={`p-2.5 rounded-xl transition-all shadow-sm border flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed ${
-                         selectedJob.status === JobStatus.READY 
-                         ? 'bg-rose-50 text-rose-500 border-rose-200/60 hover:bg-rose-100 hover:text-rose-600 shadow-rose-100' 
-                         : 'bg-white text-slate-400 border-slate-200/60 enabled:bg-emerald-50 enabled:text-emerald-600 enabled:border-emerald-200/60 enabled:hover:bg-emerald-600 enabled:hover:text-white'
-                       }`}
-                    >
-                      {selectedJob.status === JobStatus.READY ? <Unlock size={15} strokeWidth={2.5} /> : <Lock size={15} strokeWidth={2.5} />}
-                    </button>
-                  </Tooltip>
 
                   {/* 6. Export Data Button */}
                   <Tooltip content={t.exportData}>
@@ -5182,7 +5154,7 @@ const mockWorkflows: Workflow[] = [
                               {comparedDocs.map(docName => {
                                  const docStatus = selectedJob.docs[docName];
                                  const isMismatched = mismatchedFileNames.has(docName);
-                                 const isReady = docStatus !== ComparisonDocStatus.RECEIVED && docStatus !== ComparisonDocStatus.EXTRACTING;
+                                 const isReady = docStatus !== ComparisonDocStatus.RECEIVED && docStatus !== ComparisonDocStatus.EXTRACTING && docStatus !== ComparisonDocStatus.MISSING;
                                  
                                  // Derived status for display - override MATCHED if there are actual mismatches in data
                                  const displayStatus = (docStatus === ComparisonDocStatus.MATCHED) && isMismatched
@@ -5191,7 +5163,7 @@ const mockWorkflows: Workflow[] = [
                                  
                                  return (
                                    <th key={docName} className="bg-slate-50 border-b border-slate-200 px-2 py-1.5 min-w-[180px] text-center group cursor-pointer hover:bg-slate-100 transition-all border-r border-slate-100 h-[82px] z-30 relative" onClick={() => isReady && setPdfPreviewUrl(docName)}>
-                                       {docStatus === ComparisonDocStatus.RECEIVED && (
+                                       {(docStatus === ComparisonDocStatus.RECEIVED || docStatus === ComparisonDocStatus.MISSING) && (
                                          <div className="absolute inset-0 z-50 bg-white/95 backdrop-blur-[1px] flex flex-col items-center justify-between p-1.5 border-x border-slate-100 shadow-inner">
                                             <div className="flex items-center justify-between w-full gap-1 px-1 py-0.5">
                                               <span className="text-[10px] font-black text-[#010136] uppercase tracking-widest leading-none truncate max-w-[100px]" title={docName}>
@@ -5228,12 +5200,25 @@ const mockWorkflows: Workflow[] = [
                                              disabled={isUnassigned || selectedJob.status === JobStatus.DONE}
                                              onClick={(e) => {
                                                e.stopPropagation();
-                                               handleOCRFiles(selectedJob.id, [docName]);
+                                               if (docStatus === ComparisonDocStatus.MISSING) {
+                                                  setReplaceTargetColumn(docName);
+                                                  setShowReplaceModal(true);
+                                               } else {
+                                                  handleOCRFiles(selectedJob.id, [docName]);
+                                               }
                                              }}
                                              className="w-full h-7 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/25 transition-all transform active:scale-95 border-none cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed disabled:transform-none disabled:active:scale-100 disabled:hover:bg-emerald-600"
                                            >
-                                             <FileText size={10} strokeWidth={2.5} />
-                                             <span className="text-[9px] font-black uppercase tracking-widest">{t.btnReadFile}</span>
+                                             {docStatus === ComparisonDocStatus.MISSING ? (
+                                                <Upload size={10} strokeWidth={2.5} />
+                                             ) : (
+                                                <FileText size={10} strokeWidth={2.5} />
+                                             )}
+                                             <span className="text-[9px] font-black uppercase tracking-widest">
+                                                {docStatus === ComparisonDocStatus.MISSING 
+                                                   ? (language === 'TH' ? 'อัปโหลดไฟล์' : 'Upload File')
+                                                   : t.btnReadFile}
+                                             </span>
                                            </button>
                                          </div>
                                        )}
@@ -5468,7 +5453,27 @@ const mockWorkflows: Workflow[] = [
                            </tr>
                         </thead>
                      </table>
-                           {['Header', 'Description', 'Footer'].map(part => {
+                      {(!selectedJob || !Object.values(selectedJob.docs).some(status => 
+                        status !== ComparisonDocStatus.MISSING && 
+                        status !== ComparisonDocStatus.RECEIVED && 
+                        status !== ComparisonDocStatus.EXTRACTING &&
+                        status !== ComparisonDocStatus.ERROR
+                      )) ? (
+                         <div className="flex flex-col items-center justify-center py-20 px-4 text-center bg-white border border-slate-200/60 rounded-b-2xl mx-1 my-1 select-none">
+                            <div className="w-16 h-16 rounded-2xl bg-indigo-50 border border-indigo-100/50 flex items-center justify-center text-indigo-500 mb-4 shadow-sm animate-pulse">
+                               <UploadCloud size={24} className="text-indigo-500" />
+                            </div>
+                            <h4 className="text-sm font-black text-[#010136] tracking-tight mb-1.5 uppercase font-sans">
+                               {language === 'TH' ? 'คลิกอ่านไฟล์เพื่อแสดงข้อมูลเปรียบเทียบ' : 'No Files Read in This Job Yet'}
+                            </h4>
+                            <p className="text-xs text-slate-400 font-semibold max-w-md mb-6 leading-relaxed">
+                               {language === 'TH'
+                                 ? 'ตารางจะเป็นค่าว่างจนกว่าจะมีการอัปโหลดและกดอ่านไฟล์สำเร็จอย่างน้อย 1 ไฟล์'
+                                 : 'This comparison table is empty until at least one file is uploaded and read.'}
+                            </p>
+                         </div>
+                      ) : (
+                           ['Header', 'Description', 'Footer'].map(part => {
                               const originalPartResults = comparisonResults.filter(res => (res as any).part === part);
                               const partResults = originalPartResults
                                 .filter(res => !showOnlyDiff || res.targets.some((t: any) => t.status === 'MISMATCH'));
@@ -5688,7 +5693,8 @@ const mockWorkflows: Workflow[] = [
                                    })()}
                                 </table>
                               );
-                           })}
+                           })
+                      )}
                   </div>
 
                   {/* Matrix Footer / Summary Bar */}

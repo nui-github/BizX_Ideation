@@ -94,7 +94,7 @@ export const CreateJobModal: React.FC<CreateJobModalProps> = ({ visible, onClose
       expiryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
       status: JobStatus.NEW,
       docs: docTypes.reduce((acc, type) => {
-        acc[type] = ComparisonDocStatus.RECEIVED;
+        acc[type] = ComparisonDocStatus.MISSING;
         return acc;
       }, {} as Record<string, any>),
       assignee: assigneeValue || undefined,
