@@ -1504,9 +1504,7 @@ const mockWorkflows: Workflow[] = [
             let found = 0;
             
             Object.keys(updatedDocs).forEach(key => {
-              if (updatedDocs[key] === ComparisonDocStatus.RECEIVED || 
-                  updatedDocs[key] === ComparisonDocStatus.EXTRACTING ||
-                  updatedDocs[key] === ComparisonDocStatus.OCR_DONE) {
+              if (updatedDocs[key] === ComparisonDocStatus.OCR_DONE) {
                 const result = Math.random() > 0.3 ? ComparisonDocStatus.MATCHED : ComparisonDocStatus.MISMATCHED;
                 updatedDocs[key] = result;
               }
@@ -1530,8 +1528,8 @@ const mockWorkflows: Workflow[] = [
               if (mismatched > 0) {
                 newStatus = JobStatus.REVIEW;
               } else {
-                // Rule: NEW -> PENDING on first success
-                newStatus = JobStatus.PENDING;
+                // Rule: NEW -> READY on first success bypassing lock
+                newStatus = JobStatus.READY;
               }
             }
 
@@ -1579,85 +1577,44 @@ const mockWorkflows: Workflow[] = [
 
     // 2. Wait 5 seconds
     setTimeout(() => {
-      let shouldAutoCompare = false;
-      setJobs(prev => prev.map(job => {
-        if (job.id === jobId) {
-          const updatedDocs = { ...job.docs };
-          docNames.forEach(name => {
-            if (updatedDocs[name] === ComparisonDocStatus.EXTRACTING) {
-              updatedDocs[name] = ComparisonDocStatus.OCR_DONE;
-            }
-          });
-          const finalJob = { ...job, docs: updatedDocs };
-          
-          const extractedCount = Object.values(updatedDocs).filter(s => 
-            s !== ComparisonDocStatus.MISSING && 
-            s !== ComparisonDocStatus.RECEIVED && 
-            s !== ComparisonDocStatus.EXTRACTING && 
-            s !== ComparisonDocStatus.ERROR
-          ).length;
-          
-          if (extractedCount >= 2) {
-             shouldAutoCompare = true;
-          }
-          
-          if (selectedJob?.id === jobId) setSelectedJob(finalJob);
-          return finalJob;
-        }
-        return job;
-      }));
-
-      if (shouldAutoCompare) {
-         handleStartComparison(jobId);
-      }
-    }, 5000); // 5 seconds
-  };
-
-  const handleForceLock = () => {
-    if (!selectedJob) return;
-    
-    // Check if we are unlocking or locking
-    const isCurrentlyReady = selectedJob.status === JobStatus.READY;
-
-    setJobs(prev => prev.map(job => {
-      if (job.id === selectedJob.id) {
-        const updatedDocs = { ...job.docs };
-        Object.keys(updatedDocs).forEach(k => {
-           // Rule: If unlocking, return documents to MATCHED status
-           // If locking, set everything to LOCKED.
-           if (isCurrentlyReady) {
-              if (updatedDocs[k] === ComparisonDocStatus.LOCKED) {
-                 updatedDocs[k] = ComparisonDocStatus.MATCHED;
+      setJobs(prev => {
+        let triggerCompare = false;
+        const nextJobs = prev.map(job => {
+          if (job.id === jobId) {
+            const updatedDocs = { ...job.docs };
+            docNames.forEach(name => {
+              if (updatedDocs[name] === ComparisonDocStatus.EXTRACTING) {
+                updatedDocs[name] = ComparisonDocStatus.OCR_DONE;
               }
-           } else {
-              updatedDocs[k] = ComparisonDocStatus.LOCKED;
-           }
+            });
+            const finalJob = { ...job, docs: updatedDocs };
+            
+            const extractedCount = Object.values(updatedDocs).filter(s => 
+              s !== ComparisonDocStatus.MISSING && 
+              s !== ComparisonDocStatus.RECEIVED && 
+              s !== ComparisonDocStatus.EXTRACTING && 
+              s !== ComparisonDocStatus.ERROR
+            ).length;
+            
+            const isAnyExtracting = Object.values(updatedDocs).some(s => s === ComparisonDocStatus.EXTRACTING);
+            
+            if (extractedCount >= 2 && !isAnyExtracting) {
+               triggerCompare = true;
+            }
+            
+            if (selectedJob?.id === jobId) setSelectedJob(finalJob);
+            return finalJob;
+          }
+          return job;
         });
 
-        const newJobStatus = isCurrentlyReady ? JobStatus.PENDING : JobStatus.READY;
-        
-        const finalJob = {
-           ...job,
-           status: newJobStatus,
-           docs: updatedDocs,
-           isLocked: !isCurrentlyReady
-        };
+        if (triggerCompare) {
+          setTimeout(() => handleStartComparison(jobId), 0);
+        }
 
-        // Add to activity logs
-        setActivityLogs(prev => [{
-          id: `log-${Date.now()}`,
-          action: isCurrentlyReady ? 'UNLOCK_JOB' : 'LOCK_JOB',
-          user: 'nuifolio@gmail.com',
-          timestamp: new Date().toISOString(),
-          details: `${isCurrentlyReady ? 'Unlocked' : 'Locked'} Job ${job.reference} for ${isCurrentlyReady ? 'review' : 'export'}`
-        }, ...prev]);
-
-        setSelectedJob(finalJob);
-        return finalJob;
-      }
-      return job;
-    }));
-    setShowLockPrompt(false);
+        return nextJobs;
+      });
+    }, 5000); // 5 seconds
   };
 
   const handleClaimJob = () => {
@@ -1856,49 +1813,6 @@ const mockWorkflows: Workflow[] = [
         )}
       </AnimatePresence>
     );
-  };
-
-  const handleToggleFileLock = (fileName: string) => {
-    if (!selectedJob) return;
-    setJobs(prev => prev.map(job => {
-      if (job.id === selectedJob.id) {
-        const currentStatus = job.docs[fileName];
-        let newStatus: ComparisonDocStatus;
-        
-        if (currentStatus === ComparisonDocStatus.LOCKED) {
-          // Rule: When unlocking, return to MATCHED status
-          newStatus = ComparisonDocStatus.MATCHED;
-          setHiddenLockedDocs(prev => prev.filter(name => name !== fileName));
-        } else {
-          // Rule: Cannot lock if there are mismatches
-          if (mismatchedFileNames.has(fileName)) {
-            return job;
-          }
-          newStatus = ComparisonDocStatus.LOCKED;
-        }
-        
-        const updatedDocs = { ...job.docs, [fileName]: newStatus };
-        
-        // Rule: If ALL files in set are locked -> Auto READY
-        const allLocked = Object.values(updatedDocs).every(s => s === ComparisonDocStatus.LOCKED);
-        let newJobStatus = job.status;
-        if (allLocked) {
-          newJobStatus = JobStatus.READY;
-        } else if (job.status === JobStatus.READY && !allLocked) {
-          newJobStatus = JobStatus.PENDING;
-        }
-
-        const finalJob = {
-          ...job,
-          status: newJobStatus,
-          docs: updatedDocs,
-          isLocked: allLocked
-        };
-        if (selectedJob.id === job.id) setSelectedJob(finalJob);
-        return finalJob;
-      }
-      return job;
-    }));
   };
 
   const handleRejectFile = (fileName: string) => {
@@ -2196,7 +2110,18 @@ const mockWorkflows: Workflow[] = [
     if (!selectedJob) return false;
     const results = getMockComparisonResults(selectedJob);
     return results.every(r => r.targets.every(t => (t.status as string) === 'MATCH' || (t.status as string) === 'SYNONYM' || (t.status as string) === 'NA'));
-  }, [selectedJob]);
+  }, [selectedJob, overriddenValues]); // added overriddenValues
+
+  useEffect(() => {
+    if (selectedJob && selectedJob.status === JobStatus.REVIEW && areAllFilesMatched) {
+      setJobs(prev => prev.map(job => {
+        if (job.id === selectedJob.id) {
+          return { ...job, status: JobStatus.READY, isLocked: true };
+        }
+        return job;
+      }));
+    }
+  }, [selectedJob?.id, selectedJob?.status, areAllFilesMatched]);
 
   const renderPendingInbox = () => {
     const filterItems = ['All', 'Email', 'Doc type'];
@@ -4704,35 +4629,6 @@ const mockWorkflows: Workflow[] = [
         </div>
       )}
 
-      {/* Locking Prompt Modal */}
-      {showLockPrompt && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300">
-           <div className="bg-white p-10 rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 text-center flex flex-col items-center gap-6 animate-in zoom-in-95 duration-300">
-              <div className="w-24 h-24 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center border-4 border-emerald-50">
-                 <CheckCircle2 size={48} strokeWidth={3} />
-              </div>
-              <div>
-                <h3 className="text-3xl font-black text-slate-800 tracking-tighter mb-2">{t.validationPassed}</h3>
-                <p className="text-slate-500 font-bold">{t.validationPassedDesc}</p>
-              </div>
-              <div className="flex flex-col w-full gap-3 mt-4">
-                 <button 
-                  onClick={handleForceLock}
-                  className="w-full py-4 bg-slate-900 text-white rounded-[4px] font-black text-sm uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center justify-center gap-2 border-none"
-                 >
-                   <Lock size={18} /> {t.yesLockProceed}
-                 </button>
-                 <button 
-                  onClick={() => setShowLockPrompt(false)}
-                  className="w-full py-2 bg-transparent hover:bg-transparent text-slate-400 hover:text-slate-500 font-bold text-sm transition-all cursor-pointer border-none"
-                 >
-                   {t.illCheckAgain}
-                 </button>
-              </div>
-           </div>
-        </div>
-      )}
-
       {/* Claim Job confirmation modal */}
       {showClaimPrompt && selectedJob && (
         <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300">
@@ -5176,24 +5072,6 @@ const mockWorkflows: Workflow[] = [
                                                 )}
                                               </span>
                                               <div className="flex items-center gap-1 shrink-0 bg-white/40 p-0.5 rounded shadow-sm border border-slate-100/50">
-                                                <Tooltip content={language === 'TH' ? 'แทนที่ไฟล์ (Replace)' : 'Replace Files'}>
-                                                  <button disabled={isUnassigned || selectedJob.status === JobStatus.DONE} onClick={(e) => { e.stopPropagation(); setReplaceTargetColumn(docName); setShowReplaceModal(true); }} className="p-0.5 rounded bg-white hover:bg-slate-100 text-[#0463EF] hover:text-[#0463EF] cursor-pointer flex items-center justify-center h-[18px] w-[18px] border border-slate-200/55 shadow-sm transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
-                                                    <ArrowLeftRight size={8} strokeWidth={2.5} />
-                                                  </button>
-                                                </Tooltip>
-                                                <Tooltip content={language === 'TH' ? 'ลบไฟล์คอลัมออก (Delete Column)' : 'Delete Column'}>
-                                                  <button
-                                                    disabled={isUnassigned || selectedJob.status === JobStatus.DONE}
-                                                    onClick={(e) => { 
-                                                      e.stopPropagation(); 
-                                                      setDeleteColumnTargetDocName(docName);
-                                                      setShowDeleteColumnConfirmModal(true);
-                                                    }} 
-                                                    className="p-0.5 rounded bg-white hover:bg-rose-50 text-rose-500 cursor-pointer flex items-center justify-center h-[18px] w-[18px] border border-slate-200/55 shadow-sm transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                                                  >
-                                                    <Trash2 size={8} strokeWidth={2.5} />
-                                                  </button>
-                                                </Tooltip>
                                               </div>
                                             </div>
                                             <button
@@ -5275,13 +5153,10 @@ const mockWorkflows: Workflow[] = [
 
                                             
                                              <div className="flex items-center gap-1 scale-90">
-                                                {docStatus === ComparisonDocStatus.MISMATCHED || docStatus === ComparisonDocStatus.OCR_DONE ? (
-                                                  <>
-                                                    {/* Replace File Button */}
-                                                    <Tooltip content={language === 'TH' ? 'แทนที่ไฟล์ (Replace)' : 'Replace Files'}>
+                                               {displayStatus === ComparisonDocStatus.MISMATCHED && (
+                                                    <Tooltip content={language === 'TH' ? 'อัปโหลดไฟล์ใหม่ (Replace)' : 'Replace File'}>
                                                       <button
                                                         disabled={isUnassigned || selectedJob.status === JobStatus.DONE}
-                                                        title={language === 'TH' ? 'แทนที่ไฟล์' : 'Replace Files'}
                                                         onClick={(e) => {
                                                           e.stopPropagation();
                                                           setReplaceTargetColumn(docName);
@@ -5290,140 +5165,13 @@ const mockWorkflows: Workflow[] = [
                                                         className={`p-1 rounded-lg bg-white border border-slate-200 transition-all ${
                                                           (isUnassigned || selectedJob.status === JobStatus.DONE)
                                                           ? 'text-slate-200 cursor-not-allowed opacity-50'
-                                                          : 'text-indigo-400 hover:bg-slate-500 hover:text-white hover:border-indigo-500 hover:shadow-lg shadow-sm cursor-pointer'
+                                                          : 'text-indigo-400 hover:bg-indigo-500 hover:text-white hover:border-indigo-500 hover:shadow-lg shadow-sm cursor-pointer'
                                                         }`}
                                                       >
-                                                        <ArrowLeftRight size={10} strokeWidth={2.5} />
+                                                        <Upload size={10} strokeWidth={2.5} />
                                                       </button>
                                                     </Tooltip>
-
-
-                                                    {/* Delete File Column (ลบไฟล์คอลัมออก) */}
-                                                    <Tooltip content={language === 'TH' ? 'ลบไฟล์คอลัมออก (Delete Column)' : 'Delete Column'}>
-                                                      <button
-                                                        disabled={isUnassigned || selectedJob.status === JobStatus.DONE}
-                                                        onClick={(e) => {
-                                                          e.stopPropagation();
-                                                          setDeleteColumnTargetDocName(docName);
-                                                          setShowDeleteColumnConfirmModal(true);
-                                                        }}
-                                                        className={`p-1 rounded-lg bg-white border border-slate-200 transition-all ${
-                                                          (isUnassigned || selectedJob.status === JobStatus.DONE)
-                                                          ? 'text-slate-200 cursor-not-allowed opacity-50'
-                                                          : 'text-rose-500 hover:bg-rose-50 hover:text-rose-600 cursor-pointer flex items-center justify-center border border-slate-200/55 hover:shadow-lg shadow-sm'
-                                                        }`}
-                                                      >
-                                                        <Trash2 size={10} strokeWidth={2.5} />
-                                                      </button>
-                                                    </Tooltip>
-                                                  </>
-                                                ) : docStatus === ComparisonDocStatus.MATCHED ? (
-                                                   <>
-                                                     <Tooltip content={language === 'TH' ? 'แทนที่ไฟล์ (Replace)' : 'Replace Files'}>
-                                                       <button
-                                                         disabled={isUnassigned || docStatus === ComparisonDocStatus.EXTRACTING || docStatus === ComparisonDocStatus.LOCKED || selectedJob.status === JobStatus.DONE}
-                                                         title={language === 'TH' ? 'แทนที่ไฟล์' : 'Replace Files'}
-                                                         onClick={(e) => {
-                                                           e.stopPropagation();
-                                                           if (docStatus === ComparisonDocStatus.LOCKED) return;
-                                                           setReplaceTargetColumn(docName);
-                                                           setShowReplaceModal(true);
-                                                         }}
-                                                         className={`p-1 rounded-lg bg-white border border-slate-200 transition-all ${
-                                                           (isUnassigned || docStatus === ComparisonDocStatus.EXTRACTING || docStatus === ComparisonDocStatus.LOCKED || selectedJob.status === JobStatus.DONE)
-                                                           ? 'text-slate-200 cursor-not-allowed opacity-50'
-                                                           : 'text-indigo-400 hover:bg-indigo-500 hover:text-white hover:border-indigo-500 hover:shadow-lg shadow-sm'
-                                                         }`}
-                                                       >
-                                                         <ArrowLeftRight size={10} strokeWidth={2.5} />
-                                                       </button>
-                                                     </Tooltip>
-                                                     <Tooltip content={docStatus === ComparisonDocStatus.LOCKED ? (language === 'TH' ? 'ปลดล็อค' : 'Unlock') : (language === 'TH' ? 'ล็อคไฟล์นี้ (ไม่รวมในการตรวจสอบ)' : 'Lock File')}>
-                                                       <button 
-                                                         disabled={
-                                                           isUnassigned || 
-                                                           docStatus === ComparisonDocStatus.RECEIVED || 
-                                                           docStatus === ComparisonDocStatus.EXTRACTING ||
-                                                           (docStatus !== ComparisonDocStatus.LOCKED && isMismatched) ||
-                                                           selectedJob.status === JobStatus.DONE
-                                                         }
-                                                         onClick={(e) => {
-                                                           e.stopPropagation();
-                                                           handleToggleFileLock(docName);
-                                                         }}
-                                                         className={`p-1 rounded-lg bg-white border border-slate-200 transition-all ${
-                                                           docStatus === ComparisonDocStatus.LOCKED 
-                                                           ? 'bg-emerald-500 text-white border-emerald-500 shadow-[0_4px_12px_rgba(16,185,129,0.35)]' 
-                                                           : (isUnassigned || docStatus === ComparisonDocStatus.RECEIVED || docStatus === ComparisonDocStatus.EXTRACTING || (docStatus !== ComparisonDocStatus.LOCKED && isMismatched) || selectedJob.status === JobStatus.DONE)
-                                                           ? 'text-slate-200 cursor-not-allowed opacity-50'
-                                                           : 'text-slate-400 hover:bg-slate-800 hover:text-white hover:border-slate-800 shadow-sm'
-                                                         }`}
-                                                       >
-                                                         {docStatus === ComparisonDocStatus.LOCKED ? <Lock size={10} strokeWidth={3} /> : <Unlock size={10} strokeWidth={2.5} />}
-                                                       </button>
-                                                     </Tooltip>
-                                                   </>
-                                                 ) : (
-                                                  <>
-                                                    <Tooltip content={language === 'TH' ? 'แทนที่ไฟล์ (Replace)' : 'Replace Files'}>
-                                                      <button
-                                                        disabled={isUnassigned || docStatus === ComparisonDocStatus.EXTRACTING || docStatus === ComparisonDocStatus.LOCKED || selectedJob.status === JobStatus.DONE}
-                                                        title={language === 'TH' ? 'แทนที่ไฟล์' : 'Replace Files'}
-                                                        onClick={(e) => {
-                                                          e.stopPropagation();
-                                                          if (docStatus === ComparisonDocStatus.LOCKED) return;
-                                                          setReplaceTargetColumn(docName);
-                                                          setShowReplaceModal(true);
-                                                        }}
-                                                        className={`p-1 rounded-lg bg-white border border-slate-200 transition-all ${
-                                                          (isUnassigned || docStatus === ComparisonDocStatus.EXTRACTING || docStatus === ComparisonDocStatus.LOCKED || selectedJob.status === JobStatus.DONE)
-                                                          ? 'text-slate-200 cursor-not-allowed opacity-50'
-                                                          : 'text-indigo-400 hover:bg-indigo-500 hover:text-white hover:border-indigo-500 hover:shadow-lg shadow-sm'
-                                                        }`}
-                                                      >
-                                                        <ArrowLeftRight size={10} strokeWidth={2.5} />
-                                                      </button>
-                                                    </Tooltip>
-                                                    <Tooltip content={docStatus === ComparisonDocStatus.LOCKED ? (language === 'TH' ? 'ปลดล็อค' : 'Unlock') : (language === 'TH' ? 'ล็อคไฟล์นี้ (ไม่รวมในการตรวจสอบ)' : 'Lock File')}>
-                                                      <button 
-                                                        disabled={
-                                                          isUnassigned || 
-                                                          docStatus === ComparisonDocStatus.RECEIVED || 
-                                                          docStatus === ComparisonDocStatus.EXTRACTING ||
-                                                          (docStatus !== ComparisonDocStatus.LOCKED && isMismatched) ||
-                                                          selectedJob.status === JobStatus.DONE
-                                                        }
-                                                        onClick={(e) => {
-                                                          e.stopPropagation();
-                                                          handleToggleFileLock(docName);
-                                                        }}
-                                                        className={`p-1 rounded-lg bg-white border border-slate-200 transition-all ${
-                                                          docStatus === ComparisonDocStatus.LOCKED 
-                                                          ? 'bg-emerald-500 text-white border-emerald-500 shadow-[0_4px_12px_rgba(16,185,129,0.35)]' 
-                                                          : (isUnassigned || docStatus === ComparisonDocStatus.RECEIVED || docStatus === ComparisonDocStatus.EXTRACTING || (docStatus !== ComparisonDocStatus.LOCKED && isMismatched) || selectedJob.status === JobStatus.DONE)
-                                                          ? 'text-slate-200 cursor-not-allowed opacity-50'
-                                                          : 'text-slate-400 hover:bg-slate-800 hover:text-white hover:border-slate-800 shadow-sm'
-                                                        }`}
-                                                      >
-                                                        {docStatus === ComparisonDocStatus.LOCKED ? <Lock size={10} strokeWidth={3} /> : <Unlock size={10} strokeWidth={2.5} />}
-                                                      </button>
-                                                    </Tooltip>
-                                                    {docStatus === ComparisonDocStatus.LOCKED && (
-                                                      <Tooltip content={language === 'TH' ? 'ซ่อนคอลัมน์นี้' : 'Hide Column'}>
-                                                        <button 
-                                                          disabled={isUnassigned}
-                                                          onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setHiddenLockedDocs(prev => [...prev, docName]);
-                                                          }}
-                                                          className="p-1 rounded-lg bg-white border border-slate-200 text-slate-500 hover:bg-slate-800 hover:text-white hover:border-emerald-500 hover:bg-slate-50 shadow-sm transition-all flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
-                                                        >
-                                                          <EyeOff size={10} strokeWidth={2.5} />
-                                                        </button>
-                                                      </Tooltip>
-                                                    )}
-                                                  </>
-                                                )}
+                                               )}
                                              </div>
                                          </div>
 
