@@ -209,6 +209,7 @@ export const DataComparison: React.FC<DataComparisonProps> = ({ language, tracki
     Footer: false
   });
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
+  const [collapsedPreviewGroups, setCollapsedPreviewGroups] = useState<Record<string, boolean>>({});
   const [logFilter, setLogFilter] = useState<'ALL' | 'JOB' | 'PENDING'>('ALL');
 
   // --- Export Job Modal States ---
@@ -4036,7 +4037,7 @@ const mockWorkflows: Workflow[] = [
                               </div>
                               <div>
                                 <span className="font-black text-slate-400 uppercase tracking-wider text-[8px]">ASSOCIATED WORKFLOW</span>
-                                <p className="font-bold text-slate-700 mt-0.5 font-sans">{selectedJob?.workflowName}</p>
+                                <p className="font-bold text-slate-700 mt-0.5 font-sans">{selectedJob?.type || 'STANDARD VERIFICATION'}</p>
                               </div>
                             </div>
 
@@ -4124,40 +4125,71 @@ const mockWorkflows: Workflow[] = [
 
                       {/* Excel rows with clean editing cell styling */}
                       <div className="flex-1 overflow-auto divide-y divide-slate-100 px-4 custom-scrollbar">
-                        {allComparisonResults.filter(res => {
-                          const target = res.targets.find(t => t.fileName === pdfPreviewUrl);
-                          return target && target.status !== 'NA';
-                        }).length === 0 ? (
-                          <div className="p-8 text-center text-slate-400 font-sans text-xs">
-                             {language === 'TH' ? 'ไม่มีฟิลด์ข้อมูลเสริมที่เกี่ยวข้อง' : 'No relevant comparison fields found for this document.'}
-                          </div>
-                        ) : (
-                          allComparisonResults.map((res, i) => {
+                        {(() => {
+                          const filteredResults = allComparisonResults.filter(res => {
                             const target = res.targets.find(t => t.fileName === pdfPreviewUrl);
-                            if (!target || target.status === 'NA') return null;
+                            return target && target.status !== 'NA';
+                          });
+
+                          if (filteredResults.length === 0) {
                             return (
-                              <div key={i} className="grid grid-cols-12 hover:bg-slate-50/40 py-1 items-center transition-all">
-                                <div className="col-span-5 text-[#0463EF] font-bold text-[12px] capitalize font-sans leading-relaxed tracking-tight px-2 break-words">
-                                  {res.fieldName}
-                                </div>
-                                <div className="col-span-7 pl-2">
-                                  <input 
-                                    type="text"
-                                    value={tempOCRData[res.fieldName] || ''}
-                                    disabled={isUnassigned || selectedJob?.status === JobStatus.DONE}
-                                    onChange={(e) => setTempOCRData(prev => ({ ...prev, [res.fieldName]: e.target.value }))}
-                                    className={`w-full p-2.5 rounded-lg text-[#010136] text-[13px] font-bold font-sans transition-all outline-none border border-transparent hover:border-slate-200 hover:bg-slate-50 focus:bg-white focus:border-[#0463EF] focus:ring-4 focus:ring-blue-500/10 ${
-                                      selectedJob?.status === JobStatus.DONE 
-                                        ? 'bg-transparent text-slate-400 cursor-not-allowed shadow-none font-semibold hover:border-transparent hover:bg-transparent' 
-                                        : 'bg-transparent'
-                                    }`}
-                                    placeholder="Enter extracted value"
-                                  />
-                                </div>
-                              </div>
+                               <div className="p-8 text-center text-slate-400 font-sans text-xs">
+                                  {language === 'TH' ? 'ไม่มีฟิลด์ข้อมูลเสริมที่เกี่ยวข้อง' : 'No relevant comparison fields found for this document.'}
+                               </div>
                             );
-                          })
-                        )}
+                          }
+
+                          const groupMap = new Map<string, typeof filteredResults>();
+                          filteredResults.forEach(res => {
+                            const g = (res as any).group || (res as any).part || 'General Information';
+                            const key = g === 'Header' || g === 'Footer' ? 'General Information' : g;
+                            if (!groupMap.has(key)) groupMap.set(key, []);
+                            groupMap.get(key)!.push(res);
+                          });
+
+                          return Array.from(groupMap.entries()).map(([groupName, items]) => (
+                            <div key={groupName} className="mb-4 border border-slate-200 rounded-lg overflow-hidden shrink-0 mt-3 mx-1 shadow-sm transition-all duration-300">
+                              <div 
+                                className="bg-slate-100/80 px-4 py-2 border-b border-slate-200 sticky top-0 z-10 flex items-center justify-between relative cursor-pointer hover:bg-slate-200/50 transition-colors group/header"
+                                onClick={() => setCollapsedPreviewGroups(prev => ({ ...prev, [groupName]: !prev[groupName] }))}
+                              >
+                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#0463EF]"></div>
+                                <div className="flex items-center gap-2">
+                                  <div className="w-5 h-5 rounded bg-white border border-slate-200 shadow-sm flex items-center justify-center text-slate-500 group-hover/header:text-[#0463EF] group-hover/header:border-blue-200 transition-all pointer-events-none">
+                                    {collapsedPreviewGroups[groupName] ? <ChevronRight size={12} strokeWidth={3} /> : <ChevronDown size={12} strokeWidth={3} />}
+                                  </div>
+                                  <span className="text-[10px] font-black text-slate-800 uppercase tracking-widest pl-1 pointer-events-none">{groupName}</span>
+                                </div>
+                                <span className="bg-white border border-slate-200 text-slate-500 text-[9px] px-1.5 py-0.5 rounded font-black tracking-wider leading-none shadow-sm pointer-events-none">{items.length} FIELDS</span>
+                              </div>
+                              {!collapsedPreviewGroups[groupName] && (
+                                <div className="divide-y divide-slate-100 bg-white animate-in slide-in-from-top-1 fade-in duration-200">
+                                  {items.map((res: any, i: number) => (
+                                    <div key={i} className="grid grid-cols-12 hover:bg-slate-50/60 py-1.5 items-center transition-all bg-white relative">
+                                      <div className="col-span-5 text-[#0463EF] font-bold text-[12px] capitalize font-sans leading-relaxed tracking-tight px-3 break-words">
+                                        {res.fieldName}
+                                      </div>
+                                      <div className="col-span-7 pl-2">
+                                        <input 
+                                          type="text"
+                                          value={tempOCRData[res.fieldName] || ''}
+                                          disabled={isUnassigned || selectedJob?.status === JobStatus.DONE}
+                                          onChange={(e) => setTempOCRData(prev => ({ ...prev, [res.fieldName]: e.target.value }))}
+                                          className={`w-full p-2 rounded-md text-[#010136] text-[13px] font-bold font-sans transition-all outline-none border border-transparent hover:border-slate-200 hover:bg-slate-50 focus:bg-white focus:border-[#0463EF] focus:ring-2 focus:ring-[#0463EF]/20 ${
+                                            selectedJob?.status === JobStatus.DONE 
+                                              ? 'bg-transparent text-slate-500 cursor-not-allowed shadow-none font-semibold hover:border-transparent hover:bg-transparent' 
+                                              : 'bg-transparent'
+                                          }`}
+                                          placeholder="Enter extracted value"
+                                        />
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          ));
+                        })()}
                       </div>
 
                     </div>
@@ -5300,14 +5332,15 @@ const mockWorkflows: Workflow[] = [
                                          return (
                                            <tbody key={group} className="divide-y divide-slate-100">
                                              {group !== 'no-group' && (
-                                                <tr className="bg-slate-50 group/itemheader hover:bg-slate-100 cursor-pointer transition-colors" onClick={(e) => toggleGroup(e, group as string)}>
-                                                   <td colSpan={comparedDocs.length + 1} className="sticky top-[114px] z-[24] p-0 border-y border-slate-200/50 bg-slate-50 shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
-                                                      <div className="flex items-center gap-2 sticky left-0 pl-10 pr-6 py-2 z-[26] w-fit">
-                                                         <div className="w-4 h-4 rounded flex items-center justify-center text-slate-400 group-hover/itemheader:text-blue-600 transition-colors">
-                                                            {collapsedGroups[group] ? <ChevronRight size={10} /> : <ChevronDown size={10} />}
+                                                <tr className="bg-slate-100/80 group/itemheader hover:bg-slate-200/50 cursor-pointer transition-colors" onClick={(e) => toggleGroup(e, group as string)}>
+                                                   <td colSpan={comparedDocs.length + 1} className="sticky top-[114px] z-[24] p-0 border-y-2 border-slate-200/80 bg-slate-100/90 shadow-sm relative">
+                                                      <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-[#0463EF]"></div>
+                                                      <div className="flex items-center gap-3 sticky left-0 pl-8 pr-6 py-2.5 z-[26] w-fit">
+                                                         <div className="w-5 h-5 rounded bg-white border border-slate-200 shadow-sm flex items-center justify-center text-slate-500 group-hover/itemheader:text-blue-600 group-hover/itemheader:border-blue-200 transition-all">
+                                                            {collapsedGroups[group] ? <ChevronRight size={12} strokeWidth={3} /> : <ChevronDown size={12} strokeWidth={3} />}
                                                          </div>
-                                                         <span className="font-bold text-[11px] text-slate-700 uppercase tracking-widest">{group}</span>
-                                                         <div className="flex items-center gap-1.5 ml-1">
+                                                         <span className="font-black text-[11px] text-slate-800 uppercase tracking-widest">{group}</span>
+                                                         <div className="flex items-center gap-1.5 ml-2">
                                                             {(() => {
                                                               const groupFields = originalPartResults.filter(r => (r.group || 'no-group') === group);
                                                               const mismatchF = groupFields.filter(r => r.targets.some(t => t.status === 'MISMATCH')).length;
@@ -5318,17 +5351,17 @@ const mockWorkflows: Workflow[] = [
                                                                 <>
                                                                   {matchF > 0 && (
                                                                     <Tooltip content={part === 'Description' ? t.ttMatchedCountDesc : t.ttMatchedCount}>
-                                                                      <div className="flex items-center gap-1 bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded-full border border-emerald-100/50 text-[8px] font-black leading-none"><div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>{matchF}</div>
+                                                                      <div className="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-2 py-1 rounded border border-emerald-200/60 text-[9px] font-black leading-none shadow-sm"><div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>{matchF} {language === 'TH' ? 'ตรงกัน' : 'Matched'}</div>
                                                                     </Tooltip>
                                                                   )}
                                                                   {synonymF > 0 && (
                                                                     <Tooltip content={t.ttSynonymCount}>
-                                                                      <div className="flex items-center gap-1 bg-amber-50 text-amber-600 px-1.5 py-0.5 rounded-full border border-amber-100/50 text-[8px] font-black leading-none"><div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>{synonymF}</div>
+                                                                      <div className="flex items-center gap-1.5 bg-amber-50 text-amber-700 px-2 py-1 rounded border border-amber-200/60 text-[9px] font-black leading-none shadow-sm"><div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>{synonymF} {language === 'TH' ? 'คล้ายคลึง' : 'Synonym'}</div>
                                                                     </Tooltip>
                                                                   )}
                                                                   {mismatchF > 0 && (
                                                                     <Tooltip content={part === 'Description' ? t.ttMismatchedCountDesc : t.ttMismatchedCount}>
-                                                                      <div className="flex items-center gap-1 bg-rose-50 text-rose-600 px-1.5 py-0.5 rounded-full border border-rose-100/50 text-[8px] font-black leading-none"><div className="w-1.5 h-1.5 rounded-full bg-rose-500"></div>{mismatchF}</div>
+                                                                      <div className="flex items-center gap-1.5 bg-rose-50 text-rose-700 px-2 py-1 rounded border border-rose-200/60 text-[9px] font-black leading-none shadow-sm"><div className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></div>{mismatchF}  {language === 'TH' ? 'ไม่ตรงกัน' : 'Mismatched'}</div>
                                                                     </Tooltip>
                                                                   )}
                                                                 </>
@@ -5340,11 +5373,12 @@ const mockWorkflows: Workflow[] = [
                                                 </tr>
                                              )}
                                              {!collapsedGroups[group] && groupFields.map((res, i) => (
-                                              <tr key={res.fieldName} className="hover:bg-slate-50/10 transition-colors group">
-                                                 <td className="sticky left-0 z-20 bg-white border-r border-slate-100 p-4 font-black text-slate-700 group-hover:text-blue-600 shadow-[2px_0_10px_rgba(0,0,0,0.02)] transition-colors">
-                                                  <div className="flex flex-col">
-                                                     <span className="text-xs tracking-tight">{res.fieldName}</span>
-                                                     {res.targets.some((t: any) => t.status === 'MISMATCH') && <span className="text-[10px] font-bold text-rose-500 mt-0.5 uppercase leading-none tracking-tighter">ต้องตรวจสอบ</span>}
+                                              <tr key={res.fieldName} className={`hover:bg-slate-50/80 transition-colors group/row ${i === groupFields.length - 1 ? 'border-b-2 border-slate-200/80' : ''}`}>
+                                                 <td className={`sticky left-0 z-20 bg-white border-r border-slate-100 p-4 font-black text-slate-700 group-hover/row:text-[#0463EF] shadow-[2px_0_10px_rgba(0,0,0,0.02)] transition-colors relative`}>
+                                                  {group !== 'no-group' && <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-slate-100"></div>}
+                                                  <div className="flex flex-col ml-1">
+                                                     <span className="text-[11px] tracking-wide">{res.fieldName}</span>
+                                                     {res.targets.some((t: any) => t.status === 'MISMATCH') && <span className="text-[9px] font-bold text-rose-500 mt-1 uppercase leading-none tracking-wider bg-rose-50 w-fit px-1.5 py-0.5 rounded">{language === 'TH' ? 'ต้องตรวจสอบอย่างละเอียด' : 'Needs verification'}</span>}
                                                   </div>
                                                </td>
 
