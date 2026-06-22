@@ -751,7 +751,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                                                 newValues[vIdx] = {
                                                   ...newValues[vIdx],
                                                   arrayMatchingMode: 'key-based',
-                                                  arrayMatchingKey: newValues[vIdx].arrayMatchingKey || 'itemId',
+                                                  arrayMatchingKey: newValues[vIdx].arrayMatchingKey || ['itemId'],
                                                   arrayMatchingFields: newValues[vIdx].arrayMatchingFields || ['hsCode', 'description', 'quantity'],
                                                   fallbackToIndex: newValues[vIdx].fallbackToIndex !== false
                                                 };
@@ -784,25 +784,68 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                                         {/* Inputs if Key-based is selected */}
                                         {currentVal?.arrayMatchingMode !== 'position' && (
                                           <div className="flex flex-col gap-2 mt-0.5 animate-in fade-in duration-150">
-                                            {/* Key Selection Dropdown */}
-                                            <select
-                                              className="w-full bg-white border border-slate-200 rounded px-2.5 py-1.5 text-[10px] font-bold text-slate-700 focus:border-blue-400 outline-none cursor-pointer"
-                                              style={{ borderRadius: '4px' }}
-                                              value={currentVal?.arrayMatchingKey || 'itemId'}
-                                              onChange={(e) => {
-                                                const newValues = [...editFormData.values];
-                                                newValues[vIdx] = {
-                                                  ...newValues[vIdx],
-                                                  arrayMatchingKey: e.target.value
-                                                };
-                                                setEditFormData({...editFormData, values: newValues});
-                                              }}
-                                            >
-                                              <option value="itemId">itemId</option>
-                                              <option value="itemCode">itemCode</option>
-                                              <option value="sku">sku</option>
-                                              <option value="productName">productName</option>
-                                            </select>
+                                            {/* Key Selection Multi-Select */}
+                                            <div className="relative" id={`array-key-wrapper-${row.id}-${vIdx}`}>
+                                              <div className="w-full bg-white border border-slate-200 focus:border-blue-500 rounded p-1.5 flex flex-wrap items-center gap-1 min-h-[30px] pr-6 cursor-pointer" style={{ borderRadius: '4px' }} onClick={() => {
+                                                const el = document.getElementById(`array-keys-dropdown-${row.id}-${vIdx}`);
+                                                if (el) el.classList.toggle('hidden');
+                                              }}>
+                                                {(Array.isArray(currentVal?.arrayMatchingKey) ? currentVal.arrayMatchingKey : (typeof currentVal?.arrayMatchingKey === 'string' ? [currentVal.arrayMatchingKey] : ['itemId'])).map((fld: string) => (
+                                                  <span key={fld} className="inline-flex items-center gap-1 bg-slate-100 text-slate-700 text-[9.5px] font-bold px-1.5 py-0.5 rounded border border-slate-200">
+                                                    {fld}
+                                                    <button 
+                                                      type="button"
+                                                      onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        const currentKeys = Array.isArray(currentVal?.arrayMatchingKey) ? currentVal.arrayMatchingKey : (typeof currentVal?.arrayMatchingKey === 'string' ? [currentVal.arrayMatchingKey] : ['itemId']);
+                                                        const nextKeys = currentKeys.filter((f: string) => f !== fld);
+                                                        const newValues = [...editFormData.values];
+                                                        newValues[vIdx] = {
+                                                          ...newValues[vIdx],
+                                                          arrayMatchingKey: nextKeys.length > 0 ? nextKeys : ['itemId'] // prevent empty
+                                                        };
+                                                        setEditFormData({...editFormData, values: newValues});
+                                                      }}
+                                                      className="text-slate-400 hover:text-red-500 font-bold ml-0.5 select-none cursor-pointer"
+                                                    >
+                                                      ×
+                                                    </button>
+                                                  </span>
+                                                ))}
+                                                <div className="absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                                                  <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
+                                                </div>
+                                              </div>
+
+                                              {/* Toggle popup options for multi-select */}
+                                              <div id={`array-keys-dropdown-${row.id}-${vIdx}`} className="absolute left-0 right-0 top-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg z-[200] hidden p-1.5 text-left flex flex-col gap-1 max-h-[150px] overflow-y-auto">
+                                                {['itemId', 'itemCode', 'sku', 'productName'].map(opt => {
+                                                  const currentKeys = Array.isArray(currentVal?.arrayMatchingKey) ? currentVal.arrayMatchingKey : (typeof currentVal?.arrayMatchingKey === 'string' ? [currentVal.arrayMatchingKey] : ['itemId']);
+                                                  const isSelected = currentKeys.includes(opt);
+                                                  return (
+                                                    <label key={opt} className="flex items-center gap-2 px-1.5 py-1 hover:bg-slate-50 text-[9.5px] font-bold text-slate-600 cursor-pointer select-none">
+                                                      <input 
+                                                        type="checkbox"
+                                                        checked={isSelected}
+                                                        onChange={() => {
+                                                          const nextKeys = isSelected 
+                                                            ? currentKeys.filter((f: string) => f !== opt)
+                                                            : [...currentKeys, opt];
+                                                          const newValues = [...editFormData.values];
+                                                          newValues[vIdx] = {
+                                                            ...newValues[vIdx],
+                                                            arrayMatchingKey: nextKeys.length > 0 ? nextKeys : ['itemId']
+                                                          };
+                                                          setEditFormData({...editFormData, values: newValues});
+                                                        }}
+                                                        className="w-3 h-3 text-blue-600 border-slate-300 focus:ring-blue-500 accent-blue-600 cursor-pointer"
+                                                      />
+                                                      <span>{opt}</span>
+                                                    </label>
+                                                  );
+                                                })}
+                                              </div>
+                                            </div>
 
                                             {/* Multi-select for field lists */}
                                             <div className="relative">
@@ -981,7 +1024,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                                         </div>
                                         {isArrayField(val?.schemaField) && (
                                           <div className="bg-blue-50 border border-blue-200 text-[#0463EF] text-[8.5px] font-bold px-2 py-1 rounded-full text-center tracking-tight shadow-sm mt-1.5">
-                                            Key: {val?.arrayMatchingKey || 'itemId'} • {val?.fallbackToIndex !== false ? '1 fallback' : 'no fallback'}
+                                            Key: {Array.isArray(val?.arrayMatchingKey) ? val.arrayMatchingKey.join(', ') : (val?.arrayMatchingKey || 'itemId')} • {val?.fallbackToIndex !== false ? '1 fallback' : 'no fallback'}
                                           </div>
                                         )}
                                       </>

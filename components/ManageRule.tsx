@@ -145,7 +145,7 @@ export const ManageRule: React.FC<ManageRuleProps> = ({ language, comparisonWork
               { id: 'd2', detail: 'hsCode', detailTh: 'พิกัดอัตราศุลกากร (hsCode)', values: [
                 {type: 'EXACT', schemaId: 'ls-1', schemaField: 'items.hsCode'},
                 {type: 'EXACT', schemaId: 'ls-2', schemaField: 'items.hsCode'},
-                {type: '', schemaId: 'ls-1', schemaField: 'items.hsCode', isMain: true, arrayMatchingMode: 'key-based', arrayMatchingKey: 'itemId', arrayMatchingFields: ['hsCode', 'description', 'quantity'], fallbackToIndex: true},
+                {type: '', schemaId: 'ls-1', schemaField: 'items.hsCode', isMain: true, arrayMatchingMode: 'key-based', arrayMatchingKey: ['itemId'], arrayMatchingFields: ['hsCode', 'description', 'quantity'], fallbackToIndex: true},
                 {type: 'EXACT', schemaId: 'ls-1', schemaField: 'items.hsCode'},
                 {type: 'EXACT', schemaId: 'ls-1', schemaField: 'items.hsCode'},
                 {type: 'TEXT', text: ''}
@@ -153,7 +153,7 @@ export const ManageRule: React.FC<ManageRuleProps> = ({ language, comparisonWork
               { id: 'd3', detail: 'quantity', detailTh: 'จำนวนหน่วยสินค้า (quantity)', values: [
                 {type: 'NUMBER_WORD', schemaId: 'ls-1', schemaField: 'items.quantity'},
                 {type: 'NUMBER_WORD', schemaId: 'ls-2', schemaField: 'items.quantity'},
-                {type: '', schemaId: 'ls-1', schemaField: 'items.quantity', isMain: true, arrayMatchingMode: 'key-based', arrayMatchingKey: 'itemId', arrayMatchingFields: ['hsCode', 'description', 'quantity'], fallbackToIndex: true},
+                {type: '', schemaId: 'ls-1', schemaField: 'items.quantity', isMain: true, arrayMatchingMode: 'key-based', arrayMatchingKey: ['itemId'], arrayMatchingFields: ['hsCode', 'description', 'quantity'], fallbackToIndex: true},
                 {type: 'NUMBER_WORD', schemaId: 'ls-1', schemaField: 'items.quantity'},
                 {type: 'NUMBER_WORD', schemaId: 'ls-1', schemaField: 'items.quantity'},
                 {type: 'TEXT', text: ''}
