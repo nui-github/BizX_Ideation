@@ -619,7 +619,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
               <div className="text-xs text-slate-500 font-bold uppercase tracking-wider flex items-center gap-1.5 mb-1">
                 <span>{isTh ? 'การตั้งค่าระบบ' : 'SYSTEM SETTINGS'}</span>
                 <ChevronRight size={12} className="text-slate-300" />
-                <span className="text-[#0463EF]">{isTh ? 'สคีมาป้ายระบุ' : 'LABEL SCHEMA'}</span>
+                <span className="text-[#1f5df9]">{isTh ? 'สคีมาป้ายระบุ' : 'LABEL SCHEMA'}</span>
               </div>
               <h1 className="text-2xl font-black text-[#010136] tracking-tight">
                 {isTh ? 'ตั้งค่า Label schema' : 'Label Schema Settings'}
@@ -630,7 +630,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
           {schemas.length > 0 && (
             <button
               onClick={handleOpenCreate}
-              className="px-5 py-2.5 bg-[#0463EF] hover:bg-[#0352cc] text-white font-black text-sm uppercase tracking-wider rounded-[4px] shadow-md shadow-blue-500/15 flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
+              className="px-5 py-2.5 bg-[#1f5df9] hover:bg-[#0352cc] text-white font-black text-sm uppercase tracking-wider rounded-[4px] shadow-md shadow-blue-500/15 flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
             >
               <Plus size={16} />
               <span>{isTh ? 'สร้างสคีมาใหม่' : 'Create Schema'}</span>
@@ -659,7 +659,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
           </p>
           <button
             onClick={handleOpenCreate}
-            className="px-6 py-3 bg-[#0463EF] hover:bg-[#0352cc] text-white font-black text-sm uppercase tracking-wider rounded-[4px] shadow-md flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
+            className="px-6 py-3 bg-[#1f5df9] hover:bg-[#0352cc] text-white font-black text-sm uppercase tracking-wider rounded-[4px] shadow-md flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
           >
             <Plus size={16} />
             <span>{isTh ? 'สร้าง Label schema' : 'Create Label Schema'}</span>
@@ -724,7 +724,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
                 <button
                   type="button"
                   onClick={handleOpenCreate}
-                  className="h-[38px] px-4 bg-[#0463EF] hover:bg-blue-700 active:scale-95 text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-blue-500/10 flex items-center gap-2 transition cursor-pointer"
+                  className="h-[38px] px-4 bg-[#1f5df9] hover:bg-blue-700 active:scale-95 text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-blue-500/10 flex items-center gap-2 transition cursor-pointer"
                   style={{ borderRadius: '4px' }}
                 >
                   <Plus size={15} strokeWidth={2.5} />
@@ -776,7 +776,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
                           {/* Name & Desc */}
                           <td className="px-6 py-4 max-w-sm">
                             <div className="flex items-start gap-3">
-                              <div className="p-2.5 bg-blue-50/70 text-[#0463EF] rounded-[4px] shrink-0 mt-0.5">
+                              <div className="p-2.5 bg-blue-50/70 text-[#1f5df9] rounded-[4px] shrink-0 mt-0.5">
                                 <Layers size={15} />
                               </div>
                               <div className="space-y-0.5">
@@ -875,7 +875,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
                               <Tooltip title={isTh ? 'แก้ไขสคีมา' : 'Edit Schema'}>
                                 <button
                                   onClick={() => handleOpenEdit(schema)}
-                                  className="p-2 hover:bg-slate-50 text-slate-400 hover:text-[#0463EF] bg-white border border-slate-150 rounded-xl transition-all cursor-pointer"
+                                  className="p-2 hover:bg-slate-50 text-slate-400 hover:text-[#1f5df9] bg-white border border-slate-150 rounded-xl transition-all cursor-pointer"
                                 >
                                   <Edit3 size={14} />
                                 </button>
@@ -974,7 +974,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
                                 return (
                                   <div key={dtIdx} className="flex items-center justify-between text-xs bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-150/45">
                                     <span className="font-bold text-[#010136] truncate max-w-[140px]">{dtName}</span>
-                                    <span className="text-[10px] font-black text-[#0463EF] bg-indigo-50 px-1.5 py-0.5 rounded">
+                                    <span className="text-[10px] font-black text-[#1f5df9] bg-indigo-50 px-1.5 py-0.5 rounded">
                                       {labelCount} {isTh ? 'Labels' : 'Labels'}
                                     </span>
                                   </div>
@@ -1047,7 +1047,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
       <Drawer
         title={
           <div className="flex items-center gap-2">
-            <div className="p-2 bg-blue-50/60 text-[#0463EF] rounded-xl">
+            <div className="p-2 bg-blue-50/60 text-[#1f5df9] rounded-xl">
               <Layers size={18} />
             </div>
             <div>
@@ -1076,7 +1076,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
             <Button 
               onClick={handleSave} 
               type="primary" 
-              className="bg-[#0463EF] hover:bg-[#0352cc] text-white font-black px-6 py-2.5 rounded-xl border-none shadow-md shadow-blue-500/10 cursor-pointer text-xs uppercase tracking-wider h-[40px]"
+              className="bg-[#1f5df9] hover:bg-[#0352cc] text-white font-black px-6 py-2.5 rounded-xl border-none shadow-md shadow-blue-500/10 cursor-pointer text-xs uppercase tracking-wider h-[40px]"
             >
               {isTh ? 'บันทึกข้อมูล' : 'Save Schema'}
             </Button>
@@ -1103,7 +1103,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
                 value={formName} 
                 onChange={(e) => setFormName(e.target.value)}
                 placeholder={isTh ? 'เช่น Import standard v2' : 'e.g. Import standard v2'} 
-                className="py-2.5 rounded-xl border-slate-200 font-semibold text-slate-800 hover:border-blue-300 focus:border-[#0463EF] focus:shadow-sm shadow-2xs placeholder-slate-400"
+                className="py-2.5 rounded-xl border-slate-200 font-semibold text-slate-800 hover:border-blue-300 focus:border-[#1f5df9] focus:shadow-sm shadow-2xs placeholder-slate-400"
               />
             </div>
 
@@ -1117,7 +1117,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
                 onChange={(e) => setFormDesc(e.target.value)}
                 placeholder={isTh ? 'สรุปรายละเอียดหรือจุดประสงค์ในการใช้สคีมานี้...' : 'Detail the use case or objective of this schema...'}
                 rows={2}
-                className="rounded-xl border-slate-200 font-semibold text-slate-800 hover:border-blue-300 focus:border-[#0463EF] focus:shadow-sm shadow-2xs placeholder-slate-400"
+                className="rounded-xl border-slate-200 font-semibold text-slate-800 hover:border-blue-300 focus:border-[#1f5df9] focus:shadow-sm shadow-2xs placeholder-slate-400"
               />
             </div>
 
@@ -1148,7 +1148,7 @@ Your task is to highly accurately extract structured elements from the uploaded 
 - If a specific field or key is not explicitly mentioned or found in the text, return null instead of fabricating data.`}
                 rows={5}
                 style={{ borderRadius: 4 }}
-                className="border-slate-200 font-semibold text-slate-800 hover:border-blue-300 focus:border-[#0463EF] focus:shadow-sm shadow-2xs placeholder-slate-450 text-xs leading-relaxed"
+                className="border-slate-200 font-semibold text-slate-800 hover:border-blue-300 focus:border-[#1f5df9] focus:shadow-sm shadow-2xs placeholder-slate-450 text-xs leading-relaxed"
               />
               <p className="text-[10px] text-slate-400 font-bold leading-normal">
                 {isTh ? '* จะทำหน้าที่เป็นคำสั่งพื้นฐาน (System Instruction) ตลอดกระบวนการสกัดหรือประมวลผลเอกสารสคีมานี้' : '* Serves as the base System Instruction during standard extraction for this schema.'}
@@ -1168,7 +1168,7 @@ Your task is to highly accurately extract structured elements from the uploaded 
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200/40">
               <div className="space-y-1">
                 <span className="text-xs font-black text-[#010136] uppercase tracking-wider flex items-center gap-1.5">
-                  <FileText size={15} className="text-[#0463EF]" />
+                  <FileText size={15} className="text-[#1f5df9]" />
                   <span>{isTh ? 'จัดการประเภทเอกสาร' : 'Document Types Management'}</span>
                   <span className="text-rose-500">*</span>
                 </span>
@@ -1193,7 +1193,7 @@ Your task is to highly accurately extract structured elements from the uploaded 
                   type="primary"
                   onClick={handleAddNewDocTypeClick}
                   disabled={!selectedDocTypeToAdd}
-                  className="bg-[#0463EF] hover:bg-[#0352cc] hover:shadow-xs text-white font-bold h-[32px] rounded-lg border-none flex items-center px-3.5 text-xs shadow-3xs transition-all duration-200"
+                  className="bg-[#1f5df9] hover:bg-[#0352cc] hover:shadow-xs text-white font-bold h-[32px] rounded-lg border-none flex items-center px-3.5 text-xs shadow-3xs transition-all duration-200"
                 >
                   <Plus size={13} className="mr-1" />
                   <span>{isTh ? 'เพิ่ม' : 'Add'}</span>
@@ -1238,9 +1238,9 @@ Your task is to highly accurately extract structured elements from the uploaded 
                             size={16} 
                             className={`text-[#010136]/50 transition-transform duration-250 ease-out-back ${isExpanded ? 'rotate-0' : '-rotate-90'}`} 
                           />
-                          <span className="w-2.5 h-2.5 rounded-full bg-[#0463EF]" />
+                          <span className="w-2.5 h-2.5 rounded-full bg-[#1f5df9]" />
                           <span className="text-sm font-black text-[#010136] tracking-tight">{docTypeName}</span>
-                          <span className="px-2 py-0.5 text-[10px] font-extrabold bg-[#0463EF]/10 text-[#0463EF] rounded-md tracking-wider">
+                          <span className="px-2 py-0.5 text-[10px] font-extrabold bg-[#1f5df9]/10 text-[#1f5df9] rounded-md tracking-wider">
                             {config.docTypeId}
                           </span>
                         </div>
@@ -1313,9 +1313,9 @@ Your task is to highly accurately extract structured elements from the uploaded 
                                       <button
                                         type="button"
                                         onClick={() => handleAddLabelRow(config.docTypeId, sect.key)}
-                                        className="px-3 py-1.5 border border-dashed border-[#0463EF]/40 hover:border-[#0463EF]/70 hover:bg-[#0463EF]/5 hover:text-[#0463EF] text-[#0463EF]/80 font-black text-xs rounded-lg transition-all flex items-center gap-1 bg-white cursor-pointer active:scale-98"
+                                        className="px-3 py-1.5 border border-dashed border-[#1f5df9]/40 hover:border-[#1f5df9]/70 hover:bg-[#1f5df9]/5 hover:text-[#1f5df9] text-[#1f5df9]/80 font-black text-xs rounded-lg transition-all flex items-center gap-1 bg-white cursor-pointer active:scale-98"
                                       >
-                                        <Plus size={12} className="text-[#0463EF]" />
+                                        <Plus size={12} className="text-[#1f5df9]" />
                                         <span>{isTh ? '+ เพิ่ม Field' : '+ Add Field'}</span>
                                       </button>
                                     </div>
@@ -1339,7 +1339,7 @@ Your task is to highly accurately extract structured elements from the uploaded 
                                                     value={label.name}
                                                     onChange={(e) => handleUpdateLabelRow(config.docTypeId, label.id, { name: e.target.value })}
                                                     placeholder={isTh ? 'ชื่อ field' : 'field name'}
-                                                    className="w-full px-3.5 py-2 font-mono bg-white text-slate-800 font-semibold border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0463EF]/10 text-sm h-[40px] transition-all border-slate-200 hover:border-slate-300 focus:border-[#0463EF]"
+                                                    className="w-full px-3.5 py-2 font-mono bg-white text-slate-800 font-semibold border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1f5df9]/10 text-sm h-[40px] transition-all border-slate-200 hover:border-slate-300 focus:border-[#1f5df9]"
                                                   />
                                                 </div>
 
@@ -1355,7 +1355,7 @@ Your task is to highly accurately extract structured elements from the uploaded 
                                                         handleUpdateLabelRow(config.docTypeId, label.id, { type: newType });
                                                       }
                                                     }}
-                                                    className="w-full pl-3.5 pr-8 py-2 bg-white text-slate-700 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0463EF]/10 text-sm font-semibold h-[40px] appearance-none cursor-pointer"
+                                                    className="w-full pl-3.5 pr-8 py-2 bg-white text-slate-700 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1f5df9]/10 text-sm font-semibold h-[40px] appearance-none cursor-pointer"
                                                   >
                                                     <option value="string">string</option>
                                                     <option value="number">number</option>
@@ -1375,7 +1375,7 @@ Your task is to highly accurately extract structured elements from the uploaded 
                                                       type="checkbox"
                                                       checked={label.required}
                                                       onChange={(e) => handleUpdateLabelRow(config.docTypeId, label.id, { required: e.target.checked })}
-                                                      className="w-4.5 h-4.5 rounded border-slate-300 text-[#0463EF] focus:ring-[#0463EF]/20 cursor-pointer"
+                                                      className="w-4.5 h-4.5 rounded border-slate-300 text-[#1f5df9] focus:ring-[#1f5df9]/20 cursor-pointer"
                                                     />
                                                     <span>Required</span>
                                                   </label>
@@ -1394,7 +1394,7 @@ Your task is to highly accurately extract structured elements from the uploaded 
 
                                               {/* Sub-fields block for array type */}
                                               {label.type === 'array' && (
-                                                <div className="pl-6 border-l-2 border-dashed border-[#0463EF]/40 space-y-3 pt-1">
+                                                <div className="pl-6 border-l-2 border-dashed border-[#1f5df9]/40 space-y-3 pt-1">
                                                   <div className="flex items-center justify-between">
                                                     <span className="text-[11px] font-black text-[#010136]/75 uppercase tracking-wider flex items-center gap-1.5 label-section-title">
                                                       <span className="w-1.5 h-1.5 rounded-full bg-[#16EA9E]" />
@@ -1403,7 +1403,7 @@ Your task is to highly accurately extract structured elements from the uploaded 
                                                     <Button
                                                       type="dashed"
                                                       onClick={() => handleAddSubLabelRow(config.docTypeId, label.id)}
-                                                      className="border-dashed border-[#0463EF]/50 text-[#0463EF] hover:text-[#0352cc] hover:border-[#0352cc] text-[11px] h-[26px] py-0 px-2.5 rounded-md flex items-center font-bold"
+                                                      className="border-dashed border-[#1f5df9]/50 text-[#1f5df9] hover:text-[#0352cc] hover:border-[#0352cc] text-[11px] h-[26px] py-0 px-2.5 rounded-md flex items-center font-bold"
                                                     >
                                                       <Plus size={12} className="mr-1" />
                                                       {isTh ? 'เพิ่ม Field ย่อย' : 'Add Sub Field'}
@@ -1426,7 +1426,7 @@ Your task is to highly accurately extract structured elements from the uploaded 
                                                               value={subLabel.name}
                                                               onChange={(e) => handleUpdateSubLabelRow(config.docTypeId, label.id, subLabel.id, { name: e.target.value })}
                                                               placeholder={isTh ? 'ชื่อ field ย่อย' : 'sub-field name'}
-                                                              className="w-full px-3 py-1.5 font-mono bg-white text-slate-800 font-semibold border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0463EF]/10 text-xs h-[36px] transition-all hover:border-slate-300 focus:border-[#0463EF]"
+                                                              className="w-full px-3 py-1.5 font-mono bg-white text-slate-800 font-semibold border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1f5df9]/10 text-xs h-[36px] transition-all hover:border-slate-300 focus:border-[#1f5df9]"
                                                             />
                                                           </div>
 
@@ -1435,7 +1435,7 @@ Your task is to highly accurately extract structured elements from the uploaded 
                                                             <select
                                                               value={subLabel.type || 'string'}
                                                               onChange={(e) => handleUpdateSubLabelRow(config.docTypeId, label.id, subLabel.id, { type: e.target.value })}
-                                                              className="w-full pl-3 pr-8 py-1.5 bg-white text-slate-700 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0463EF]/10 text-xs font-semibold h-[36px] appearance-none cursor-pointer"
+                                                              className="w-full pl-3 pr-8 py-1.5 bg-white text-slate-700 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1f5df9]/10 text-xs font-semibold h-[36px] appearance-none cursor-pointer"
                                                             >
                                                               <option value="string">string</option>
                                                               <option value="number">number</option>
@@ -1454,7 +1454,7 @@ Your task is to highly accurately extract structured elements from the uploaded 
                                                                 type="checkbox"
                                                                 checked={subLabel.required}
                                                                 onChange={(e) => handleUpdateSubLabelRow(config.docTypeId, label.id, subLabel.id, { required: e.target.checked })}
-                                                                className="w-3.5 h-3.5 rounded border-slate-300 text-[#0463EF] focus:ring-[#0463EF]/20 cursor-pointer"
+                                                                className="w-3.5 h-3.5 rounded border-slate-300 text-[#1f5df9] focus:ring-[#1f5df9]/20 cursor-pointer"
                                                               />
                                                               <span>Required</span>
                                                             </label>
@@ -1592,7 +1592,7 @@ Your task is to highly accurately extract structured elements from the uploaded 
                   submitSave(pendingSavePayload);
                 }
               }}
-              className="px-4 py-2.5 bg-[#0463EF] text-white hover:bg-[#0352cc] font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shadow-blue-500/10 cursor-pointer h-[40px]"
+              className="px-4 py-2.5 bg-[#1f5df9] text-white hover:bg-[#0352cc] font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shadow-blue-500/10 cursor-pointer h-[40px]"
             >
               {isTh ? 'ต้องการบันทึกต่อไป' : 'Continue Saving'}
             </button>

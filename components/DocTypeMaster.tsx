@@ -172,7 +172,7 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
 
   const text = {
     TH: {
-      title: "ตั้งค่า Doc Type & Label Schema",
+      title: "ตั้งค่า Doc Type",
       subtitle: "รายการประเภทเอกสารและคู่มือกำหนดรูปแบบชื่อไฟล์ให้ AI ตรวจสอบและประมวลผล",
       searchPlaceholder: "ค้นหาประเภทเอกสาร...",
       addBtn: "เพิ่ม Doc Type",
@@ -209,7 +209,7 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
       schemaLabelConfidence: "ความแม่นยำขั้นต่ำ",
     },
     EN: {
-      title: "Doc Type & Label Schema Settings",
+      title: "Doc Type Settings",
       subtitle: "List of document types and filename signature guides for AI classification",
       searchPlaceholder: "Search document types...",
       addBtn: "Add Doc Type",
@@ -485,7 +485,7 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
               <button
                 type="button"
                 onClick={handleOpenAddModal}
-                className="h-[38px] px-4 bg-[#0463EF] hover:bg-blue-700 active:scale-95 text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-blue-500/10 flex items-center gap-2 transition cursor-pointer"
+                className="h-[38px] px-4 bg-[#1f5df9] hover:bg-blue-700 active:scale-95 text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-blue-500/10 flex items-center gap-2 transition cursor-pointer"
                 style={{ borderRadius: '4px' }}
               >
                 <Plus size={15} strokeWidth={2.5} />

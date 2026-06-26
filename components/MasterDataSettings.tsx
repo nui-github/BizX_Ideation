@@ -735,7 +735,7 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
                         setEditTableNameEN(activeTable.nameEN);
                         setIsEditTableModalOpen(true);
                       }}
-                      className="p-1.5 text-[#0463EF] bg-blue-50/50 hover:bg-blue-100/50 border border-blue-200/40 rounded-[4px] transition-all cursor-pointer flex items-center justify-center"
+                      className="p-1.5 text-[#1f5df9] bg-blue-50/50 hover:bg-blue-100/50 border border-blue-200/40 rounded-[4px] transition-all cursor-pointer flex items-center justify-center"
                     >
                       <Edit3 size={13} />
                     </button>
@@ -756,7 +756,7 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
               type="primary"
               onClick={handleOpenAddTable}
               icon={<Plus size={16} />}
-              className="bg-[#0463EF] hover:bg-[#0463EF]/90 border-none font-bold rounded-[4px] h-[42px] px-5 flex items-center justify-center gap-1.5 cursor-pointer shadow-sm text-sm shrink-0"
+              className="bg-[#1f5df9] hover:bg-[#1f5df9]/90 border-none font-bold rounded-[4px] h-[42px] px-5 flex items-center justify-center gap-1.5 cursor-pointer shadow-sm text-sm shrink-0"
             >
               {t.addTableBtn}
             </Button>
@@ -782,7 +782,7 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
                     placeholder={t.searchTablePlaceholder}
                     value={searchTableQuery}
                     onChange={e => setSearchTableQuery(e.target.value)}
-                    className="rounded-[4px] border border-slate-200 p-2.5 h-[42px] focus:border-[#0463EF] focus:shadow-none hover:border-[#0463EF] w-full"
+                    className="rounded-[4px] border border-slate-200 p-2.5 h-[42px] focus:border-[#1f5df9] focus:shadow-none hover:border-[#1f5df9] w-full"
                     allowClear
                   />
                 </div>
@@ -793,7 +793,7 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
                     onClick={() => setViewMode('grid')}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] text-xs font-black transition-all cursor-pointer ${
                       viewMode === 'grid'
-                        ? 'bg-white text-[#0463EF] shadow-sm border border-slate-200/50'
+                        ? 'bg-white text-[#1f5df9] shadow-sm border border-slate-200/50'
                         : 'text-slate-500 hover:text-slate-800'
                     }`}
                   >
@@ -805,7 +805,7 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
                     onClick={() => setViewMode('list')}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] text-xs font-black transition-all cursor-pointer ${
                       viewMode === 'list'
-                        ? 'bg-white text-[#0463EF] shadow-sm border border-slate-200/50'
+                        ? 'bg-white text-[#1f5df9] shadow-sm border border-slate-200/50'
                         : 'text-slate-500 hover:text-slate-800'
                     }`}
                   >
@@ -824,12 +824,12 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
                         key={tbl.id}
                         onClick={() => { setSelectedTableId(tbl.id); setSearchRecordQuery(''); }}
                         whileHover={{ y: -3, transition: { duration: 0.1 } }}
-                        className="bg-slate-50/40 hover:bg-white border border-slate-100 hover:border-[#0463EF]/20 rounded-[8px] p-6 shadow-sm hover:shadow-md cursor-pointer transition-all flex flex-col justify-between group"
+                        className="bg-slate-50/40 hover:bg-white border border-slate-100 hover:border-[#1f5df9]/20 rounded-[8px] p-6 shadow-sm hover:shadow-md cursor-pointer transition-all flex flex-col justify-between group"
                       >
                         <div className="space-y-4">
                           {/* Top bar with icon & record quantity count badge */}
                           <div className="flex items-center justify-between">
-                            <div className="w-11 h-11 rounded-[8px] bg-blue-50 text-[#0463EF] flex items-center justify-center group-hover:bg-[#0463EF] group-hover:text-white transition-colors duration-200">
+                            <div className="w-11 h-11 rounded-[8px] bg-blue-50 text-[#1f5df9] flex items-center justify-center group-hover:bg-[#1f5df9] group-hover:text-white transition-colors duration-200">
                               <Database size={20} />
                             </div>
                             <span className="text-xs font-black text-[#010136] bg-white border border-slate-100 rounded-[4px] px-2.5 py-1 flex items-center gap-1 group-hover:bg-blue-50 group-hover:border-blue-100/30 transition-colors">
@@ -840,7 +840,7 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
 
                           {/* Content headings */}
                           <div>
-                            <h3 className="text-md font-black tracking-tight leading-snug group-hover:text-[#0463EF] transition-colors mb-1.5">
+                            <h3 className="text-md font-black tracking-tight leading-snug group-hover:text-[#1f5df9] transition-colors mb-1.5">
                               {language === 'TH' ? tbl.nameTH : tbl.nameEN}
                             </h3>
                             <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">
@@ -855,7 +855,7 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
                             <Calendar size={13} className="text-slate-300" />
                             <span>{formatDateTime(tbl.updatedAt)}</span>
                           </div>
-                          <ChevronRight size={14} className="text-slate-300 group-hover:text-[#0463EF] group-hover:translate-x-1 transition-all" />
+                          <ChevronRight size={14} className="text-slate-300 group-hover:text-[#1f5df9] group-hover:translate-x-1 transition-all" />
                         </div>
                       </motion.div>
                     ))}
@@ -869,11 +869,11 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
                         className="p-4 hover:bg-slate-50/60 transition-colors cursor-pointer flex items-center justify-between gap-4 group"
                       >
                         <div className="flex items-center gap-3.5 min-w-0">
-                          <div className="w-10 h-10 rounded-[6px] bg-blue-50 text-[#0463EF] flex items-center justify-center group-hover:bg-[#0463EF] group-hover:text-white transition-colors duration-200 shrink-0">
+                          <div className="w-10 h-10 rounded-[6px] bg-blue-50 text-[#1f5df9] flex items-center justify-center group-hover:bg-[#1f5df9] group-hover:text-white transition-colors duration-200 shrink-0">
                             <Database size={18} />
                           </div>
                           <div className="min-w-0">
-                            <h4 className="text-sm font-black tracking-tight text-[#010136] group-hover:text-[#0463EF] transition-colors truncate">
+                            <h4 className="text-sm font-black tracking-tight text-[#010136] group-hover:text-[#1f5df9] transition-colors truncate">
                               {language === 'TH' ? tbl.nameTH : tbl.nameEN}
                             </h4>
                             <span className="font-mono text-[10px] font-bold text-slate-400 block uppercase tracking-wider mt-0.5">
@@ -899,7 +899,7 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
                             <span>{tbl.records.length} {language === 'TH' ? 'รายการ' : 'Records'}</span>
                           </span>
 
-                          <ChevronRight size={16} className="text-slate-300 group-hover:text-[#0463EF] group-hover:translate-x-0.5 transition-all" />
+                          <ChevronRight size={16} className="text-slate-300 group-hover:text-[#1f5df9] group-hover:translate-x-0.5 transition-all" />
                         </div>
                       </div>
                     ))}
@@ -929,7 +929,7 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
                     placeholder={t.searchRecordPlaceholder}
                     value={searchRecordQuery}
                     onChange={e => setSearchRecordQuery(e.target.value)}
-                    className="rounded-[4px] border border-slate-200 p-2.5 h-[42px] focus:border-[#0463EF] focus:shadow-none hover:border-[#0463EF]"
+                    className="rounded-[4px] border border-slate-200 p-2.5 h-[42px] focus:border-[#1f5df9] focus:shadow-none hover:border-[#1f5df9]"
                     allowClear
                   />
                 </div>
@@ -950,7 +950,7 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
                     type="primary"
                     onClick={handleOpenAddRecord}
                     icon={<Plus size={16} />}
-                    className="bg-[#0463EF] hover:bg-[#0463EF]/90 border-none font-bold rounded-[4px] h-[40px] px-5 flex items-center justify-center gap-1.5 cursor-pointer shadow-sm text-sm"
+                    className="bg-[#1f5df9] hover:bg-[#1f5df9]/90 border-none font-bold rounded-[4px] h-[40px] px-5 flex items-center justify-center gap-1.5 cursor-pointer shadow-sm text-sm"
                   >
                     {t.addRecordBtn}
                   </Button>
@@ -1002,7 +1002,7 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
                           {rec.keys.map((key, kIdx) => (
                             <span 
                               key={kIdx}
-                              className="inline-flex items-center text-xs font-bold text-[#0463EF] bg-blue-50 border border-blue-100/50 rounded-[4px] px-2.5 py-1"
+                              className="inline-flex items-center text-xs font-bold text-[#1f5df9] bg-blue-50 border border-blue-100/50 rounded-[4px] px-2.5 py-1"
                             >
                               {key}
                             </span>
@@ -1015,7 +1015,7 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
                         <Tooltip title={language === 'TH' ? 'แก้ไขข้อมูล' : 'Edit'}>
                           <button
                             onClick={() => handleOpenEditRecord(rec)}
-                            className="p-2 text-slate-500 hover:text-[#0463EF] border border-slate-200/80 hover:border-blue-200 hover:bg-blue-50/50 rounded-[4px] transition-all cursor-pointer flex items-center justify-center grow sm:grow-0"
+                            className="p-2 text-slate-500 hover:text-[#1f5df9] border border-slate-200/80 hover:border-blue-200 hover:bg-blue-50/50 rounded-[4px] transition-all cursor-pointer flex items-center justify-center grow sm:grow-0"
                           >
                             <Edit3 size={15} />
                           </button>
@@ -1047,7 +1047,7 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
       <Drawer
         title={
           <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-blue-50 text-[#0463EF] rounded-[4px]">
+            <div className="p-1.5 bg-blue-50 text-[#1f5df9] rounded-[4px]">
               <Database size={16} />
             </div>
             <span className="text-[18px] font-black text-[#010136]">
@@ -1067,7 +1067,7 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
             </button>
             <button
               onClick={handleSaveRecord}
-              className="px-4 py-2 bg-[#0463EF] hover:bg-[#0463EF]/90 text-white font-bold rounded-[4px] transition-colors text-xs inline-flex items-center justify-center cursor-pointer border-none h-[36px]"
+              className="px-4 py-2 bg-[#1f5df9] hover:bg-[#1f5df9]/90 text-white font-bold rounded-[4px] transition-colors text-xs inline-flex items-center justify-center cursor-pointer border-none h-[36px]"
             >
               {t.save}
             </button>
@@ -1089,7 +1089,7 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
               placeholder={t.valuePlaceholder}
               value={formValue}
               onChange={e => setFormValue(e.target.value)}
-              className="rounded-[4px] border-slate-200 hover:border-[#0463EF] focus:border-[#0463EF] focus:shadow-none p-2.5 text-xs h-[38px] font-bold text-[#010136]"
+              className="rounded-[4px] border-slate-200 hover:border-[#1f5df9] focus:border-[#1f5df9] focus:shadow-none p-2.5 text-xs h-[38px] font-bold text-[#010136]"
             />
           </div>
 
@@ -1124,7 +1124,7 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
                       <Tag
                         closable
                         onClose={() => handleRemoveKeyTag(key)}
-                        className="m-0 bg-white border-blue-200 text-[#0463EF] font-bold py-0.5 px-2 rounded-[4px] flex items-center gap-1 shrink-0"
+                        className="m-0 bg-white border-blue-200 text-[#1f5df9] font-bold py-0.5 px-2 rounded-[4px] flex items-center gap-1 shrink-0"
                       >
                         {key}
                       </Tag>
@@ -1141,7 +1141,7 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
                 value={keyInput}
                 onChange={e => setKeyInput(e.target.value)}
                 onKeyDown={handleKeyDownInput}
-                className="rounded-[4px] border-slate-200 hover:border-[#0463EF] focus:border-[#0463EF] focus:shadow-none p-2 text-xs h-[36px]"
+                className="rounded-[4px] border-slate-200 hover:border-[#1f5df9] focus:border-[#1f5df9] focus:shadow-none p-2 text-xs h-[36px]"
               />
               <button
                 type="button"
@@ -1202,7 +1202,7 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
       <Drawer
         title={
           <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-blue-50 text-[#0463EF] rounded-[4px]">
+            <div className="p-1.5 bg-blue-50 text-[#1f5df9] rounded-[4px]">
               <Database size={16} />
             </div>
             <span className="text-[18px] font-black text-[#010136]">
@@ -1222,7 +1222,7 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
             </button>
             <button
               onClick={handleSaveTable}
-              className="px-4 py-2 bg-[#0463EF] hover:bg-[#0463EF]/90 text-white font-bold rounded-[4px] transition-colors text-xs inline-flex items-center justify-center cursor-pointer border-none h-[36px]"
+              className="px-4 py-2 bg-[#1f5df9] hover:bg-[#1f5df9]/90 text-white font-bold rounded-[4px] transition-colors text-xs inline-flex items-center justify-center cursor-pointer border-none h-[36px]"
             >
               {t.save}
             </button>
@@ -1244,7 +1244,7 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
               placeholder={t.tableNamePlaceholder}
               value={newTableName}
               onChange={e => setNewTableName(e.target.value)}
-              className="rounded-[4px] border-slate-200 hover:border-[#0463EF] focus:border-[#0463EF] focus:shadow-none p-2.5 text-xs h-[38px] font-bold text-[#010136]"
+              className="rounded-[4px] border-slate-200 hover:border-[#1f5df9] focus:border-[#1f5df9] focus:shadow-none p-2.5 text-xs h-[38px] font-bold text-[#010136]"
             />
           </div>
 
@@ -1260,7 +1260,7 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
               placeholder={t.tableIdPlaceholder}
               value={newTableId}
               onChange={e => setNewTableId(e.target.value)}
-              className="rounded-[4px] border-slate-200 hover:border-[#0463EF] focus:border-[#0463EF] focus:shadow-none p-2.5 text-xs h-[38px] font-bold text-[#010136]"
+              className="rounded-[4px] border-slate-200 hover:border-[#1f5df9] focus:border-[#1f5df9] focus:shadow-none p-2.5 text-xs h-[38px] font-bold text-[#010136]"
             />
           </div>
         </div>
@@ -1270,7 +1270,7 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
       <Drawer
         title={
           <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-blue-50 text-[#0463EF] rounded-[4px]">
+            <div className="p-1.5 bg-blue-50 text-[#1f5df9] rounded-[4px]">
               <Edit3 size={16} />
             </div>
             <span className="text-[18px] font-black text-[#010136]">
@@ -1290,7 +1290,7 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
             </button>
             <button
               onClick={handleSaveEditTable}
-              className="px-4 py-2 bg-[#0463EF] hover:bg-[#0463EF]/90 text-white font-bold rounded-[4px] transition-colors text-xs inline-flex items-center justify-center cursor-pointer border-none h-[36px]"
+              className="px-4 py-2 bg-[#1f5df9] hover:bg-[#1f5df9]/90 text-white font-bold rounded-[4px] transition-colors text-xs inline-flex items-center justify-center cursor-pointer border-none h-[36px]"
             >
               {language === 'TH' ? 'บันทึกการแก้ไข' : 'Save Changes'}
             </button>
@@ -1315,7 +1315,7 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
                 setEditTableNameTH(e.target.value);
                 setEditTableNameEN(e.target.value);
               }}
-              className="rounded-[4px] border-slate-200 hover:border-[#0463EF] focus:border-[#0463EF] focus:shadow-none p-2.5 text-xs h-[38px] font-bold text-[#010136]"
+              className="rounded-[4px] border-slate-200 hover:border-[#1f5df9] focus:border-[#1f5df9] focus:shadow-none p-2.5 text-xs h-[38px] font-bold text-[#010136]"
             />
           </div>
 
@@ -1331,7 +1331,7 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
               placeholder={t.tableIdPlaceholder}
               value={editTableId}
               onChange={e => setEditTableId(e.target.value)}
-              className="rounded-[4px] border-slate-200 hover:border-[#0463EF] focus:border-[#0463EF] focus:shadow-none p-2.5 text-xs h-[38px] font-bold text-[#010136]"
+              className="rounded-[4px] border-slate-200 hover:border-[#1f5df9] focus:border-[#1f5df9] focus:shadow-none p-2.5 text-xs h-[38px] font-bold text-[#010136]"
             />
           </div>
         </div>
@@ -1377,18 +1377,18 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
       >
         <div className="space-y-5 pt-1 text-[#010136]">
           {/* Download Template Banner Section */}
-          <div className="p-4 bg-[#0463EF]/5 rounded-[16px] border border-[#0463EF]/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-3xs">
+          <div className="p-4 bg-[#1f5df9]/5 rounded-[16px] border border-[#1f5df9]/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-3xs">
             <div className="space-y-1">
               <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider">
                 {language === 'TH' ? 'ต้องการเทมเพลตสำหรับเติมข้อมูล?' : 'Need a template to fill data?'}
               </h4>
-              <p className="text-[11px] font-bold text-[#0463EF]">
+              <p className="text-[11px] font-bold text-[#1f5df9]">
                 {language === 'TH' ? 'กรอกตามคอลัมน์มาตรฐานเพื่อนำเข้าระบบ' : 'Please upload following standard schema columns.'}
               </p>
             </div>
             <button
               onClick={handleDownloadTemplate}
-              className="px-3 py-1.5 bg-[#0463EF] text-white hover:bg-[#0463EF]/95 text-xs font-bold rounded-[4px] border-none inline-flex items-center gap-1.5 cursor-pointer shrink-0 shadow-sm shadow-[#0463EF]/20 transition-all"
+              className="px-3 py-1.5 bg-[#1f5df9] text-white hover:bg-[#1f5df9]/95 text-xs font-bold rounded-[4px] border-none inline-flex items-center gap-1.5 cursor-pointer shrink-0 shadow-sm shadow-[#1f5df9]/20 transition-all"
             >
               <Download size={12} />
               <span>{language === 'TH' ? 'ดาวน์โหลดแม่แบบ' : 'Template'}</span>
@@ -1421,8 +1421,8 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
               onClick={() => fileInputRef.current?.click()}
               className={`p-6 border border-dashed rounded-[4px] cursor-pointer transition-all flex flex-col items-center justify-center text-center space-y-3 min-h-[140px] select-none ${
                 isDragging 
-                  ? 'border-[#0463EF] bg-blue-50/40 shadow-xs' 
-                  : 'border-slate-200 hover:border-[#0463EF] bg-slate-50/30 hover:bg-white hover:shadow-xs'
+                  ? 'border-[#1f5df9] bg-blue-50/40 shadow-xs' 
+                  : 'border-slate-200 hover:border-[#1f5df9] bg-slate-50/30 hover:bg-white hover:shadow-xs'
               }`}
             >
               <input 

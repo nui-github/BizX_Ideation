@@ -288,7 +288,7 @@ export const CreateJobModal: React.FC<CreateJobModalProps> = ({
     <Modal
       title={
         <div className="font-sans text-[16px] font-black tracking-tight text-[#010136] flex items-center gap-2.5 pb-2 border-b border-slate-100">
-          <Briefcase size={20} className="text-[#0463EF]" />
+          <Briefcase size={20} className="text-[#1f5df9]" />
           <span>{modalTitle}</span>
         </div>
       }
@@ -301,7 +301,7 @@ export const CreateJobModal: React.FC<CreateJobModalProps> = ({
       centered
       className="font-sans"
       okButtonProps={{ 
-        className: 'bg-[#0463EF] text-white hover:bg-blue-600 rounded-[4px] font-sans font-bold h-10 px-5 text-xs uppercase tracking-widest transition-all cursor-pointer border-none shadow-sm'
+        className: 'bg-[#1f5df9] text-white hover:bg-blue-600 rounded-[4px] font-sans font-bold h-10 px-5 text-xs uppercase tracking-widest transition-all cursor-pointer border-none shadow-sm'
       }}
       cancelButtonProps={{ 
         className: 'font-sans font-bold h-10 px-5 text-xs text-slate-500 rounded-[4px] border border-slate-200 hover:border-slate-300 hover:text-slate-700 transition-all cursor-pointer'
@@ -337,7 +337,7 @@ export const CreateJobModal: React.FC<CreateJobModalProps> = ({
                     setSingleSuffixValue('');
                   }
                 }}
-                className="w-full bg-white border border-slate-200 rounded-[4px] py-2.5 px-3 text-sm font-bold text-[#010136] outline-none focus:ring-2 focus:ring-[#0463EF]/10 focus:border-[#0463EF] transition-all"
+                className="w-full bg-white border border-slate-200 rounded-[4px] py-2.5 px-3 text-sm font-bold text-[#010136] outline-none focus:ring-2 focus:ring-[#1f5df9]/10 focus:border-[#1f5df9] transition-all"
               >
                 <option value="">{isTh ? '-- เลือกเวิร์กโฟลว์ --' : '-- Select Workflow --'}</option>
                 {workflows.map(w => (
@@ -351,7 +351,7 @@ export const CreateJobModal: React.FC<CreateJobModalProps> = ({
                 <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">
                   {isTh ? 'รูปแบบของ Job (รหัสต่อท้าย)' : 'JOB FORMAT SUFFIX'} <span className="text-red-500">*</span>
                 </label>
-                <div className="flex rounded-[4px] border border-slate-200 overflow-hidden bg-white focus-within:ring-2 focus-within:ring-[#0463EF]/10 focus-within:border-[#0463EF] transition-all">
+                <div className="flex rounded-[4px] border border-slate-200 overflow-hidden bg-white focus-within:ring-2 focus-within:ring-[#1f5df9]/10 focus-within:border-[#1f5df9] transition-all">
                   <span className="inline-flex items-center px-3 bg-slate-50 border-r border-slate-100 text-slate-400 text-xs font-mono font-bold select-none">
                     {getPrefix(workflows.find(w => w.id === singleWorkflowId)?.nodes.find(n => n.type === 'create_job')?.data?.namingFormat || '')}
                   </span>
@@ -373,7 +373,7 @@ export const CreateJobModal: React.FC<CreateJobModalProps> = ({
               <select
                 value={singleAssignee || 'unassigned'}
                 onChange={(e) => setSingleAssignee(e.target.value)}
-                className="w-full bg-white border border-slate-200 rounded-[4px] py-2.5 px-3 text-sm font-bold text-[#010136] outline-none focus:ring-2 focus:ring-[#0463EF]/10 focus:border-[#0463EF] transition-all"
+                className="w-full bg-white border border-slate-200 rounded-[4px] py-2.5 px-3 text-sm font-bold text-[#010136] outline-none focus:ring-2 focus:ring-[#1f5df9]/10 focus:border-[#1f5df9] transition-all"
               >
                 <option value="unassigned">{isTh ? 'ไม่ได้มอบหมาย (Unassigned)' : 'Unassigned'}</option>
                 <option value="Kunawut W.">Kunawut W.</option>
@@ -395,7 +395,7 @@ export const CreateJobModal: React.FC<CreateJobModalProps> = ({
                   type="text"
                   value={shipmentName}
                   onChange={(e) => setShipmentName(e.target.value)}
-                  className="flex-1 bg-white border border-slate-200 rounded-[4px] px-3.5 py-2.5 text-sm font-black text-[#010136] font-mono outline-none focus:ring-2 focus:ring-[#0463EF]/10 focus:border-[#0463EF] transition-all"
+                  className="flex-1 bg-white border border-slate-200 rounded-[4px] px-3.5 py-2.5 text-sm font-black text-[#010136] font-mono outline-none focus:ring-2 focus:ring-[#1f5df9]/10 focus:border-[#1f5df9] transition-all"
                   placeholder={isTh ? 'ป้อนชื่อหรือเลขที่ Shipment...' : 'Enter shipment reference name...'}
                 />
                 <button
@@ -414,7 +414,7 @@ export const CreateJobModal: React.FC<CreateJobModalProps> = ({
             {/* Child Jobs Sequence Visualization (Visual Flowchart) */}
             <div className="border border-slate-100 rounded-[8px] p-4 bg-slate-50/30">
               <div className="flex items-center gap-1.5 mb-3">
-                <Layers size={14} className="text-[#0463EF]" />
+                <Layers size={14} className="text-[#1f5df9]" />
                 <span className="text-[10px] font-black text-[#010136] uppercase tracking-widest">
                   {isTh ? 'โครงสร้างการส่งต่องาน (Workflow Chaining Visualizer)' : 'Workflow Chaining Sequence'}
                 </span>
@@ -447,8 +447,8 @@ export const CreateJobModal: React.FC<CreateJobModalProps> = ({
                           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Job {idx + 1}</span>
                           <span className="text-xs font-extrabold text-[#010136] max-w-[160px] truncate">{wfName}</span>
                           {job.workflowId && (
-                            <span className="text-[9px] font-bold text-[#0463EF] mt-0.5 flex items-center gap-1">
-                              <User size={10} className="text-[#0463EF]/70 shrink-0" />
+                            <span className="text-[9px] font-bold text-[#1f5df9] mt-0.5 flex items-center gap-1">
+                              <User size={10} className="text-[#1f5df9]/70 shrink-0" />
                               <span className="truncate max-w-[140px]">
                                 {job.assignee && job.assignee !== 'unassigned' ? job.assignee : (isTh ? 'ยังไม่กำหนด' : 'Unassigned')}
                               </span>
@@ -510,7 +510,7 @@ export const CreateJobModal: React.FC<CreateJobModalProps> = ({
                 <button
                   type="button"
                   onClick={handleAddChildJobRow}
-                  className="px-3.5 py-1.5 bg-white hover:bg-slate-50 text-[#0463EF] border border-[#0463EF] rounded-[4px] text-xs font-black uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer shadow-sm"
+                  className="px-3.5 py-1.5 bg-white hover:bg-slate-50 text-[#1f5df9] border border-[#1f5df9] rounded-[4px] text-xs font-black uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer shadow-sm"
                 >
                   <Plus size={14} strokeWidth={2.5} />
                   <span>{isTh ? 'เพิ่มรายการย่อย' : 'Add Child Job'}</span>
@@ -534,14 +534,14 @@ export const CreateJobModal: React.FC<CreateJobModalProps> = ({
                       onDragEnd={handleDragEnd}
                       className={`p-4 bg-white border rounded-[8px] relative transition-all duration-150 shadow-sm flex items-center gap-3.5 ${
                         draggedIndex === idx 
-                          ? 'border-[#0463EF] bg-blue-50/20 opacity-40 scale-[0.98]' 
-                          : 'border-slate-200 hover:border-[#0463EF]/40'
+                          ? 'border-[#1f5df9] bg-blue-50/20 opacity-40 scale-[0.98]' 
+                          : 'border-slate-200 hover:border-[#1f5df9]/40'
                       }`}
                     >
                       {/* Drag Handle on the far left */}
                       {childJobs.length > 1 && (
                         <div 
-                          className="cursor-grab active:cursor-grabbing text-slate-400 hover:text-[#0463EF] transition-colors p-1 rounded hover:bg-slate-100 flex items-center justify-center shrink-0 self-center"
+                          className="cursor-grab active:cursor-grabbing text-slate-400 hover:text-[#1f5df9] transition-colors p-1 rounded hover:bg-slate-100 flex items-center justify-center shrink-0 self-center"
                           title={isTh ? 'ลากเพื่อสลับลำดับ' : 'Drag to reorder'}
                         >
                           <GripVertical size={18} />
@@ -557,7 +557,7 @@ export const CreateJobModal: React.FC<CreateJobModalProps> = ({
                           <select
                             value={job.workflowId || ''}
                             onChange={(e) => handleChildJobChange(job.id, 'workflowId', e.target.value || null)}
-                            className="w-full h-[38px] bg-white border border-slate-200 rounded-[4px] px-2.5 text-xs font-black text-[#010136] outline-none focus:ring-2 focus:ring-[#0463EF]/10 focus:border-[#0463EF] transition-all py-0"
+                            className="w-full h-[38px] bg-white border border-slate-200 rounded-[4px] px-2.5 text-xs font-black text-[#010136] outline-none focus:ring-2 focus:ring-[#1f5df9]/10 focus:border-[#1f5df9] transition-all py-0"
                           >
                             <option value="">{isTh ? '-- เลือกเวิร์กโฟลว์ --' : '-- Select Workflow --'}</option>
                             {workflows.map(w => (
@@ -571,7 +571,7 @@ export const CreateJobModal: React.FC<CreateJobModalProps> = ({
                           <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
                             {isTh ? 'รูปแบบของ Job (รหัสต่อท้าย)' : 'Job Suffix Format'} <span className="text-red-500">*</span>
                           </label>
-                          <div className="flex h-[38px] rounded-[4px] border border-slate-200 overflow-hidden bg-white focus-within:ring-2 focus-within:ring-[#0463EF]/10 focus-within:border-[#0463EF] transition-all">
+                          <div className="flex h-[38px] rounded-[4px] border border-slate-200 overflow-hidden bg-white focus-within:ring-2 focus-within:ring-[#1f5df9]/10 focus-within:border-[#1f5df9] transition-all">
                             <span className="inline-flex items-center px-2 bg-slate-50 border-r border-slate-100 text-slate-400 text-[10px] font-mono font-black select-none h-full">
                               {currentPrefix}
                             </span>
@@ -594,7 +594,7 @@ export const CreateJobModal: React.FC<CreateJobModalProps> = ({
                           <select
                             value={job.assignee || 'unassigned'}
                             onChange={(e) => handleChildJobChange(job.id, 'assignee', e.target.value)}
-                            className="w-full h-[38px] bg-white border border-slate-200 rounded-[4px] px-2.5 text-xs font-black text-[#010136] outline-none focus:ring-2 focus:ring-[#0463EF]/10 focus:border-[#0463EF] transition-all py-0"
+                            className="w-full h-[38px] bg-white border border-slate-200 rounded-[4px] px-2.5 text-xs font-black text-[#010136] outline-none focus:ring-2 focus:ring-[#1f5df9]/10 focus:border-[#1f5df9] transition-all py-0"
                             disabled={!job.workflowId}
                           >
                             <option value="unassigned">{isTh ? 'ยังไม่กำหนด' : 'Unassigned'}</option>

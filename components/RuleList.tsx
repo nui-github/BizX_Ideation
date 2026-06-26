@@ -68,7 +68,7 @@ export const RuleList = ({ rules, onSelect, onCreate, onDelete, onToggleStatus, 
             </p>
             <button
               onClick={onCreate}
-              className="flex items-center gap-2 px-6 py-3 bg-[#0463EF] hover:bg-blue-700 text-white rounded-xl font-bold transition-all shadow-md active:scale-[0.98]"
+              className="flex items-center gap-2 px-6 py-3 bg-[#1f5df9] hover:bg-blue-700 text-white rounded-xl font-bold transition-all shadow-md active:scale-[0.98]"
             >
               <Plus size={18} />
               <span>{t.btnCreateRuleSet}</span>

@@ -1738,7 +1738,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
 
                           <div className="flex items-center justify-between pt-1.5 border-t border-slate-100/50">
                             <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">THRESHOLD</span>
-                            <span className="text-[10px] font-bold text-[#0463EF] font-mono bg-blue-50/60 border border-blue-100 px-2 py-0.5 rounded-[4px]">
+                            <span className="text-[10px] font-bold text-[#1f5df9] font-mono bg-blue-50/60 border border-blue-100 px-2 py-0.5 rounded-[4px]">
                               {node.data.confidenceThreshold !== undefined ? `≥ ${node.data.confidenceThreshold}%` : '≥ 80%'}
                             </span>
                           </div>
@@ -3349,7 +3349,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                            <button
                              type="button"
                              onClick={() => window.dispatchEvent(new CustomEvent('change-view', { detail: 'DATA_COMPARISON_RULE' }))}
-                             className="text-xs font-black text-[#0463EF] hover:underline mt-1.5 flex items-center gap-1"
+                             className="text-xs font-black text-[#1f5df9] hover:underline mt-1.5 flex items-center gap-1"
                            >
                              {language === 'TH' ? 'ไปสร้าง Compare rule' : 'Go create a Compare rule'} &rarr;
                            </button>
@@ -3373,13 +3373,13 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                           <div className="space-y-3 pt-3 border-t border-slate-100">
                             <div className="p-4 bg-blue-50/20 border border-blue-100 space-y-3" style={{ borderRadius: '8px' }}>
                               <div className="flex items-center justify-between">
-                                <span className="text-[10px] font-black text-[#0463EF] bg-blue-100/60 px-2.5 py-1 rounded uppercase tracking-wider">
+                                <span className="text-[10px] font-black text-[#1f5df9] bg-blue-100/60 px-2.5 py-1 rounded uppercase tracking-wider">
                                   {language === 'TH' ? 'Rule ที่เลือกอยู่' : 'Selected Rule'}
                                 </span>
                                 <button
                                   type="button"
                                   onClick={() => window.dispatchEvent(new CustomEvent('change-view', { detail: 'DATA_COMPARISON_RULE' }))}
-                                  className="text-[10px] font-black text-[#0463EF] hover:underline"
+                                  className="text-[10px] font-black text-[#1f5df9] hover:underline"
                                 >
                                   {language === 'TH' ? 'แก้ไขกฎนี้' : 'Edit this rule'}
                                 </button>
@@ -3530,7 +3530,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                     {/* Section 1: Directory path */}
                     <div className="p-4 bg-white border border-slate-200 shadow-sm rounded-[16px] space-y-4">
                       <div className="flex items-center gap-2">
-                        <FolderInput size={16} className="text-[#0463EF]" />
+                        <FolderInput size={16} className="text-[#1f5df9]" />
                         <h4 className="text-xs font-black text-[#010136] uppercase tracking-wider">
                           Section 1: Directory Path (เส้นทางหลัก) <span className="text-rose-500 font-bold">*</span>
                         </h4>
@@ -3541,7 +3541,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                           type="text"
                           value={node.data.directoryPath !== undefined ? node.data.directoryPath : "/imports/{year}/{month}"}
                           onChange={(e) => updateNodeData(node.id, { directoryPath: e.target.value })}
-                          className="w-full bg-slate-50 p-3 text-xs font-bold text-[#010136] border border-slate-200 rounded-[4px] focus:outline-none focus:border-[#0463EF] focus:ring-1 focus:ring-[#0463EF]/20 transition-all font-mono"
+                          className="w-full bg-slate-50 p-3 text-xs font-bold text-[#010136] border border-slate-200 rounded-[4px] focus:outline-none focus:border-[#1f5df9] focus:ring-1 focus:ring-[#1f5df9]/20 transition-all font-mono"
                           placeholder="/imports/{year}/{month}"
                         />
                         
@@ -3558,7 +3558,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                                   const currentPath = node.data.directoryPath !== undefined ? node.data.directoryPath : "/imports/{year}/{month}";
                                   updateNodeData(node.id, { directoryPath: currentPath + tag });
                                 }}
-                                className="px-1.5 py-0.5 bg-white hover:bg-blue-50 hover:border-[#0463EF] border border-slate-200 text-[#0463EF] rounded-[4px] text-[10px] font-mono font-bold transition-all"
+                                className="px-1.5 py-0.5 bg-white hover:bg-blue-50 hover:border-[#1f5df9] border border-slate-200 text-[#1f5df9] rounded-[4px] text-[10px] font-mono font-bold transition-all"
                               >
                                 {tag}
                               </button>
@@ -3568,7 +3568,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
 
                         {/* Preview */}
                         <div className="flex flex-col gap-1 p-2.5 bg-blue-50/50 border border-blue-100 rounded-[8px]">
-                          <p className="text-[9px] font-black text-[#0463EF] uppercase tracking-wider leading-none">
+                          <p className="text-[9px] font-black text-[#1f5df9] uppercase tracking-wider leading-none">
                             {language === 'TH' ? 'ตัวอย่างเส้นทางจริง:' : 'Real Path Preview:'}
                           </p>
                           <p className="text-[11px] font-bold text-slate-600 font-mono break-all leading-relaxed mt-1">
@@ -3581,7 +3581,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                     {/* Section 2: Directory naming */}
                     <div className="p-4 bg-white border border-slate-200 shadow-sm rounded-[16px] space-y-4 font-sans max-w-full">
                       <div className="flex items-center gap-2">
-                        <Folder size={16} className="text-[#0463EF]" />
+                        <Folder size={16} className="text-[#1f5df9]" />
                         <h4 className="text-xs font-black text-[#010136] uppercase tracking-wider">
                           Section 2: Directory Naming (ชื่อโฟลเดอร์) <span className="text-rose-500 font-bold">*</span>
                         </h4>
@@ -3592,7 +3592,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                           type="text"
                           value={node.data.directoryNaming !== undefined ? node.data.directoryNaming : "{job#}-{job_type}"}
                           onChange={(e) => updateNodeData(node.id, { directoryNaming: e.target.value })}
-                          className="w-full bg-slate-50 p-3 text-xs font-bold text-[#010136] border border-slate-200 rounded-[4px] focus:outline-none focus:border-[#0463EF] focus:ring-1 focus:ring-[#0463EF]/20 transition-all font-mono"
+                          className="w-full bg-slate-50 p-3 text-xs font-bold text-[#010136] border border-slate-200 rounded-[4px] focus:outline-none focus:border-[#1f5df9] focus:ring-1 focus:ring-[#1f5df9]/20 transition-all font-mono"
                           placeholder="{job#}-{job_type}"
                         />
                         
@@ -3609,7 +3609,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                                   const currentNaming = node.data.directoryNaming !== undefined ? node.data.directoryNaming : "{job#}-{job_type}";
                                   updateNodeData(node.id, { directoryNaming: currentNaming + tag });
                                 }}
-                                className="px-1.5 py-0.5 bg-white hover:bg-blue-50 hover:border-[#0463EF] border border-slate-200 text-[#0463EF] rounded-[4px] text-[10px] font-mono font-bold transition-all"
+                                className="px-1.5 py-0.5 bg-white hover:bg-blue-50 hover:border-[#1f5df9] border border-slate-200 text-[#1f5df9] rounded-[4px] text-[10px] font-mono font-bold transition-all"
                               >
                                 {tag}
                               </button>
@@ -3619,7 +3619,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
 
                         {/* Preview */}
                         <div className="flex flex-col gap-1 p-2.5 bg-blue-50/50 border border-blue-100 rounded-[8px]">
-                          <p className="text-[9px] font-black text-[#0463EF] uppercase tracking-wider leading-none">
+                          <p className="text-[9px] font-black text-[#1f5df9] uppercase tracking-wider leading-none">
                             {language === 'TH' ? 'ตัวอย่างชื่อโฟลเดอร์จริง:' : 'Folder Name Preview:'}
                           </p>
                           <p className="text-[11px] font-bold text-slate-600 font-mono break-all leading-relaxed mt-1">
@@ -3632,7 +3632,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                     {/* Section 3: File naming */}
                     <div className="p-4 bg-white border border-slate-200 shadow-sm rounded-[16px] space-y-4 font-sans max-w-full">
                       <div className="flex items-center gap-2">
-                        <FileText size={16} className="text-[#0463EF]" />
+                        <FileText size={16} className="text-[#1f5df9]" />
                         <h4 className="text-xs font-black text-[#010136] uppercase tracking-wider">
                           Section 3: File Naming (รูปแบบชื่อไฟล์) <span className="text-rose-500 font-bold">*</span>
                         </h4>
@@ -3643,7 +3643,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                           onClick={() => updateNodeData(node.id, { fileNamingMode: 'original' })}
                           className={`p-3 border transition-all rounded-[8px] flex flex-col justify-between h-[80px] text-left transition-all ${
                             (node.data.fileNamingMode || 'original') === 'original' 
-                              ? 'border-[#0463EF] bg-blue-50/50 text-[#010136] ring-1 ring-[#0463EF]' 
+                              ? 'border-[#1f5df9] bg-blue-50/50 text-[#010136] ring-1 ring-[#1f5df9]' 
                               : 'border-slate-200 bg-white hover:border-slate-300 text-slate-500 hover:bg-slate-50'
                           }`}
                         >
@@ -3657,7 +3657,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                           onClick={() => updateNodeData(node.id, { fileNamingMode: 'custom' })}
                           className={`p-3 border transition-all rounded-[8px] flex flex-col justify-between h-[80px] text-left transition-all ${
                             node.data.fileNamingMode === 'custom' 
-                              ? 'border-[#0463EF] bg-blue-50/50 text-[#010136] ring-1 ring-[#0463EF]' 
+                              ? 'border-[#1f5df9] bg-blue-50/50 text-[#010136] ring-1 ring-[#1f5df9]' 
                               : 'border-slate-200 bg-white hover:border-slate-300 text-slate-500 hover:bg-slate-50'
                           }`}
                         >
@@ -3679,7 +3679,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                               type="text"
                               value={node.data.fileNamingTemplate !== undefined ? node.data.fileNamingTemplate : "{job#}_{doc_type}_{date}"}
                               onChange={(e) => updateNodeData(node.id, { fileNamingTemplate: e.target.value })}
-                              className="w-full bg-slate-50 p-3 text-xs font-bold text-[#010136] border border-slate-200 rounded-[4px] focus:outline-none focus:border-[#0463EF] focus:ring-1 focus:ring-[#0463EF]/20 transition-all font-mono"
+                              className="w-full bg-slate-50 p-3 text-xs font-bold text-[#010136] border border-slate-200 rounded-[4px] focus:outline-none focus:border-[#1f5df9] focus:ring-1 focus:ring-[#1f5df9]/20 transition-all font-mono"
                               placeholder="{job#}_{doc_type}_{date}"
                             />
                           </div>
@@ -3697,7 +3697,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                                     const currentTemplate = node.data.fileNamingTemplate !== undefined ? node.data.fileNamingTemplate : "{job#}_{doc_type}_{date}";
                                     updateNodeData(node.id, { fileNamingTemplate: currentTemplate + tag });
                                   }}
-                                  className="px-1.5 py-0.5 bg-white hover:bg-blue-50 hover:border-[#0463EF] border border-slate-200 text-[#0463EF] rounded-[4px] text-[10px] font-mono font-bold transition-all"
+                                  className="px-1.5 py-0.5 bg-white hover:bg-blue-50 hover:border-[#1f5df9] border border-slate-200 text-[#1f5df9] rounded-[4px] text-[10px] font-mono font-bold transition-all"
                                 >
                                   {tag}
                                 </button>
@@ -3709,7 +3709,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
 
                       {/* Preview for File Naming */}
                       <div className="flex flex-col gap-1 p-2.5 bg-blue-50/50 border border-blue-100 rounded-[8px]">
-                        <p className="text-[9px] font-black text-[#0463EF] uppercase tracking-wider leading-none">
+                        <p className="text-[9px] font-black text-[#1f5df9] uppercase tracking-wider leading-none">
                           {language === 'TH' ? 'ตัวอย่างชื่อไฟล์จริง:' : 'File Name Preview:'}
                         </p>
                         <p className="text-[11px] font-bold text-slate-600 font-mono break-all leading-relaxed mt-1">
@@ -3744,7 +3744,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                       {/* Section 1: Label schema */}
                       <div className="p-4 bg-white border border-slate-200 shadow-sm rounded-[16px] space-y-4 font-sans">
                         <div className="flex items-center gap-2">
-                          <Layers size={16} className="text-[#0463EF]" />
+                          <Layers size={16} className="text-[#1f5df9]" />
                           <h4 className="text-xs font-black text-[#010136] uppercase tracking-wider">
                             Section 1: Label Schema <span className="text-rose-500 font-bold">*</span>
                           </h4>
@@ -3762,7 +3762,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                                   setDrawerNodeId(null);
                                   window.dispatchEvent(new CustomEvent('change-view', { detail: 'SETTINGS_LABEL_SCHEMA' }));
                                 }}
-                                className="text-[#0463EF] hover:underline font-bold text-xs flex items-center gap-1 cursor-pointer"
+                                className="text-[#1f5df9] hover:underline font-bold text-xs flex items-center gap-1 cursor-pointer"
                               >
                                 {language === 'TH' ? 'ไปสร้าง Label schema →' : 'Go to create Label schema →'}
                               </button>
@@ -3772,7 +3772,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                               <select 
                                 value={selectedSchemaId}
                                 onChange={(e) => updateNodeData(node.id, { schemaId: e.target.value })}
-                                className="w-full bg-slate-50 p-3 text-xs font-bold text-[#010136] border border-slate-200 rounded-[4px] focus:outline-none focus:border-[#0463EF] focus:ring-1 focus:ring-[#0463EF]/20 transition-all cursor-pointer"
+                                className="w-full bg-slate-50 p-3 text-xs font-bold text-[#010136] border border-slate-200 rounded-[4px] focus:outline-none focus:border-[#1f5df9] focus:ring-1 focus:ring-[#1f5df9]/20 transition-all cursor-pointer"
                               >
                                 <option value="" disabled className="text-slate-400">
                                   {language === 'TH' ? '-- เลือก Label Schema --' : '-- Choose Label Schema --'}
@@ -3787,7 +3787,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                               {/* Schema Summary Preview */}
                               {selectedSchema && (
                                 <div className="p-4 bg-blue-50/40 border border-blue-100 rounded-[8px] space-y-3 animate-in fade-in duration-200">
-                                  <p className="text-[10px] font-black text-[#0463EF] uppercase tracking-wider">
+                                  <p className="text-[10px] font-black text-[#1f5df9] uppercase tracking-wider">
                                     {language === 'TH' ? 'สรุป Schema ที่เลือก:' : 'Selected Schema Summary:'}
                                   </p>
                                   <div className="space-y-2">
@@ -3797,10 +3797,10 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                                       return (
                                         <div key={config.docTypeId} className="flex items-center justify-between bg-white px-3 py-2 rounded-lg border border-blue-100/40">
                                           <div className="flex items-center gap-1.5">
-                                            <FileText size={12} className="text-[#0463EF]" />
+                                            <FileText size={12} className="text-[#1f5df9]" />
                                             <span className="text-[11px] font-black text-slate-700">{docTypeName}</span>
                                           </div>
-                                          <span className="text-[10px] font-black bg-blue-50 text-[#0463EF] px-2 py-0.5 rounded" style={{ borderRadius: '4px' }}>
+                                          <span className="text-[10px] font-black bg-blue-50 text-[#1f5df9] px-2 py-0.5 rounded" style={{ borderRadius: '4px' }}>
                                             {labelCount} {language === 'TH' ? 'Labels' : 'Labels'}
                                           </span>
                                         </div>
@@ -3822,7 +3822,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                       {/* Section 2: Confidence Threshold */}
                       <div className="p-4 bg-white border border-slate-200 shadow-sm rounded-[16px] space-y-4 font-sans">
                         <div className="flex items-center gap-2">
-                          <ShieldCheck size={16} className="text-[#0463EF]" />
+                          <ShieldCheck size={16} className="text-[#1f5df9]" />
                           <h4 className="text-xs font-black text-[#010136] uppercase tracking-wider">
                             Section 2: Confidence Threshold <span className="text-rose-500 font-bold">*</span>
                           </h4>
@@ -3842,10 +3842,10 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                                     onChange={(e) => {
                                       updateNodeData(node.id, { confidenceThreshold: Number(e.target.value) });
                                     }}
-                                    className="flex-1 accent-[#0463EF] h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer"
+                                    className="flex-1 accent-[#1f5df9] h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer"
                                   />
                                   <div className="flex items-center gap-1 bg-blue-50 border border-blue-100 px-3 py-1" style={{ borderRadius: '4px' }}>
-                                    <span className="text-xs font-black text-[#0463EF] font-mono">{currentValue}%</span>
+                                    <span className="text-xs font-black text-[#1f5df9] font-mono">{currentValue}%</span>
                                   </div>
                                 </div>
 
@@ -3860,7 +3860,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                                         onClick={() => updateNodeData(node.id, { confidenceThreshold: preset })}
                                         className={`px-3 py-1 text-xs font-black font-mono transition-all cursor-pointer ${
                                           isSelected 
-                                            ? 'bg-[#0463EF] border-[#0463EF] text-white shadow-sm' 
+                                            ? 'bg-[#1f5df9] border-[#1f5df9] text-white shadow-sm' 
                                             : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100 hover:border-slate-300'
                                         }`}
                                         style={{ borderRadius: '4px' }}
@@ -3892,7 +3892,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                       <div className="p-4 bg-white border border-slate-200 shadow-sm rounded-[16px] space-y-4 font-sans">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <UserCheck size={16} className="text-[#0463EF]" />
+                            <UserCheck size={16} className="text-[#1f5df9]" />
                             <h4 className="text-xs font-black text-[#010136] uppercase tracking-wider">
                               Section 3: Allow Review
                             </h4>
@@ -3905,7 +3905,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                               updateNodeData(node.id, { allowReview: newVal });
                             }}
                             className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                              node.data.allowReview !== false ? 'bg-[#0463EF]' : 'bg-slate-200'
+                              node.data.allowReview !== false ? 'bg-[#1f5df9]' : 'bg-slate-200'
                             }`}
                           >
                             <span

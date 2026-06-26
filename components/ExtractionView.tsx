@@ -915,7 +915,7 @@ export const ExtractionView: React.FC<ExtractionViewProps> = ({ item, language, 
                <div className="p-4 bg-white border-t border-slate-200 shrink-0">
                    <button 
                       onClick={onSave}
-                      className="w-full bg-[#1d4ed8] hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-sm transition-all active:scale-[0.98] flex justify-center items-center gap-2"
+                      className="w-full bg-[#1f5df9] hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-sm transition-all active:scale-[0.98] flex justify-center items-center gap-2"
                    >
                       <Check size={18} />
                       {getSaveButtonLabel()}

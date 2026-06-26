@@ -1856,7 +1856,7 @@ const mockWorkflows: Workflow[] = [
         color: 'bg-teal-50 border-teal-200 text-teal-700',
         label: language === 'TH' ? 'ส่งออกแล้ว (EXPORTED)' : 'EXPORTED',
         desc: language === 'TH' ? 'รายการตรวจสอบได้รับการส่งออกข้อมูลเรียบร้อยแล้ว' : 'Comparison task was successfully exported',
-        action: language === 'TH' ? 'ข้อมูลจะคงอยู่บน Job board เพื่อความโปร่งใส โดยปุ่มทำงานต่างๆ จะถูกแสดงในรูปแบบอ่านอย่างเดียว (Read-only) เพื่อความปลอดภัยสูงสุด' : 'The job persists in the list for transparency while locking any action buttons to ensure data safety via a read-only layout.'
+        action: language === 'TH' ? 'ข้อมูลจะคงอยู่บนรายการงาน (Job) เพื่อความโปร่งใส โดยปุ่มทำงานต่างๆ จะถูกแสดงในรูปแบบอ่านอย่างเดียว (Read-only) เพื่อความปลอดภัยสูงสุด' : 'The job persists in the list for transparency while locking any action buttons to ensure data safety via a read-only layout.'
       }
     ];
 
@@ -2249,7 +2249,7 @@ const mockWorkflows: Workflow[] = [
           <div className="p-5 pb-3">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-sm font-black text-[#010136] tracking-tight flex items-center gap-2 font-sans">
-                <Inbox size={18} className="text-[#0463EF]" />
+                <Inbox size={18} className="text-[#1f5df9]" />
                 {language === 'TH' ? 'รายการรอรีวิว' : 'PENDING INBOX'} <span className="text-slate-500 font-bold ml-0.5 font-sans">({pendingInboxItems.length})</span>
               </h2>
             </div>
@@ -2260,8 +2260,8 @@ const mockWorkflows: Workflow[] = [
                   key={f}
                   className={`px-4 py-2 rounded-xl font-bold uppercase tracking-wider text-[10px] transition-all border font-sans ${
                     pendingFilter === f 
-                      ? 'bg-[#0463EF] text-white border-[#0463EF] shadow-md shadow-blue-200' 
-                      : 'bg-white text-slate-500 border-slate-200 hover:border-blue-300 hover:text-[#0463EF]'
+                      ? 'bg-[#1f5df9] text-white border-[#1f5df9] shadow-md shadow-blue-200' 
+                      : 'bg-white text-slate-500 border-slate-200 hover:border-blue-300 hover:text-[#1f5df9]'
                   }`}
                   onClick={() => setPendingFilter(f)}
                 >
@@ -2278,7 +2278,7 @@ const mockWorkflows: Workflow[] = [
                   key={item.id}
                   className={`mx-3 px-5 py-[18px] cursor-pointer transition-all relative border-l-[3px] rounded-r-2xl ${
                     selectedPendingId === item.id || (!selectedPendingId && filteredItems[0]?.id === item.id)
-                      ? 'bg-white border-[#0463EF] shadow-[0_4px_12px_rgba(0,0,0,0.05)] z-10' 
+                      ? 'bg-white border-[#1f5df9] shadow-[0_4px_12px_rgba(0,0,0,0.05)] z-10' 
                       : 'bg-transparent border-transparent hover:bg-white/60 hover:shadow-sm'
                   }`}
                   onClick={() => {
@@ -2288,12 +2288,12 @@ const mockWorkflows: Workflow[] = [
                 >
                   <div className="flex items-center gap-2 mb-2">
                     {!readPendingIds.has(item.id) && (
-                      <div className="w-2.5 h-2.5 rounded-full bg-[#0463EF] shadow-[0_0_8px_rgba(4,99,239,0.4)]"></div>
+                      <div className="w-2.5 h-2.5 rounded-full bg-[#1f5df9] shadow-[0_0_8px_rgba(4,99,239,0.4)]"></div>
                     )}
                     <Tag 
                       variant="filled" 
                       className={`text-[8px] font-black uppercase tracking-tighter px-2 py-0.5 rounded-md m-0 border-none font-sans ${
-                        item.typeBadge === 'Email review' ? 'bg-blue-50 text-[#0463EF]' : 'bg-indigo-50 text-indigo-600'
+                        item.typeBadge === 'Email review' ? 'bg-blue-50 text-[#1f5df9]' : 'bg-indigo-50 text-indigo-600'
                       }`}
                     >
                       {item.typeBadge}
@@ -2327,7 +2327,7 @@ const mockWorkflows: Workflow[] = [
               <div className="px-8 py-7 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white z-20">
                 <div className="min-w-0">
                   <div className="flex items-center gap-3 mb-2">
-                    <Tag variant="filled" className="bg-[#0463EF] text-white font-black text-[9px] uppercase tracking-widest rounded-md border-none px-2 py-0.5 font-sans">
+                    <Tag variant="filled" className="bg-[#1f5df9] text-white font-black text-[9px] uppercase tracking-widest rounded-md border-none px-2 py-0.5 font-sans">
                       {activeItem.typeBadge}
                     </Tag>
                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] font-sans">{activeItem.workflow}</span>
@@ -2373,7 +2373,7 @@ const mockWorkflows: Workflow[] = [
                         </div>
                         <div className="flex items-center">
                           <span className="w-32 text-[11px] font-black text-slate-400 uppercase tracking-widest font-sans">SUBJECT</span>
-                          <span className="text-[13px] font-black text-[#0463EF] font-sans">{activeItem.subject}</span>
+                          <span className="text-[13px] font-black text-[#1f5df9] font-sans">{activeItem.subject}</span>
                         </div>
                         <div className="flex items-start bg-slate-50/60 p-6 rounded-3xl mt-6 border border-slate-100">
                           <span className="w-32 text-[11px] font-black text-slate-400 uppercase tracking-widest mt-1.5 font-sans shrink-0">BODY</span>
@@ -2411,7 +2411,7 @@ const mockWorkflows: Workflow[] = [
                                   setSelectedJob(matchedJob);
                                   setPdfPreviewUrl(file);
                                 }}
-                                className="bg-white border border-slate-200 rounded-xl py-1.5 px-4 text-[11px] font-black text-[#0463EF] flex items-center gap-2.5 hover:border-blue-300 hover:shadow-sm transition-all cursor-pointer font-sans"
+                                className="bg-white border border-slate-200 rounded-xl py-1.5 px-4 text-[11px] font-black text-[#1f5df9] flex items-center gap-2.5 hover:border-blue-300 hover:shadow-sm transition-all cursor-pointer font-sans"
                               >
                                 <FileIcon size={16} className="text-slate-400" />
                                 {file}
@@ -2424,17 +2424,17 @@ const mockWorkflows: Workflow[] = [
 
                 {/* AI Analysis Section */}
                 <div className="bg-[#f0f7ff] border border-blue-100 rounded-[32px] p-8 relative overflow-hidden group">
-                  <div className="absolute -top-10 -right-10 p-4 opacity-[0.03] text-[#0463EF]">
+                  <div className="absolute -top-10 -right-10 p-4 opacity-[0.03] text-[#1f5df9]">
                     <Bot size={140} />
                   </div>
                   <div className="flex items-center justify-between mb-5">
-                    <h3 className="text-[10px] font-black text-[#0463EF] uppercase tracking-[0.25em] flex items-center gap-3 font-sans">
+                    <h3 className="text-[10px] font-black text-[#1f5df9] uppercase tracking-[0.25em] flex items-center gap-3 font-sans">
                       <div className="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center">
                         <Bot size={16} />
                       </div>
                       AI ANALYSIS
                     </h3>
-                    <div className="bg-white px-3 py-1 rounded-full text-[#0463EF] font-black text-[10px] tracking-widest shadow-sm font-sans border border-blue-50">
+                    <div className="bg-white px-3 py-1 rounded-full text-[#1f5df9] font-black text-[10px] tracking-widest shadow-sm font-sans border border-blue-50">
                       {activeItem.aiConfidence}% CONFIDENCE
                     </div>
                   </div>
@@ -2449,7 +2449,7 @@ const mockWorkflows: Workflow[] = [
                       <div className="flex items-start justify-between">
                         <div>
                           <div className="flex items-center gap-3 mb-2">
-                             <FileSpreadsheet size={24} className="text-[#0463EF]" />
+                             <FileSpreadsheet size={24} className="text-[#1f5df9]" />
                              <h3 className="text-lg font-black text-[#010136] tracking-tight font-sans break-all">{activeItem.title}</h3>
                           </div>
                           <p className="text-[12px] font-bold text-slate-500 font-sans ml-9 flex items-center gap-2">
@@ -2460,7 +2460,7 @@ const mockWorkflows: Workflow[] = [
                         </div>
                         <Button 
                           type="default"
-                          icon={<ScanEye size={15} className="text-[#0463EF]" />}
+                          icon={<ScanEye size={15} className="text-[#1f5df9]" />}
                           onClick={() => {
                             const matchedJob = jobs.find(j => j.reference === activeItem.jobNo) || {
                               id: activeItem.jobNo || 'job-temp',
@@ -2484,25 +2484,25 @@ const mockWorkflows: Workflow[] = [
                             setSelectedJob(matchedJob);
                             setPdfPreviewUrl(activeItem.title);
                           }}
-                          className="font-bold border-[#0463EF] text-[#0463EF] hover:bg-blue-50/50 shadow-2xs font-sans h-9"
+                          className="font-bold border-[#1f5df9] text-[#1f5df9] hover:bg-blue-50/50 shadow-2xs font-sans h-9"
                           style={{ borderRadius: '4px' }}
                         >
                           {language === 'TH' ? 'ดูไฟล์' : 'View File'}
                         </Button>
                       </div>
 
-                      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border-l-4 border-l-[#0463EF]">
+                      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border-l-4 border-l-[#1f5df9]">
                          <div className="flex items-center justify-between mb-4">
                            <div className="flex items-center gap-2">
-                             <div className="w-7 h-7 rounded-full bg-blue-50 flex items-center justify-center text-[#0463EF]">
+                             <div className="w-7 h-7 rounded-full bg-blue-50 flex items-center justify-center text-[#1f5df9]">
                                <Bot size={14} />
                              </div>
                              <span className="text-[11px] font-black text-slate-600 uppercase tracking-widest flex items-center gap-2 font-sans">
                                {language === 'TH' ? 'AI แนะนำประเภทเอกสาร:' : 'AI Suggests:'}
-                               <span className="bg-[#0463EF] text-white px-2 py-0.5 rounded font-black text-[10px] tracking-wider ml-1">{activeItem.aiSuggestedType || 'UNKNOWN'}</span>
+                               <span className="bg-[#1f5df9] text-white px-2 py-0.5 rounded font-black text-[10px] tracking-wider ml-1">{activeItem.aiSuggestedType || 'UNKNOWN'}</span>
                              </span>
                            </div>
-                           <Tag className="m-0 bg-blue-50 border-blue-100 text-[#0463EF] font-black text-[10px] px-3 py-1 flex items-center gap-1.5 font-sans">
+                           <Tag className="m-0 bg-blue-50 border-blue-100 text-[#1f5df9] font-black text-[10px] px-3 py-1 flex items-center gap-1.5 font-sans">
                              {activeItem.aiConfidence}% {language === 'TH' ? 'มั่นใจ' : 'CONFIDENCE'}
                            </Tag>
                          </div>
@@ -2530,23 +2530,23 @@ const mockWorkflows: Workflow[] = [
                                onClick={() => setPendingDocTypeSelections(prev => ({ ...prev, [activeItem.id]: type }))}
                                className={`p-4 rounded-xl border text-left flex flex-col items-start gap-2 transition-all font-sans relative overflow-hidden group ${
                                  isSelected 
-                                 ? 'border-[#0463EF] bg-white shadow-[0_4px_12px_rgba(4,99,239,0.1)] ring-1 ring-[#0463EF]' 
+                                 ? 'border-[#1f5df9] bg-white shadow-[0_4px_12px_rgba(4,99,239,0.1)] ring-1 ring-[#1f5df9]' 
                                  : 'border-slate-200 bg-white hover:border-blue-300 hover:bg-slate-50/50'
                                }`}
                              >
                                <div className="flex items-center justify-between w-full">
-                                 <span className={`text-[12px] font-black uppercase tracking-widest line-clamp-1 ${isSelected ? 'text-[#0463EF]' : 'text-slate-600 group-hover:text-slate-900'}`}>
+                                 <span className={`text-[12px] font-black uppercase tracking-widest line-clamp-1 ${isSelected ? 'text-[#1f5df9]' : 'text-slate-600 group-hover:text-slate-900'}`}>
                                    {type}
                                  </span>
                                  {isSelected && (
-                                   <CheckCircle2 size={16} className="text-[#0463EF] shrink-0" />
+                                   <CheckCircle2 size={16} className="text-[#1f5df9] shrink-0" />
                                  )}
                                </div>
                                {isAiSuggested && !isSelected && (
                                  <span className="text-[9px] font-black text-amber-500 bg-amber-50 px-1.5 py-0.5 rounded leading-none">AI SUGGESTED</span>
                                )}
                                {isSelected && isAiSuggested && (
-                                 <span className="text-[9px] font-black text-[#0463EF] bg-blue-50 px-1.5 py-0.5 rounded leading-none flex items-center gap-1"><Bot size={10} /> AI SUGGESTED</span>
+                                 <span className="text-[9px] font-black text-[#1f5df9] bg-blue-50 px-1.5 py-0.5 rounded leading-none flex items-center gap-1"><Bot size={10} /> AI SUGGESTED</span>
                                )}
                              </button>
                            );
@@ -2579,7 +2579,7 @@ const mockWorkflows: Workflow[] = [
       <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm h-[640px] flex flex-col animate-in fade-in duration-700 font-sans">
         <div className="p-6 border-b border-slate-100 bg-slate-50/30 flex items-center justify-between">
           <h2 className="text-sm font-black text-[#010136] tracking-tight flex items-center gap-3">
-            <Clock size={18} className="text-[#0463EF]" />
+            <Clock size={18} className="text-[#1f5df9]" />
             {language === 'TH' ? 'บันทึกประวัติ' : 'ACTIVITY LOGS'}
           </h2>
           <div className="flex bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm">
@@ -2588,8 +2588,8 @@ const mockWorkflows: Workflow[] = [
                 key={f}
                 className={`px-4 py-2 rounded-lg font-black uppercase tracking-widest text-[11px] transition-all font-sans ${
                   logFilter === f 
-                    ? 'bg-[#0463EF] text-white shadow-md shadow-blue-200' 
-                    : 'text-slate-500 hover:text-[#0463EF] hover:bg-blue-50/50'
+                    ? 'bg-[#1f5df9] text-white shadow-md shadow-blue-200' 
+                    : 'text-slate-500 hover:text-[#1f5df9] hover:bg-blue-50/50'
                 }`}
                 onClick={() => setLogFilter(f)}
               >
@@ -2626,7 +2626,7 @@ const mockWorkflows: Workflow[] = [
                   </td>
                   <td className="px-8 py-5 align-top">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-blue-50 text-[#0463EF] flex items-center justify-center border border-blue-100">
+                      <div className="w-8 h-8 rounded-full bg-blue-50 text-[#1f5df9] flex items-center justify-center border border-blue-100">
                         <User size={14} />
                       </div>
                       <span className="text-[12px] font-black text-slate-700 truncate">{log.user}</span>
@@ -2638,7 +2638,7 @@ const mockWorkflows: Workflow[] = [
                       className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-lg m-0 border-none ${
                         log.action.includes('REJECT') ? 'bg-rose-50 text-rose-600' :
                         log.action.includes('APPROVE') || log.action.includes('DONE') ? 'bg-emerald-50 text-emerald-600' :
-                        'bg-blue-50 text-[#0463EF]'
+                        'bg-blue-50 text-[#1f5df9]'
                       }`}
                     >
                       {log.action}
@@ -2653,7 +2653,7 @@ const mockWorkflows: Workflow[] = [
                         <button
                           type="button"
                           onClick={() => handleRestorePending(log)}
-                          className="shrink-0 px-3 py-1 bg-blue-50 hover:bg-[#0463EF] text-[#0463EF] hover:text-white border border-blue-100 rounded-lg text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-3xs cursor-pointer active:scale-95"
+                          className="shrink-0 px-3 py-1 bg-blue-50 hover:bg-[#1f5df9] text-[#1f5df9] hover:text-white border border-blue-100 rounded-lg text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-3xs cursor-pointer active:scale-95"
                           title={language === 'TH' ? 'กู้คืนรายการกลับสู่ Inbox' : 'Restore back to Inbox'}
                         >
                           <RotateCcw size={11} strokeWidth={3} />
@@ -2697,7 +2697,7 @@ const mockWorkflows: Workflow[] = [
         label: language === 'TH' ? 'งานของฉันที่ทำค้างอยู่' : 'My Pending Shipments', 
         count: myPendingShipments, 
         icon: <ArrowLeftRight size={18} />, 
-        color: 'bg-blue-50 text-[#0463EF]',
+        color: 'bg-blue-50 text-[#1f5df9]',
         dotColor: 'bg-blue-500 shadow-[0_0_8px_rgba(4,99,239,0.4)]'
       },
       { 
@@ -2751,7 +2751,7 @@ const mockWorkflows: Workflow[] = [
                 placeholder={language === 'TH' ? 'ค้นหาเลขที่ Shipment...' : 'Search Shipment Reference...'}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-white border border-slate-200 rounded-xl py-2 pl-11 pr-4 focus:ring-4 focus:ring-blue-500/10 focus:border-[#0463EF] text-sm font-bold outline-none shadow-sm font-sans transition-all"
+                className="w-full bg-white border border-slate-200 rounded-xl py-2 pl-11 pr-4 focus:ring-4 focus:ring-blue-500/10 focus:border-[#1f5df9] text-sm font-bold outline-none shadow-sm font-sans transition-all"
               />
             </div>
             
@@ -2764,7 +2764,7 @@ const mockWorkflows: Workflow[] = [
                     setStatusFilter(e.target.value);
                     setCurrentPage(1);
                   }}
-                  className="bg-white border border-slate-200 rounded-xl py-2 px-4 pr-10 focus:ring-4 focus:ring-blue-500/10 focus:border-[#0463EF] text-[11px] font-black uppercase tracking-tight appearance-none cursor-pointer outline-none shadow-sm font-sans transition-all"
+                  className="bg-white border border-slate-200 rounded-xl py-2 px-4 pr-10 focus:ring-4 focus:ring-blue-500/10 focus:border-[#1f5df9] text-[11px] font-black uppercase tracking-tight appearance-none cursor-pointer outline-none shadow-sm font-sans transition-all"
                 >
                   <option value="ALL">{language === 'TH' ? 'ทั้งหมด' : 'ALL'}</option>
                   <option value="PENDING">{language === 'TH' ? 'ยังไม่เสร็จ' : 'UNFINISHED'}</option>
@@ -2805,7 +2805,7 @@ const mockWorkflows: Workflow[] = [
                       >
                         <td className="px-8 py-5">
                           <div className="flex items-center gap-3">
-                            <div className="p-2 bg-blue-50 text-[#0463EF] rounded-lg">
+                            <div className="p-2 bg-blue-50 text-[#1f5df9] rounded-lg">
                               <FileSpreadsheet size={18} />
                             </div>
                             <div>
@@ -2852,7 +2852,7 @@ const mockWorkflows: Workflow[] = [
                               e.stopPropagation();
                               setSelectedShipment(shipment.reference);
                             }}
-                            className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-[#0463EF] font-black text-xs rounded-lg flex items-center gap-1 transition-all cursor-pointer"
+                            className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-[#1f5df9] font-black text-xs rounded-lg flex items-center gap-1 transition-all cursor-pointer"
                           >
                             <span>{language === 'TH' ? 'ดูงานย่อย' : 'VIEW JOBS'}</span>
                             <ArrowRight size={14} />
@@ -2947,7 +2947,7 @@ const mockWorkflows: Workflow[] = [
           </div>
           <button 
             onClick={() => setShowCreateJobModal(true)}
-            className="px-4 py-2 bg-[#0463EF] text-white rounded-lg flex items-center gap-2 text-xs font-black uppercase tracking-widest hover:bg-blue-600 transition-all shadow-sm cursor-pointer"
+            className="px-4 py-2 bg-[#1f5df9] text-white rounded-lg flex items-center gap-2 text-xs font-black uppercase tracking-widest hover:bg-blue-600 transition-all shadow-sm cursor-pointer"
           >
             <Plus size={16} />
             {language === 'TH' ? 'สร้างรายการย่อย' : 'CREATE CHILD JOB'}
@@ -2988,7 +2988,7 @@ const mockWorkflows: Workflow[] = [
                           <div className={`w-2.5 h-2.5 rounded-full shadow-sm ${
                             job.status === JobStatus.READY ? 'bg-emerald-500 shadow-emerald-200' : 
                             job.status === JobStatus.DONE ? 'bg-teal-500 shadow-teal-200' : 
-                            job.status === JobStatus.PENDING ? 'bg-[#0463EF] shadow-blue-200' : 
+                            job.status === JobStatus.PENDING ? 'bg-[#1f5df9] shadow-blue-200' : 
                             job.status === JobStatus.REVIEW ? 'bg-amber-500 shadow-amber-200' : 
                             job.status === JobStatus.PROCESSING ? 'bg-blue-600 animate-pulse' : 
                             'bg-slate-300'
@@ -3026,7 +3026,7 @@ const mockWorkflows: Workflow[] = [
                                 setSelectedJob(job);
                                 setStep(1);
                               }}
-                              className={`p-2.5 rounded-xl transition-all ${isProcessing ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:text-[#0463EF] hover:bg-blue-50'}`}
+                              className={`p-2.5 rounded-xl transition-all ${isProcessing ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:text-[#1f5df9] hover:bg-blue-50'}`}
                             >
                               <Eye size={20} />
                             </button>
@@ -3048,7 +3048,7 @@ const mockWorkflows: Workflow[] = [
                                   setSelectedExportPlatform('FTA');
                                 }
                               }}
-                              className={`p-2.5 transition-all rounded-xl ${job.status === JobStatus.READY && !isProcessing ? 'text-[#0463EF] hover:bg-blue-50 cursor-pointer' : 'text-slate-200 cursor-not-allowed'}`}
+                              className={`p-2.5 transition-all rounded-xl ${job.status === JobStatus.READY && !isProcessing ? 'text-[#1f5df9] hover:bg-blue-50 cursor-pointer' : 'text-slate-200 cursor-not-allowed'}`}
                             >
                               <Send size={20} />
                             </button>
@@ -3199,7 +3199,7 @@ const mockWorkflows: Workflow[] = [
                     setStatusFilter(e.target.value);
                     setCurrentPage(1);
                   }}
-                  className="bg-white border border-slate-200 rounded-xl py-2 px-4 pr-10 focus:ring-4 focus:ring-blue-500/10 focus:border-[#0463EF] text-[11px] font-black uppercase tracking-tight appearance-none cursor-pointer outline-none shadow-sm font-sans transition-all"
+                  className="bg-white border border-slate-200 rounded-xl py-2 px-4 pr-10 focus:ring-4 focus:ring-blue-500/10 focus:border-[#1f5df9] text-[11px] font-black uppercase tracking-tight appearance-none cursor-pointer outline-none shadow-sm font-sans transition-all"
                 >
                   <option value="ALL">{language === 'TH' ? 'ทั้งหมด' : 'ALL'}</option>
                   <option value="NEW">{language === 'TH' ? 'รอไฟล์ครบ' : 'PENDING FILES'}</option>
@@ -3222,7 +3222,7 @@ const mockWorkflows: Workflow[] = [
                     setJobTypeFilter(e.target.value);
                     setCurrentPage(1);
                   }}
-                  className="bg-white border border-slate-200 rounded-xl py-2 px-4 pr-10 focus:ring-4 focus:ring-blue-500/10 focus:border-[#0463EF] text-[11px] font-black uppercase tracking-tight appearance-none cursor-pointer outline-none shadow-sm font-sans transition-all w-[180px] truncate"
+                  className="bg-white border border-slate-200 rounded-xl py-2 px-4 pr-10 focus:ring-4 focus:ring-blue-500/10 focus:border-[#1f5df9] text-[11px] font-black uppercase tracking-tight appearance-none cursor-pointer outline-none shadow-sm font-sans transition-all w-[180px] truncate"
                 >
                   <option value="ALL">ประเภทงานทั้งหมด</option>
                   {Array.from(new Set(jobs.map(j => j.workflowName).filter(Boolean))).map(type => (
@@ -3242,7 +3242,7 @@ const mockWorkflows: Workflow[] = [
                     setAssigneeFilter(e.target.value);
                     setCurrentPage(1);
                   }}
-                  className="bg-white border border-slate-200 rounded-xl py-2 px-4 pr-10 focus:ring-4 focus:ring-blue-500/10 focus:border-[#0463EF] text-[11px] font-black uppercase tracking-tight appearance-none cursor-pointer outline-none shadow-sm font-sans transition-all w-[160px] truncate"
+                  className="bg-white border border-slate-200 rounded-xl py-2 px-4 pr-10 focus:ring-4 focus:ring-blue-500/10 focus:border-[#1f5df9] text-[11px] font-black uppercase tracking-tight appearance-none cursor-pointer outline-none shadow-sm font-sans transition-all w-[160px] truncate"
                 >
                   <option value="ALL">{language === 'TH' ? 'ผู้รับผิดชอบทั้งหมด' : 'ALL ASSIGNEES'}</option>
                   <option value="UNASSIGNED">{language === 'TH' ? 'ยังไม่ได้มอบหมาย' : 'UNASSIGNED'}</option>
@@ -3262,7 +3262,7 @@ const mockWorkflows: Workflow[] = [
                 <select 
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="bg-white border border-slate-200 rounded-xl py-2 px-4 pr-10 focus:ring-4 focus:ring-blue-500/10 focus:border-[#0463EF] text-[11px] font-black uppercase tracking-tight appearance-none cursor-pointer outline-none shadow-sm font-sans transition-all w-[200px]"
+                  className="bg-white border border-slate-200 rounded-xl py-2 px-4 pr-10 focus:ring-4 focus:ring-blue-500/10 focus:border-[#1f5df9] text-[11px] font-black uppercase tracking-tight appearance-none cursor-pointer outline-none shadow-sm font-sans transition-all w-[200px]"
                 >
                   <option value="NEWEST">เรียงจากรายการใหม่ไปเก่า</option>
                   <option value="OLDEST">เรียงจากรายการเก่าไปใหม่</option>
@@ -3319,7 +3319,7 @@ const mockWorkflows: Workflow[] = [
                         <div className={`w-2.5 h-2.5 rounded-full shadow-sm ${
                           job.status === JobStatus.READY ? 'bg-emerald-500 shadow-emerald-200' : 
                           job.status === JobStatus.DONE ? 'bg-teal-500 shadow-teal-200' : 
-                          job.status === JobStatus.PENDING ? 'bg-[#0463EF] shadow-blue-200' : 
+                          job.status === JobStatus.PENDING ? 'bg-[#1f5df9] shadow-blue-200' : 
                           job.status === JobStatus.REVIEW ? 'bg-amber-500 shadow-amber-200' : 
                           job.status === JobStatus.PROCESSING ? 'bg-blue-600 animate-pulse' : 
                           'bg-slate-300'
@@ -3356,7 +3356,7 @@ const mockWorkflows: Workflow[] = [
                               setSelectedJob(job);
                               setStep(1);
                             }}
-                            className={`p-2.5 rounded-xl transition-all ${isProcessing ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:text-[#0463EF] hover:bg-blue-50'}`}
+                            className={`p-2.5 rounded-xl transition-all ${isProcessing ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:text-[#1f5df9] hover:bg-blue-50'}`}
                           >
                             <Eye size={20} />
                           </button>
@@ -3378,7 +3378,7 @@ const mockWorkflows: Workflow[] = [
                                 setSelectedExportPlatform('FTA');
                               }
                             }}
-                            className={`p-2.5 transition-all rounded-xl ${job.status === JobStatus.READY && !isProcessing ? 'text-[#0463EF] hover:bg-blue-50 cursor-pointer' : 'text-slate-200 cursor-not-allowed'}`}
+                            className={`p-2.5 transition-all rounded-xl ${job.status === JobStatus.READY && !isProcessing ? 'text-[#1f5df9] hover:bg-blue-50 cursor-pointer' : 'text-slate-200 cursor-not-allowed'}`}
                           >
                             <Send size={20} />
                           </button>
@@ -4551,7 +4551,7 @@ const mockWorkflows: Workflow[] = [
                                   <div className="border border-slate-200 rounded-xl p-4 flex-1 font-mono text-slate-500 font-bold text-[11px] space-y-2 whitespace-pre leading-relaxed bg-slate-50/50">
                                     {Object.entries(tempOCRData).slice(0, 10).map(([field, value]) => (
                                       <div key={field} className="flex justify-between border-b border-slate-100 py-1.5 font-sans text-xs">
-                                        <span className="text-[#0463EF] font-bold font-sans">{field}:</span>
+                                        <span className="text-[#1f5df9] font-bold font-sans">{field}:</span>
                                         <span className="text-[#010136] font-semibold font-sans">{value}</span>
                                       </div>
                                     ))}
@@ -4563,7 +4563,7 @@ const mockWorkflows: Workflow[] = [
                                   <div className="border border-slate-200 rounded-xl p-4 flex-1 font-mono text-slate-500 font-bold text-[11px] space-y-2 whitespace-pre leading-relaxed bg-slate-50/50 font-sans">
                                     {Object.entries(tempOCRData).slice(10, 20).map(([field, value]) => (
                                       <div key={field} className="flex justify-between border-b border-slate-100 py-1.5 font-sans text-xs">
-                                        <span className="text-[#0463EF] font-bold font-sans">{field}:</span>
+                                        <span className="text-[#1f5df9] font-bold font-sans">{field}:</span>
                                         <span className="text-[#010136] font-semibold font-sans">{value}</span>
                                       </div>
                                     ))}
@@ -4598,7 +4598,7 @@ const mockWorkflows: Workflow[] = [
                       onClick={() => setActiveRightTab('excel')}
                       className={`px-5 py-3 border-b-2 text-xs font-black uppercase tracking-wider transition-all leading-none ${
                         activeRightTab === 'excel' 
-                          ? 'border-[#0463EF] text-[#0463EF]' 
+                          ? 'border-[#1f5df9] text-[#1f5df9]' 
                           : 'border-transparent text-slate-400 hover:text-slate-600'
                       }`}
                     >
@@ -4608,7 +4608,7 @@ const mockWorkflows: Workflow[] = [
                       onClick={() => setActiveRightTab('json')}
                       className={`px-5 py-3 border-b-2 text-xs font-black uppercase tracking-wider transition-all leading-none ${
                         activeRightTab === 'json' 
-                          ? 'border-[#0463EF] text-[#0463EF]' 
+                          ? 'border-[#1f5df9] text-[#1f5df9]' 
                           : 'border-transparent text-slate-400 hover:text-slate-600'
                       }`}
                     >
@@ -4621,7 +4621,7 @@ const mockWorkflows: Workflow[] = [
                     <div className="flex-1 overflow-hidden flex flex-col bg-white min-h-0">
                       
                       {/* Excel Header row indicators */}
-                      <div className="grid grid-cols-12 px-6 py-3 border-b border-slate-200 bg-slate-50 text-[10px] font-black tracking-wider uppercase text-[#0463EF] shrink-0 font-sans">
+                      <div className="grid grid-cols-12 px-6 py-3 border-b border-slate-200 bg-slate-50 text-[10px] font-black tracking-wider uppercase text-[#1f5df9] shrink-0 font-sans">
                         <div className="col-span-5 font-sans">{language === 'TH' ? 'ชื่อฟิลด์' : 'FIELD'}</div>
                         <div className="col-span-7 pl-4 font-sans">{language === 'TH' ? 'ข้อมูลที่สกัด' : 'VALUE'}</div>
                       </div>
@@ -4656,9 +4656,9 @@ const mockWorkflows: Workflow[] = [
                                 className="bg-slate-100/80 px-4 py-2 border-b border-slate-200 sticky top-0 z-10 flex items-center justify-between relative cursor-pointer hover:bg-slate-200/50 transition-colors group/header"
                                 onClick={() => setCollapsedPreviewGroups(prev => ({ ...prev, [groupName]: !prev[groupName] }))}
                               >
-                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#0463EF]"></div>
+                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#1f5df9]"></div>
                                 <div className="flex items-center gap-2">
-                                  <div className="w-5 h-5 rounded bg-white border border-slate-200 shadow-sm flex items-center justify-center text-slate-500 group-hover/header:text-[#0463EF] group-hover/header:border-blue-200 transition-all pointer-events-none">
+                                  <div className="w-5 h-5 rounded bg-white border border-slate-200 shadow-sm flex items-center justify-center text-slate-500 group-hover/header:text-[#1f5df9] group-hover/header:border-blue-200 transition-all pointer-events-none">
                                     {collapsedPreviewGroups[groupName] ? <ChevronRight size={12} strokeWidth={3} /> : <ChevronDown size={12} strokeWidth={3} />}
                                   </div>
                                   <span className="text-[10px] font-black text-slate-800 uppercase tracking-widest pl-1 pointer-events-none">{groupName}</span>
@@ -4669,7 +4669,7 @@ const mockWorkflows: Workflow[] = [
                                 <div className="divide-y divide-slate-100 bg-white animate-in slide-in-from-top-1 fade-in duration-200">
                                   {items.map((res: any, i: number) => (
                                     <div key={i} className="grid grid-cols-12 hover:bg-slate-50/60 py-1.5 items-center transition-all bg-white relative">
-                                      <div className="col-span-5 text-[#0463EF] font-bold text-[12px] capitalize font-sans leading-relaxed tracking-tight px-3 break-words">
+                                      <div className="col-span-5 text-[#1f5df9] font-bold text-[12px] capitalize font-sans leading-relaxed tracking-tight px-3 break-words">
                                         {res.fieldName}
                                       </div>
                                       <div className="col-span-7 pl-2">
@@ -4678,7 +4678,7 @@ const mockWorkflows: Workflow[] = [
                                           value={tempOCRData[res.fieldName] || ''}
                                           disabled={isUnassigned || selectedJob?.status === JobStatus.DONE}
                                           onChange={(e) => setTempOCRData(prev => ({ ...prev, [res.fieldName]: e.target.value }))}
-                                          className={`w-full p-2 rounded-md text-[#010136] text-[13px] font-bold font-sans transition-all outline-none border border-transparent hover:border-slate-200 hover:bg-slate-50 focus:bg-white focus:border-[#0463EF] focus:ring-2 focus:ring-[#0463EF]/20 ${
+                                          className={`w-full p-2 rounded-md text-[#010136] text-[13px] font-bold font-sans transition-all outline-none border border-transparent hover:border-slate-200 hover:bg-slate-50 focus:bg-white focus:border-[#1f5df9] focus:ring-2 focus:ring-[#1f5df9]/20 ${
                                             selectedJob?.status === JobStatus.DONE 
                                               ? 'bg-transparent text-slate-500 cursor-not-allowed shadow-none font-semibold hover:border-transparent hover:bg-transparent' 
                                               : 'bg-transparent'
@@ -4764,7 +4764,7 @@ const mockWorkflows: Workflow[] = [
                       disabled={isUnassigned || !hasOCRChanges || selectedJob?.status === JobStatus.DONE}
                       className={`w-full py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2 group cursor-pointer ${
                         (!isUnassigned && hasOCRChanges) && selectedJob?.status !== JobStatus.DONE
-                          ? 'bg-[#0463EF] text-white shadow-lg shadow-blue-500/25 hover:bg-blue-600' 
+                          ? 'bg-[#1f5df9] text-white shadow-lg shadow-blue-500/25 hover:bg-blue-600' 
                           : 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-70 border border-slate-200/50 shadow-none'
                       }`}
                     >
@@ -5023,7 +5023,7 @@ const mockWorkflows: Workflow[] = [
                     setShowWorkflowWarning(false);
                     // Navigation logic would go here
                   }}
-                  className="w-full py-4 bg-[#0463EF] text-white rounded-[4px] font-black text-sm uppercase tracking-widest hover:bg-blue-600 transition-all flex items-center justify-center gap-2 border-none"
+                  className="w-full py-4 bg-[#1f5df9] text-white rounded-[4px] font-black text-sm uppercase tracking-widest hover:bg-blue-600 transition-all flex items-center justify-center gap-2 border-none"
                  >
                    {language === 'TH' ? 'ไปที่ตั้งค่าเวิร์กโฟลว์' : 'Go to Set Workflow'}
                  </button>
@@ -5046,7 +5046,7 @@ const mockWorkflows: Workflow[] = [
             {/* Header section with export tag & title */}
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#0463EF] flex items-center justify-center border border-blue-100">
+                <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#1f5df9] flex items-center justify-center border border-blue-100">
                   <Send size={24} strokeWidth={2.5} />
                 </div>
                 <div>
@@ -5085,7 +5085,7 @@ const mockWorkflows: Workflow[] = [
                     {language === 'TH' ? 'ส่งออกโดยใช้ Workflow (ตามระบบ)' : 'Export using Workflow (Default)'}
                   </span>
                   {exportJob.workflowName && (
-                    <span className="text-[9px] font-black text-[#0463EF] bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100 uppercase tracking-wider">
+                    <span className="text-[9px] font-black text-[#1f5df9] bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100 uppercase tracking-wider">
                       {language === 'TH' ? 'มีเวิร์กโฟลว์อยู่แล้ว' : 'Workflow Bound'}
                     </span>
                   )}
@@ -5098,7 +5098,7 @@ const mockWorkflows: Workflow[] = [
                       disabled={!!exportJob.workflowName}
                       value={exportJob.workflowName || selectedExportWorkflow}
                       onChange={(e) => setSelectedExportWorkflow(e.target.value)}
-                      className="w-full bg-white disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200/80 border border-slate-200/80 rounded-xl py-2.5 px-4 pr-10 focus:ring-4 focus:ring-blue-500/10 focus:border-[#0463EF] text-xs font-black uppercase tracking-tight appearance-none cursor-pointer disabled:cursor-not-allowed outline-none shadow-sm font-sans transition-all"
+                      className="w-full bg-white disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200/80 border border-slate-200/80 rounded-xl py-2.5 px-4 pr-10 focus:ring-4 focus:ring-blue-500/10 focus:border-[#1f5df9] text-xs font-black uppercase tracking-tight appearance-none cursor-pointer disabled:cursor-not-allowed outline-none shadow-sm font-sans transition-all"
                     >
                       <option value="">-- {language === 'TH' ? 'เลือกเวิร์กโฟลว์' : 'SELECT WORKFLOW'} --</option>
                       {mockWorkflows.map(wf => (
@@ -5139,7 +5139,7 @@ const mockWorkflows: Workflow[] = [
                 type="primary" 
                 size="large" 
                 disabled={exportOption === 'workflow' && !exportJob.workflowName && !selectedExportWorkflow}
-                className="flex-1 rounded-[4px] h-12 font-black uppercase tracking-widest text-[11px] bg-[#0463EF] hover:bg-[#0352c7] border-none shadow-lg shadow-blue-500/20 font-sans disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex-1 rounded-[4px] h-12 font-black uppercase tracking-widest text-[11px] bg-[#1f5df9] hover:bg-[#0352c7] border-none shadow-lg shadow-blue-500/20 font-sans disabled:opacity-40 disabled:cursor-not-allowed"
                 onClick={() => handleConfirmExport(exportJob)}
               >
                 {language === 'TH' ? 'ส่งออกข้อมูล' : 'EXPORT DATA'}
@@ -5153,7 +5153,7 @@ const mockWorkflows: Workflow[] = [
       {showClaimPrompt && selectedJob && (
         <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300">
            <div className="bg-white p-10 rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 text-center flex flex-col items-center gap-6 animate-in zoom-in-95 duration-300 animate-out fade-out duration-200">
-              <div className="w-24 h-24 rounded-full bg-blue-50 text-[#0463EF] flex items-center justify-center border-4 border-blue-100/50">
+              <div className="w-24 h-24 rounded-full bg-blue-50 text-[#1f5df9] flex items-center justify-center border-4 border-blue-100/50">
                  <UserPlus size={44} strokeWidth={2.5} />
               </div>
               <div>
@@ -5169,7 +5169,7 @@ const mockWorkflows: Workflow[] = [
               <div className="flex flex-col w-full gap-2.5 mt-2">
                   <button 
                     onClick={handleClaimJob}
-                    className="w-full py-3.5 bg-[#0463EF] hover:bg-blue-600 text-white rounded-[4px] font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-blue-500/10 hover:shadow-blue-500/25 border-none"
+                    className="w-full py-3.5 bg-[#1f5df9] hover:bg-blue-600 text-white rounded-[4px] font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-blue-500/10 hover:shadow-blue-500/25 border-none"
                   >
                     <Check size={16} strokeWidth={3} />
                     <span>{language === 'TH' ? 'ใช่, ยืนยันรับงาน' : 'YES, CLAIM JOB'}</span>
@@ -5301,7 +5301,7 @@ const mockWorkflows: Workflow[] = [
                 </div>
                 <button 
                   onClick={() => setShowCreateJobModal(true)}
-                  className="px-4 py-2 bg-[#0463EF] text-white rounded-lg flex items-center gap-2 text-xs font-black uppercase tracking-widest hover:bg-blue-600 transition-all shadow-sm cursor-pointer"
+                  className="px-4 py-2 bg-[#1f5df9] text-white rounded-lg flex items-center gap-2 text-xs font-black uppercase tracking-widest hover:bg-blue-600 transition-all shadow-sm cursor-pointer"
                   id="create-new-job-btn"
                 >
                   <Plus size={16} />
@@ -5366,8 +5366,8 @@ const mockWorkflows: Workflow[] = [
             .custom-job-tabs .ant-tabs-nav::before { border-bottom: 2px solid #f1f5f9; }
             .custom-job-tabs .ant-tabs-tab { padding: 4px 12px !important; margin: 0 24px 0 0 !important; }
             .custom-job-tabs .ant-tabs-tab-active .ant-tabs-tab-btn > div > span:first-of-type { color: #010136 !important; }
-            .custom-job-tabs .ant-tabs-tab-active svg { color: #0463EF !important; }
-            .custom-job-tabs .ant-tabs-ink-bar { background: #0463EF !important; height: 3px !important; border-radius: 3px 3px 0 0; }
+            .custom-job-tabs .ant-tabs-tab-active svg { color: #1f5df9 !important; }
+            .custom-job-tabs .ant-tabs-ink-bar { background: #1f5df9 !important; height: 3px !important; border-radius: 3px 3px 0 0; }
             .custom-job-tabs .ant-badge .ant-scroll-number-only-unit { color: white !important; }
           `}</style>
         </div>
@@ -5429,7 +5429,7 @@ const mockWorkflows: Workflow[] = [
                          <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{selectedJob.createdAt ? formatDisplayDate(selectedJob.createdAt) : 'N/A'}</p>
                          <div className="w-1 h-1 bg-slate-200 rounded-full"></div>
                          <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5 bg-slate-50 border border-slate-100 rounded-lg px-1.5 py-0.5 shadow-sm">
-                           <User size={9} className="text-[#0463EF]" />
+                           <User size={9} className="text-[#1f5df9]" />
                            <span className="text-slate-400 text-[8px]">{language === 'TH' ? 'ผู้รับผิดชอบ:' : 'USER:'}</span>
                            <span className="text-[#010136] font-extrabold font-mono text-[9px]">
                              {selectedJob.assignee || (language === 'TH' ? 'ยังไม่ได้มอบหมาย' : 'Unassigned')}
@@ -5449,7 +5449,7 @@ const mockWorkflows: Workflow[] = [
                           <button 
                             type="button"
                             onClick={() => setShowClaimPrompt(true)}
-                            className="px-3.5 py-2.5 bg-[#0463EF] hover:bg-[#0463EF]/90 text-white font-black text-[11px] uppercase tracking-wider rounded-xl transition-all shadow-md shadow-blue-500/10 hover:shadow-blue-500/25 flex items-center gap-1.5 cursor-pointer h-10 select-none border-none shrink-0"
+                            className="px-3.5 py-2.5 bg-[#1f5df9] hover:bg-[#1f5df9]/90 text-white font-black text-[11px] uppercase tracking-wider rounded-xl transition-all shadow-md shadow-blue-500/10 hover:shadow-blue-500/25 flex items-center gap-1.5 cursor-pointer h-10 select-none border-none shrink-0"
                             id="claim-job-btn"
                           >
                             <UserPlus size={13} strokeWidth={3} />
@@ -5592,7 +5592,7 @@ const mockWorkflows: Workflow[] = [
                                               <span className="text-[10px] font-black text-[#010136] uppercase tracking-widest leading-none truncate max-w-[100px]" title={docName}>
                                                 {docName.length > 11 ? (
                                                   <Tooltip content={docName}>
-                                                    <span className="cursor-help hover:text-[#0463EF] transition-colors">{docName.slice(0, 11) + '...'}</span>
+                                                    <span className="cursor-help hover:text-[#1f5df9] transition-colors">{docName.slice(0, 11) + '...'}</span>
                                                   </Tooltip>
                                                 ) : (
                                                   docName
@@ -5844,7 +5844,7 @@ const mockWorkflows: Workflow[] = [
                                              {group !== 'no-group' && (
                                                 <tr className="bg-slate-100/80 group/itemheader hover:bg-slate-200/50 cursor-pointer transition-colors" onClick={(e) => toggleGroup(e, group as string)}>
                                                    <td colSpan={comparedDocs.length + 1} className="sticky top-[114px] z-[24] p-0 border-y-2 border-slate-200/80 bg-slate-100/90 shadow-sm relative">
-                                                      <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-[#0463EF]"></div>
+                                                      <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-[#1f5df9]"></div>
                                                       <div className="flex items-center gap-3 sticky left-0 pl-8 pr-6 py-2.5 z-[26] w-fit">
                                                          <div className="w-5 h-5 rounded bg-white border border-slate-200 shadow-sm flex items-center justify-center text-slate-500 group-hover/itemheader:text-blue-600 group-hover/itemheader:border-blue-200 transition-all">
                                                             {collapsedGroups[group] ? <ChevronRight size={12} strokeWidth={3} /> : <ChevronDown size={12} strokeWidth={3} />}
@@ -5884,7 +5884,7 @@ const mockWorkflows: Workflow[] = [
                                              )}
                                              {!collapsedGroups[group] && groupFields.map((res, i) => (
                                               <tr key={res.fieldName} className={`hover:bg-slate-50/80 transition-colors group/row ${i === groupFields.length - 1 ? 'border-b-2 border-slate-200/80' : ''}`}>
-                                                 <td className={`sticky left-0 z-20 bg-white border-r border-slate-100 p-4 font-black text-slate-700 group-hover/row:text-[#0463EF] shadow-[2px_0_10px_rgba(0,0,0,0.02)] transition-colors relative`}>
+                                                 <td className={`sticky left-0 z-20 bg-white border-r border-slate-100 p-4 font-black text-slate-700 group-hover/row:text-[#1f5df9] shadow-[2px_0_10px_rgba(0,0,0,0.02)] transition-colors relative`}>
                                                   {group !== 'no-group' && <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-slate-100"></div>}
                                                   <div className="flex flex-col ml-1">
                                                      <span className="text-[11px] tracking-wide">{res.fieldName}</span>

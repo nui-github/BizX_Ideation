@@ -65,7 +65,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentUserRole, onTog
                       <button 
                         onClick={() => { setActiveMenu('upload'); onNavigate('UPLOAD'); }}
                         className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors font-medium text-sm w-full
-                            ${activeMenu === 'upload' ? 'bg-[#1d4ed8] text-white shadow-md' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}
+                            ${activeMenu === 'upload' ? 'bg-[#1f5df9] text-white shadow-md' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}
                             ${collapsed ? 'justify-center' : ''}`}
                         title={collapsed ? t.uploadDoc : undefined}
                       >
@@ -76,7 +76,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentUserRole, onTog
                       <button 
                         onClick={() => { setActiveMenu('tracking'); onNavigate('TRACKING'); }}
                         className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors font-medium text-sm w-full
-                            ${activeMenu === 'tracking' ? 'bg-[#1d4ed8] text-white shadow-md' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'} 
+                            ${activeMenu === 'tracking' ? 'bg-[#1f5df9] text-white shadow-md' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'} 
                             ${collapsed ? 'justify-center' : ''}`}
                         title={collapsed ? t.docTracking : undefined}
                       >
@@ -104,7 +104,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentUserRole, onTog
                  <button 
                     onClick={() => { setActiveMenu('workflow'); onNavigate('WORKFLOW_LIST'); }}
                     className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors font-medium text-sm w-full
-                        ${activeMenu === 'workflow' ? 'bg-[#1d4ed8] text-white shadow-md' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'} 
+                        ${activeMenu === 'workflow' ? 'bg-[#1f5df9] text-white shadow-md' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'} 
                         ${collapsed ? 'justify-center' : ''}`}
                     title={collapsed ? t.datasetBuilder : undefined}
                   >
@@ -137,7 +137,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentUserRole, onTog
                        <button 
                          onClick={() => { setActiveMenu('comparison_jobs'); onNavigate('DATA_COMPARISON_JOBS'); }}
                          className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors font-medium text-sm w-full
-                             ${activeMenu === 'comparison_jobs' ? 'bg-[#1d4ed8] text-white shadow-md' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}
+                             ${activeMenu === 'comparison_jobs' ? 'bg-[#1f5df9] text-white shadow-md' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}
                              ${collapsed ? 'justify-center' : ''}`}
                          title={collapsed ? t.jobList : undefined}
                        >
@@ -148,7 +148,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentUserRole, onTog
                        <button 
                          onClick={() => { setActiveMenu('comparison_workflow'); onNavigate('DATA_COMPARISON_WORKFLOW'); }}
                          className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors font-medium text-sm w-full
-                             ${activeMenu === 'comparison_workflow' ? 'bg-[#1d4ed8] text-white shadow-md' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}
+                             ${activeMenu === 'comparison_workflow' ? 'bg-[#1f5df9] text-white shadow-md' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}
                              ${collapsed ? 'justify-center' : ''}`}
                          title={collapsed ? t.manageWorkflow : undefined}
                        >
@@ -159,7 +159,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentUserRole, onTog
                        <button 
                          onClick={() => { setActiveMenu('comparison_rule'); onNavigate('DATA_COMPARISON_RULE'); }}
                          className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors font-medium text-sm w-full
-                             ${activeMenu === 'comparison_rule' ? 'bg-[#1d4ed8] text-white shadow-md' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}
+                             ${activeMenu === 'comparison_rule' ? 'bg-[#1f5df9] text-white shadow-md' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}
                              ${collapsed ? 'justify-center' : ''}`}
                          title={collapsed ? t.manageRule : undefined}
                        >
@@ -251,7 +251,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentUserRole, onTog
                   <span className="mx-2">/</span>
                   <span className="flex items-center gap-1 font-semibold text-slate-800">
                     {activeMenu === 'settings_doc_type' 
-                      ? (language === 'TH' ? 'ตั้งค่า Doc Type & Label Schema' : 'Doc Type & Label Schema Settings') 
+                      ? (language === 'TH' ? 'ตั้งค่า Doc Type' : 'Doc Type Settings') 
                       : activeMenu === 'settings_label_schema'
                       ? (language === 'TH' ? 'ตั้งค่า Label schema' : 'Label Schema Settings')
                       : (language === 'TH' ? 'ตั้งค่า Master data' : 'Master Data Settings')}
@@ -276,7 +276,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentUserRole, onTog
                  <div className="flex items-center gap-1.5 text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-0.5">
                    <span>{currentUserRole}</span>
                    <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
-                   <span className="text-[#0463EF] font-black">{language === 'TH' ? 'ทีม LOGISTICS' : 'LOGISTICS TEAM'}</span>
+                   <span className="text-[#1f5df9] font-black">{language === 'TH' ? 'ทีม LOGISTICS' : 'LOGISTICS TEAM'}</span>
                  </div>
               </div>
               <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center font-bold">
@@ -292,7 +292,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentUserRole, onTog
                   <div className="font-bold text-[#010136]">Kunawut Wachirapunyawut</div>
                   <div className="text-xs text-slate-500 flex flex-col gap-0.5 mt-1">
                     <span>Administrator</span>
-                    <span className="text-[#0463EF] font-bold">{language === 'TH' ? 'ทีม: Logistics' : 'Team: Import Logistics'}</span>
+                    <span className="text-[#1f5df9] font-bold">{language === 'TH' ? 'ทีม: Logistics' : 'Team: Import Logistics'}</span>
                   </div>
                 </div>
                 <div className="py-1">
@@ -321,7 +321,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentUserRole, onTog
                     className="w-full text-left px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 flex items-center gap-2"
                   >
                     <Settings size={16} className="text-slate-400" /> 
-                    <span>{language === 'TH' ? 'ตั้งค่า Doc Type & Label Schema' : 'Doc Type & Label Schema Settings'}</span>
+                    <span>{language === 'TH' ? 'ตั้งค่า Doc Type' : 'Doc Type Settings'}</span>
                   </button>
                   <button 
                     onClick={() => {

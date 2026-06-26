@@ -1023,7 +1023,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                                           {language === 'TH' ? 'เอกสารหลัก' : 'MAIN DOC'}
                                         </div>
                                         {isArrayField(val?.schemaField) && (
-                                          <div className="bg-blue-50 border border-blue-200 text-[#0463EF] text-[8.5px] font-bold px-2 py-1 rounded-full text-center tracking-tight shadow-sm mt-1.5">
+                                          <div className="bg-blue-50 border border-blue-200 text-[#1f5df9] text-[8.5px] font-bold px-2 py-1 rounded-full text-center tracking-tight shadow-sm mt-1.5">
                                             Key: {Array.isArray(val?.arrayMatchingKey) ? val.arrayMatchingKey.join(', ') : (val?.arrayMatchingKey || 'itemId')} • {val?.fallbackToIndex !== false ? '1 fallback' : 'no fallback'}
                                           </div>
                                         )}
@@ -1276,7 +1276,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
             {/* Header */}
             <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
               <div className="flex flex-col gap-0.5">
-                <span className="text-[10px] font-black text-[#0463EF] uppercase tracking-widest">
+                <span className="text-[10px] font-black text-[#1f5df9] uppercase tracking-widest">
                   {language === 'TH' ? 'ตั้งค่าการเปรียบเทียบย่อย' : 'Comparison Config'}
                 </span>
                 <h3 className="text-sm font-black text-[#010136] tracking-tight">
@@ -1923,7 +1923,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                                   };
                                   setEditFormData({...editFormData, values: newValues});
                                 }} 
-                                className="w-4 h-4 text-[#0463EF] border-slate-300 accent-[#0463EF] cursor-pointer" 
+                                className="w-4 h-4 text-[#1f5df9] border-slate-300 accent-[#1f5df9] cursor-pointer" 
                               />
                               <span>{language === 'TH' ? 'แปลง พ.ศ. → ค.ศ. (ลบ 543 อัตโนมัติ)' : 'Buddhist Era to AD (Sub 543)'}</span>
                             </label>
@@ -1942,7 +1942,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                                   };
                                   setEditFormData({...editFormData, values: newValues});
                                 }} 
-                                className="w-4 h-4 text-[#0463EF] border-slate-300 accent-[#0463EF] cursor-pointer" 
+                                className="w-4 h-4 text-[#1f5df9] border-slate-300 accent-[#1f5df9] cursor-pointer" 
                               />
                               <span>{language === 'TH' ? 'แปลง ค.ศ. → พ.ศ. (บวก 543 อัตโนมัติ)' : 'AD to Buddhist Era (Add 543)'}</span>
                             </label>
@@ -2047,7 +2047,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                 className="px-5 py-2 hover:opacity-90 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-sm"
                 style={{ 
                   borderRadius: '4px',
-                  backgroundColor: '#0463EF'
+                  backgroundColor: '#1f5df9'
                 }}
                 onClick={() => {
                   setToastMessage(language === 'TH' ? 'บันทึกการตั้งค่าลงตารางแล้ว' : 'Comparison settings saved');

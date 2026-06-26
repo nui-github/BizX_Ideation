@@ -1,8 +1,8 @@
 // Custom SCSS for Hand-Off High Fidelity UI (No Tailwind)
-// Conforming to Design System spec for #0463EF primary, #16EA9E accent, #010136 text, 
+// Conforming to Design System spec for #1f5df9 primary, #16EA9E accent, #010136 text, 
 // and specific border radius guidelines.
 
-$primary-color: #0463EF;
+$primary-color: #1f5df9;
 $accent-color: #16EA9E;
 $text-primary: #010136;
 $text-secondary: #64748b;
@@ -407,7 +407,7 @@ $radius-card: 8px;
 
   .progress-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, #0463EF 0%, #16EA9E 100%);
+    background: linear-gradient(90deg, #1f5df9 0%, #16EA9E 100%);
     border-radius: 9999px;
     transition: width 0.4s ease;
   }
