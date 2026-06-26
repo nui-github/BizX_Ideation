@@ -194,6 +194,63 @@ export const DataComparison: React.FC<DataComparisonProps> = ({ language, tracki
   const [showSaveToast, setShowSaveToast] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [activeBoardTab, setActiveBoardTab] = useState('jobs');
+  const [selectedShipment, setSelectedShipment] = useState<string | null>(null);
+
+  const getShipments = () => {
+    const grouped: Record<string, ComparisonJob[]> = {};
+    jobs.forEach(job => {
+      const ref = job.reference || 'UNKNOWN';
+      if (!grouped[ref]) {
+        grouped[ref] = [];
+      }
+      grouped[ref].push(job);
+    });
+
+    return Object.entries(grouped).map(([reference, shipmentJobs]) => {
+      const unfinishedJobs = shipmentJobs.filter(j => j.status !== JobStatus.DONE);
+      const activeJob = unfinishedJobs[0] || shipmentJobs[shipmentJobs.length - 1];
+      const currentAssignee = activeJob ? activeJob.assignee : 'N/A';
+      const currentPhase = activeJob ? activeJob.workflowName : (language === 'TH' ? 'เสร็จสิ้นทั้งหมด' : 'All Completed');
+
+      const completedCount = shipmentJobs.filter(j => j.status === JobStatus.DONE || j.status === JobStatus.READY).length;
+      const totalCount = shipmentJobs.length;
+
+      const createdAt = shipmentJobs.reduce((acc, job) => {
+        if (!acc) return job.createdAt;
+        try {
+          return parseDateValue(job.createdAt) < parseDateValue(acc) ? job.createdAt : acc;
+        } catch (e) {
+          return job.createdAt;
+        }
+      }, shipmentJobs[0]?.createdAt);
+
+      const latestUpdate = shipmentJobs.reduce((acc, job) => {
+        if (!acc) return job.expiryDate;
+        try {
+          return parseDateValue(job.expiryDate) > parseDateValue(acc) ? job.expiryDate : acc;
+        } catch (e) {
+          return job.expiryDate;
+        }
+      }, shipmentJobs[0]?.expiryDate);
+
+      const isUnfinished = shipmentJobs.some(j => j.status !== JobStatus.DONE && j.status !== JobStatus.READY);
+      const isMyPending = shipmentJobs.some(j => j.assignee === 'Kunawut W.' && j.status !== JobStatus.DONE && j.status !== JobStatus.READY);
+
+      return {
+        reference,
+        jobs: shipmentJobs,
+        currentPhase,
+        currentAssignee,
+        completedCount,
+        totalCount,
+        createdAt,
+        latestUpdate,
+        isUnfinished,
+        isMyPending
+      };
+    });
+  };
+
   const [selectedPendingId, setSelectedPendingId] = useState<string | null>(null);
   const [readPendingIds, setReadPendingIds] = useState<Set<string>>(new Set());
   const [pendingDocTypeSelections, setPendingDocTypeSelections] = useState<Record<string, string>>({});
@@ -1366,7 +1423,7 @@ const mockWorkflows: Workflow[] = [
       reference: 'CN-TH-2026-00998',
       expiryDate: '05 MAY 2026 11:20:00',
       createdAt: '25 APR 2026',
-      workflowName: 'Electronics Import Rules',
+      workflowName: 'Chinese Origin Form E Match',
       assignee: 'Somchai T.',
       status: JobStatus.DONE,
       isLocked: true,
@@ -1386,7 +1443,7 @@ const mockWorkflows: Workflow[] = [
       reference: 'SG-TH-2026-00334',
       expiryDate: '02 MAY 2026 13:40:44',
       createdAt: '24 APR 2026',
-      workflowName: 'ASEAN Trade Agreement',
+      workflowName: 'Singapore Port Release',
       assignee: 'Nui P.',
       status: JobStatus.DONE,
       isLocked: true,
@@ -1405,7 +1462,7 @@ const mockWorkflows: Workflow[] = [
       reference: 'TH-DE-2026-00889',
       expiryDate: '01 MAY 2026 10:00:15',
       createdAt: '24 APR 2026',
-      workflowName: 'Export Electronics Rules',
+      workflowName: 'EU Tariff Compliance',
       assignee: 'Alice M.',
       status: JobStatus.DONE,
       isLocked: true,
@@ -1426,7 +1483,7 @@ const mockWorkflows: Workflow[] = [
       reference: 'CN-TH-2026-00451',
       expiryDate: '25 APR 2026 14:20:05',
       createdAt: '20 APR 2026',
-      workflowName: 'Import Logistics Ruleset A',
+      workflowName: 'Purchase Order Matching',
       assignee: 'Kunawut W.',
       status: JobStatus.DONE,
       isLocked: true,
@@ -2558,6 +2615,408 @@ const mockWorkflows: Workflow[] = [
               ))}
             </tbody>
           </table>
+        </div>
+      </div>
+    );
+  };
+
+  const renderShipmentGrid = () => {
+    const shipments = getShipments();
+    const totalShipments = shipments.length;
+    const unfinishedShipments = shipments.filter(sh => sh.isUnfinished).length;
+    const myPendingShipments = shipments.filter(sh => sh.isMyPending).length;
+    const completedShipments = totalShipments - unfinishedShipments;
+
+    const shipmentStats = [
+      { 
+        label: language === 'TH' ? 'Shipment ทั้งหมด' : 'Total Shipments', 
+        count: totalShipments, 
+        icon: <FileText size={18} />, 
+        color: 'bg-slate-50 text-slate-400',
+        dotColor: 'bg-slate-400'
+      },
+      { 
+        label: language === 'TH' ? 'Shipment ที่ยังไม่เสร็จ' : 'Unfinished Shipments', 
+        count: unfinishedShipments, 
+        icon: <Plus size={18} />, 
+        color: 'bg-amber-50 text-amber-500',
+        dotColor: 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.4)]'
+      },
+      { 
+        label: language === 'TH' ? 'งานของฉันที่ทำค้างอยู่' : 'My Pending Shipments', 
+        count: myPendingShipments, 
+        icon: <ArrowLeftRight size={18} />, 
+        color: 'bg-blue-50 text-[#0463EF]',
+        dotColor: 'bg-blue-500 shadow-[0_0_8px_rgba(4,99,239,0.4)]'
+      },
+      { 
+        label: language === 'TH' ? 'Shipment ที่เสร็จสิ้น' : 'Completed Shipments', 
+        count: completedShipments, 
+        icon: <CheckCircle2 size={18} />, 
+        color: 'bg-emerald-50 text-emerald-500',
+        dotColor: 'bg-emerald-500 shadow-[0_0_8px_rgba(16,234,158,0.4)]'
+      },
+    ];
+
+    const filteredShipments = shipments
+      .filter(sh => {
+        if (searchTerm === '') return true;
+        return sh.reference.toLowerCase().includes(searchTerm.toLowerCase());
+      })
+      .filter(sh => {
+        if (statusFilter === 'ALL') return true;
+        if (statusFilter === 'PENDING') return sh.isUnfinished;
+        if (statusFilter === 'DONE') return !sh.isUnfinished;
+        return true;
+      });
+
+    return (
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+        {/* Shipment Stats Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          {shipmentStats.map((stat, i) => (
+            <div key={i} className="bg-white border border-slate-100 rounded-lg p-5 flex items-center justify-between shadow-sm hover:shadow-md transition-all group cursor-pointer font-sans">
+              <div className="flex flex-col">
+                <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1">{stat.label}</p>
+                <div className="flex items-baseline gap-2">
+                  <h3 className="text-2xl font-black text-[#010136] tracking-tight">{stat.count}</h3>
+                  <div className={`w-1.5 h-1.5 rounded-full ${stat.dotColor}`}></div>
+                </div>
+              </div>
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all group-hover:scale-110 shadow-sm ${stat.color}`}>
+                {stat.icon}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Search bar & simple filters */}
+        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm mb-6 overflow-hidden font-sans">
+          <div className="p-4 flex flex-wrap items-center gap-4 border-b border-slate-100 bg-slate-50/20">
+            <div className="relative flex-1 min-w-[240px]">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+              <input 
+                type="text"
+                placeholder={language === 'TH' ? 'ค้นหาเลขที่ Shipment...' : 'Search Shipment Reference...'}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full bg-white border border-slate-200 rounded-xl py-2 pl-11 pr-4 focus:ring-4 focus:ring-blue-500/10 focus:border-[#0463EF] text-sm font-bold outline-none shadow-sm font-sans transition-all"
+              />
+            </div>
+            
+            <div className="flex items-center gap-2 text-[11px] font-black text-slate-400 uppercase tracking-widest pl-2 font-sans shrink-0">
+              <span>สถานะ Shipment:</span>
+              <div className="relative">
+                <select 
+                  value={statusFilter}
+                  onChange={(e) => {
+                    setStatusFilter(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="bg-white border border-slate-200 rounded-xl py-2 px-4 pr-10 focus:ring-4 focus:ring-blue-500/10 focus:border-[#0463EF] text-[11px] font-black uppercase tracking-tight appearance-none cursor-pointer outline-none shadow-sm font-sans transition-all"
+                >
+                  <option value="ALL">{language === 'TH' ? 'ทั้งหมด' : 'ALL'}</option>
+                  <option value="PENDING">{language === 'TH' ? 'ยังไม่เสร็จ' : 'UNFINISHED'}</option>
+                  <option value="DONE">{language === 'TH' ? 'เสร็จสิ้นแล้ว' : 'COMPLETED'}</option>
+                </select>
+                <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400" />
+              </div>
+            </div>
+          </div>
+
+          {/* Shipment Grid Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse table-auto font-sans">
+              <thead>
+                <tr className="bg-slate-50/50 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                  <th className="px-8 py-4">{language === 'TH' ? 'เลขที่ Shipment' : 'SHIPMENT NO.'}</th>
+                  <th className="px-8 py-4">{language === 'TH' ? 'ความคืบหน้างานย่อย' : 'PROGRESS'}</th>
+                  <th className="px-8 py-4">{language === 'TH' ? 'สถานะเวิร์กโฟลว์ปัจจุบัน' : 'CURRENT WORKFLOW'}</th>
+                  <th className="px-8 py-4">{language === 'TH' ? 'ปัจจุบันงานค้างอยู่ที่ใคร' : 'CURRENT ASSIGNEE'}</th>
+                  <th className="px-8 py-4 text-right"></th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {filteredShipments.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="px-8 py-12 text-center text-slate-400">
+                      <Empty description={language === 'TH' ? 'ไม่พบข้อมูล Shipment' : 'No Shipment Found'} />
+                    </td>
+                  </tr>
+                ) : (
+                  filteredShipments.map((shipment) => {
+                    const percent = Math.round((shipment.completedCount / shipment.totalCount) * 100);
+                    return (
+                      <tr 
+                        key={shipment.reference} 
+                        onClick={() => setSelectedShipment(shipment.reference)}
+                        className="transition-all hover:bg-blue-50/20 cursor-pointer"
+                      >
+                        <td className="px-8 py-5">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-blue-50 text-[#0463EF] rounded-lg">
+                              <FileSpreadsheet size={18} />
+                            </div>
+                            <div>
+                              <p className="font-black text-[#010136] text-[13px] tracking-tight mb-0.5">{shipment.reference}</p>
+                              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                                {language === 'TH' ? 'วันที่เริ่ม: ' : 'STARTED: '} <span className="text-slate-500">{shipment.createdAt}</span>
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-8 py-5">
+                          <div className="flex flex-col gap-1 w-[140px]">
+                            <div className="flex justify-between text-[11px] font-black text-slate-500 tabular-nums">
+                              <span>{shipment.completedCount}/{shipment.totalCount} {language === 'TH' ? 'เสร็จ' : 'done'}</span>
+                              <span>{percent}%</span>
+                            </div>
+                            <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                              <div className="bg-[#16EA9E] h-full rounded-full transition-all duration-500" style={{ width: `${percent}%` }}></div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-8 py-5">
+                          <span className="px-2.5 py-1 text-xs font-bold rounded-lg bg-blue-50 text-blue-700 border border-blue-100 inline-flex items-center gap-1.5 font-sans">
+                            <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></div>
+                            {shipment.currentPhase}
+                          </span>
+                        </td>
+                        <td className="px-8 py-5">
+                          {shipment.isUnfinished ? (
+                            <span className="text-[13px] font-bold text-slate-600 flex items-center gap-1.5">
+                              <div className="w-2 h-2 rounded-full bg-amber-400"></div>
+                              {shipment.currentAssignee || (language === 'TH' ? 'ยังไม่ได้มอบหมาย' : 'Unassigned')}
+                            </span>
+                          ) : (
+                            <span className="text-[13px] font-black text-emerald-600 flex items-center gap-1.5 font-sans">
+                              <ShieldCheck size={14} className="text-emerald-500" />
+                              {language === 'TH' ? 'เสร็จสมบูรณ์ทั้งหมด' : 'All Completed'}
+                            </span>
+                          )}
+                        </td>
+                        <td className="px-8 py-5 text-right">
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedShipment(shipment.reference);
+                            }}
+                            className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-[#0463EF] font-black text-xs rounded-lg flex items-center gap-1 transition-all cursor-pointer"
+                          >
+                            <span>{language === 'TH' ? 'ดูงานย่อย' : 'VIEW JOBS'}</span>
+                            <ArrowRight size={14} />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderShipmentJobList = () => {
+    const shipmentJobs = jobs.filter(job => job.reference === selectedShipment);
+    
+    const filteredJobs = shipmentJobs
+      .filter(job => 
+        job.reference.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        job.workflowName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        job.assignee?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+
+    const getDocIcon = (status: ComparisonDocStatus) => {
+      switch (status) {
+        case ComparisonDocStatus.MATCHED:
+          return (
+            <Tooltip content={t.ttMatched}>
+              <div className="w-5 h-5 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center border border-emerald-100 hover:scale-110 transition-transform cursor-help shadow-sm">
+                <Check size={12} strokeWidth={4} />
+              </div>
+            </Tooltip>
+          );
+        case ComparisonDocStatus.RECEIVED:
+          return (
+            <Tooltip content={t.ttProcessing}>
+              <div className="w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition-colors cursor-help border border-slate-200"></div>
+            </Tooltip>
+          );
+        case ComparisonDocStatus.MISMATCHED:
+          return (
+            <Tooltip content={t.ttMismatched}>
+              <XCircle size={18} className="text-red-500 hover:scale-110 transition-transform cursor-help mx-auto" />
+            </Tooltip>
+          );
+        case ComparisonDocStatus.MISSING:
+        default:
+          return <div className="w-4 h-[2px] bg-slate-100 mx-auto"></div>;
+      }
+    };
+
+    const getStatusBadge = (status: JobStatus) => {
+      switch (status) {
+        case JobStatus.READY:
+          return <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans"><div className="w-1 h-1 rounded-full bg-emerald-500"></div>{language === 'TH' ? 'เสร็จสมบูรณ์' : 'READY'}</span>;
+        case JobStatus.DONE:
+          return <span className="bg-teal-50 text-teal-700 border border-teal-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans"><div className="w-1.5 h-1.5 rounded-full bg-teal-500"></div>{language === 'TH' ? 'ส่งออกแล้ว' : 'EXPORTED'}</span>;
+        case JobStatus.PENDING:
+          return <span className="bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans"><div className="w-1 h-1 rounded-full bg-blue-500"></div>{language === 'TH' ? 'รอดำเนินการ' : 'PENDING'}</span>;
+        case JobStatus.NEW:
+          return <span className="bg-slate-50 text-slate-500 border border-slate-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans"><div className="w-1 h-1 rounded-full bg-slate-400"></div>{language === 'TH' ? 'รอไฟล์ครบ' : 'PENDING FILES'}</span>;
+        case JobStatus.PROCESSING:
+          return (
+            <span className="bg-blue-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 w-fit font-sans">
+              <Loader2 size={10} className="animate-spin" />
+              {language === 'TH' ? 'กำลังเปรียบเทียบข้อมูล' : 'COMPARING'}
+            </span>
+          );
+        case JobStatus.REVIEW:
+          return <span className="bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans"><div className="w-1 h-1 rounded-full bg-amber-500 animate-pulse"></div>{language === 'TH' ? 'รอตรวจสอบ' : 'REVIEW'}</span>;
+        default:
+          return null;
+      }
+    };
+
+    return (
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+        {/* Back Button and Shipment Context Banner */}
+        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 font-sans">
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => setSelectedShipment(null)}
+              className="p-2.5 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition-all text-slate-600 shadow-sm flex items-center justify-center cursor-pointer font-bold font-sans"
+            >
+              <ArrowLeft size={18} />
+            </button>
+            <div>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">{language === 'TH' ? 'มุมมอง Shipment' : 'SHIPMENT VIEW'}</p>
+              <h3 className="text-lg font-black text-[#010136] tracking-tight">{selectedShipment}</h3>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-bold text-slate-500">
+              {language === 'TH' ? `พบทั้งหมด ${filteredJobs.length} งานย่อย` : `Found ${filteredJobs.length} child jobs`}
+            </span>
+            <button 
+              onClick={() => setSelectedShipment(null)}
+              className="px-4 py-2 bg-[#0463EF] hover:bg-blue-600 text-white font-black text-xs uppercase tracking-widest rounded-lg transition-all cursor-pointer shadow-sm"
+            >
+              {language === 'TH' ? 'กลับไปหน้ารายการ Shipment' : 'BACK TO SHIPMENTS'}
+            </button>
+          </div>
+        </div>
+
+        {/* Child Jobs Table */}
+        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden font-sans">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse table-auto font-sans">
+              <thead>
+                <tr className="bg-slate-50/50 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                  <th className="px-8 py-4">{t.jobNo}</th>
+                  <th className="px-8 py-4">{language === 'TH' ? 'ประเภทงาน / เวิร์กโฟลว์' : 'JOB TYPE / WORKFLOW'}</th>
+                  <th className="px-8 py-4">{language === 'TH' ? 'ผู้รับผิดชอบ' : 'ASSIGNEE'}</th>
+                  <th className="px-8 py-4">{language === 'TH' ? 'อัปเดตล่าสุด' : 'LAST UPDATE'}</th>
+                  <th className="px-8 py-4 text-center">{language === 'TH' ? 'จำนวนไฟล์' : 'FILES'}</th>
+                  <th className="px-8 py-4">{t.status}</th>
+                  <th className="px-8 py-4 text-right"></th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {filteredJobs.map((job) => {
+                  const isProcessing = job.status === JobStatus.PROCESSING;
+                  return (
+                    <tr 
+                      key={job.id} 
+                      onClick={() => {
+                        if (!isProcessing) {
+                          setSelectedJob(job);
+                          setStep(1);
+                        }
+                      }} 
+                      className={`transition-all group ${isProcessing ? 'cursor-not-allowed opacity-80' : 'hover:bg-blue-50/20 cursor-pointer'}`}
+                    >
+                      <td className="px-8 py-5">
+                        <div className="flex items-center gap-4">
+                          <div className={`w-2.5 h-2.5 rounded-full shadow-sm ${
+                            job.status === JobStatus.READY ? 'bg-emerald-500 shadow-emerald-200' : 
+                            job.status === JobStatus.DONE ? 'bg-teal-500 shadow-teal-200' : 
+                            job.status === JobStatus.PENDING ? 'bg-[#0463EF] shadow-blue-200' : 
+                            job.status === JobStatus.REVIEW ? 'bg-amber-500 shadow-amber-200' : 
+                            job.status === JobStatus.PROCESSING ? 'bg-blue-600 animate-pulse' : 
+                            'bg-slate-300'
+                          }`}></div>
+                          <div>
+                            <p className="font-black text-[#010136] text-[13px] tracking-tight mb-0.5">{job.id.toUpperCase()}</p>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                              {language === 'TH' ? 'สร้างเมื่อ: ' : 'CREATED: '} <span className="text-slate-500">{job.createdAt ? formatDisplayDate(job.createdAt) : 'N/A'}</span>
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-8 py-5">
+                        <p className="text-[13px] font-bold text-slate-600 font-sans">{job.workflowName || 'N/A'}</p>
+                      </td>
+                      <td className="px-8 py-5">
+                        <span className="text-[13px] font-bold text-slate-500 font-sans">{job.assignee || (language === 'TH' ? 'ยังไม่ได้มอบหมาย' : 'Unassigned')}</span>
+                      </td>
+                      <td className="px-8 py-5">
+                        <p className="text-[13px] font-bold text-slate-600 font-sans">{job.expiryDate ? formatDisplayDateWithTime(job.expiryDate) : 'N/A'}</p>
+                      </td>
+                      <td className="px-8 py-5 text-center">
+                        <p className="text-[13px] font-black text-slate-800 tabular-nums">{job.foundDocs ?? Object.values(job.docs).filter(s => s !== ComparisonDocStatus.MISSING).length} / {job.totalDocs}</p>
+                      </td>
+                      <td className="px-8 py-5">
+                        {getStatusBadge(job.status)}
+                      </td>
+                      <td className="px-8 py-5 text-right w-[160px]">
+                        <div className="flex items-center justify-end gap-2">
+                          <Tooltip content={t.ttViewCompare}>
+                            <button 
+                              disabled={isProcessing}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedJob(job);
+                                setStep(1);
+                              }}
+                              className={`p-2.5 rounded-xl transition-all ${isProcessing ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:text-[#0463EF] hover:bg-blue-50'}`}
+                            >
+                              <Eye size={20} />
+                            </button>
+                          </Tooltip>
+
+                          <Tooltip content={t.ttExportNotify}>
+                            <button 
+                              disabled={job.status !== JobStatus.READY || isProcessing}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const workflow = mockWorkflows.find(wf => wf.name === job.workflowName);
+                                const hasExportNode = workflow?.nodes.some(node => node.type === 'output');
+                                if (!hasExportNode) {
+                                  setShowWorkflowWarning(true);
+                                } else {
+                                  setExportJob(job);
+                                  setExportOption('workflow');
+                                  setSelectedExportWorkflow(job.workflowName || '');
+                                  setSelectedExportPlatform('FTA');
+                                }
+                              }}
+                              className={`p-2.5 transition-all rounded-xl ${job.status === JobStatus.READY && !isProcessing ? 'text-[#0463EF] hover:bg-blue-50 cursor-pointer' : 'text-slate-200 cursor-not-allowed'}`}
+                            >
+                              <Send size={20} />
+                            </button>
+                          </Tooltip>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     );
@@ -4816,7 +5275,7 @@ const mockWorkflows: Workflow[] = [
                     </span>
                   </div>
                 ),
-                children: renderGrid()
+                children: selectedShipment ? renderShipmentJobList() : renderShipmentGrid()
               },
               {
                 key: 'pending',

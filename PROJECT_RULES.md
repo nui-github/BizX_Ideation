@@ -2,14 +2,17 @@
 
 ## 1. Tech Stack Requirements
 - **Framework:** Angular
-- **UI Component Library:** `ng-zorro-antd` (Ant Design for Angular)
-- **Styling:** SCSS (Component-scoped)
-- **Icons:** Lucide Icons (e.g., `lucide-angular`)
+- **UI Component Library:** `ng-zorro-antd` (Ant Design for Angular). 
+  - *Rule:* Do not use Tailwind for structural layout where `ng-zorro-antd` provides a native alternative (e.g. use `<nz-row>`, `<nz-col>`, `<nz-space>`, `<nz-layout>`, `<nz-card>` primarily).
+- **Styling:** SCSS (Component-scoped). Avoid external CSS frameworks. Customizations should be scoped within the Angular component's `.scss` file.
+- **Icons:** Lucide Icons (e.g., `lucide-angular`).
 
 ## 2. Mock Data & State Management Principles
-- **Strict Separation (`mock-data/`):** All mocked arrays, hardcoded initial states, and JSON objects MUST be isolated in a dedicated `mock-data/` directory (e.g., `mock-data/dashboard.mock.ts`).
-- **Data Encapsulation:** UI Components (`.ts`) must **never** import mock data directly. 
-- **The Service Bridge:** `@Injectable()` Services are the *only* structures allowed to import constants from `mock-data/`. These services must structure the data as RxJS Observables (e.g., using `return of(MOCK_DATA);`). Components must subscribe to these services to consume data.
+- **Strict Separation (`mock-data/`):** All mocked arrays, hardcoded initial states, and JSON objects MUST be isolated in a dedicated `mock-data/` directory (e.g., `mock-data/dashboard.mock.ts`). Do not place raw arrays directly inside component logic files.
+- **Data Encapsulation:** UI Components (`.ts`) must **never** import mock data directly from the `mock-data/` artifacts. 
+- **The Service Bridge:** Create Angular `@Injectable()` Services that act as the *only* structures allowed to import constants from `mock-data/`. 
+  - These services must wrap and return the mock data using RxJS Observables (e.g., `return of(MOCK_DATA);`).
+  - Components must `subscribe` to these observables to consume data. This ensures the component logic assumes asynchronous behavior from day one, making swapping to real HTTP endpoints later completely seamless.
 - **Data Currency:** Ensure all mock data and simulated records reflect the current year (e.g., 2026).
 
 ## 3. General Principles
