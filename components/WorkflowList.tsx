@@ -96,7 +96,7 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({ workflows, language,
         </div>
         <button 
           onClick={onCreate}
-          className="flex items-center gap-2 px-4 py-2 bg-[#0ea5e9] text-white rounded-lg font-medium hover:bg-[#0284c7] transition-colors shadow-sm"
+          className="flex items-center gap-2 px-4 py-2 bg-[#0ea5e9] text-white rounded-[4px] font-medium hover:bg-[#0284c7] transition-colors shadow-sm"
         >
           <Plus size={18} />
           Create Workflow
@@ -162,7 +162,7 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({ workflows, language,
               <button
                 key={status}
                 onClick={() => setStatusFilter(status as any)}
-                className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${
+                className={`px-3 py-1.5 rounded-[4px] text-xs font-bold transition-all ${
                   statusFilter === status 
                     ? 'bg-white shadow-sm text-blue-600' 
                     : 'text-slate-500 hover:text-slate-700'
@@ -176,14 +176,14 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({ workflows, language,
           <div className="flex items-center bg-slate-100 p-1 rounded-lg border border-slate-200">
             <button 
               onClick={() => setViewMode('list')}
-              className={`p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400 hover:text-slate-600'}`}
+              className={`p-1.5 rounded-[4px] transition-all ${viewMode === 'list' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400 hover:text-slate-600'}`}
               title={language === 'TH' ? 'แสดงแบบรายการ' : 'List View'}
             >
               <ListIcon size={18} />
             </button>
             <button 
               onClick={() => setViewMode('card')}
-              className={`p-1.5 rounded-md transition-all ${viewMode === 'card' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400 hover:text-slate-600'}`}
+              className={`p-1.5 rounded-[4px] transition-all ${viewMode === 'card' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400 hover:text-slate-600'}`}
               title={language === 'TH' ? 'แสดงแบบการ์ด' : 'Card View'}
             >
               <LayoutGrid size={18} />
@@ -206,7 +206,7 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({ workflows, language,
             </p>
             <button 
               onClick={onCreate}
-              className="flex items-center gap-2 px-4 py-2 bg-[#0ea5e9] text-white rounded-lg font-medium hover:bg-[#0284c7] transition-colors shadow-sm"
+              className="flex items-center gap-2 px-4 py-2 bg-[#0ea5e9] text-white rounded-[4px] font-medium hover:bg-[#0284c7] transition-colors shadow-sm"
             >
               <Plus size={18} />
               {language === 'TH' ? 'สร้างเวิร์กโฟลว์ใหม่' : 'Create Workflow'}
@@ -260,7 +260,7 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({ workflows, language,
                               e.stopPropagation();
                               onToggleStatus(workflow);
                             }}
-                            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                            className={`relative inline-flex h-5 w-9 items-center rounded-[4px] transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                               workflow.status === 'ACTIVE' ? 'bg-green-500' : 'bg-slate-300'
                             }`}
                           >
@@ -281,7 +281,7 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({ workflows, language,
                     <div className="relative group/tip">
                       <button 
                         onClick={() => onEdit(workflow)}
-                        className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border-2 border-transparent hover:border-blue-200"
+                        className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-[4px] transition-colors border-2 border-transparent hover:border-blue-200"
                       >
                         <Settings size={16} />
                       </button>
@@ -294,7 +294,7 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({ workflows, language,
                       <div className="relative group/tip">
                         <button 
                           onClick={() => handleOpenDuplicate(workflow)}
-                          className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-[4px] transition-colors"
                         >
                           <Copy size={16} />
                         </button>
@@ -307,7 +307,7 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({ workflows, language,
                     <div className="relative group/tip">
                       <button 
                         onClick={() => onDelete(workflow)}
-                        className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-[4px] transition-colors"
                       >
                         <Trash2 size={16} />
                       </button>
@@ -329,7 +329,7 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({ workflows, language,
                         <div className="relative group/tip">
                           <button 
                             onClick={() => onEdit(workflow)}
-                            className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border-2 border-transparent hover:border-blue-200"
+                            className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-[4px] transition-colors border-2 border-transparent hover:border-blue-200"
                           >
                             <Settings size={16} />
                           </button>
@@ -342,7 +342,7 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({ workflows, language,
                           <div className="relative group/tip">
                             <button 
                               onClick={() => handleOpenDuplicate(workflow)}
-                              className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                              className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-[4px] transition-colors"
                             >
                               <Copy size={16} />
                             </button>
@@ -355,7 +355,7 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({ workflows, language,
                         <div className="relative group/tip">
                           <button 
                             onClick={() => onDelete(workflow)}
-                            className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-[4px] transition-colors"
                           >
                             <Trash2 size={16} />
                           </button>
@@ -396,7 +396,7 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({ workflows, language,
                               e.stopPropagation();
                               onToggleStatus(workflow);
                             }}
-                            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                            className={`relative inline-flex h-5 w-9 items-center rounded-[4px] transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                               workflow.status === 'ACTIVE' ? 'bg-green-500' : 'bg-slate-300'
                             }`}
                           >
@@ -481,13 +481,13 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({ workflows, language,
                 <div className="flex justify-end gap-3">
                   <button 
                     onClick={() => setDuplicateModal(prev => ({ ...prev, isOpen: false }))}
-                    className="px-6 py-3 rounded-xl text-slate-600 font-bold hover:bg-slate-100 transition-colors text-sm"
+                    className="px-6 py-3 rounded-[4px] text-slate-600 font-bold hover:bg-slate-100 transition-colors text-sm"
                   >
                     {language === 'TH' ? 'ยกเลิก' : 'Cancel'}
                   </button>
                   <button 
                     onClick={submitDuplicate}
-                    className="px-6 py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition-colors shadow-sm shadow-blue-200 text-sm flex items-center gap-2"
+                    className="px-6 py-3 rounded-[4px] bg-blue-600 text-white font-bold hover:bg-blue-700 transition-colors shadow-sm shadow-blue-200 text-sm flex items-center gap-2"
                   >
                     <Copy size={16} />
                     {language === 'TH' ? 'ทำสำเนา' : 'Duplicate'}

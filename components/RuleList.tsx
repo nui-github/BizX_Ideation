@@ -47,7 +47,7 @@ export const RuleList = ({ rules, onSelect, onCreate, onDelete, onToggleStatus, 
           <p className="text-slate-500 font-bold text-xs md:text-sm">{t.ruleSetSubtitle}</p>
         </div>
         {rules && rules.length > 0 && (
-          <button onClick={onCreate} className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg border border-blue-600 transition-colors shadow-sm font-bold text-xs md:text-sm tracking-tight">
+          <button onClick={onCreate} className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-[4px] border border-blue-600 transition-colors shadow-sm font-bold text-xs md:text-sm tracking-tight">
             <Plus size={16} />
             <span>{t.btnCreateRuleSet}</span>
           </button>
@@ -68,7 +68,7 @@ export const RuleList = ({ rules, onSelect, onCreate, onDelete, onToggleStatus, 
             </p>
             <button
               onClick={onCreate}
-              className="flex items-center gap-2 px-6 py-3 bg-[#1f5df9] hover:bg-blue-700 text-white rounded-xl font-bold transition-all shadow-md active:scale-[0.98]"
+              className="flex items-center gap-2 px-6 py-3 bg-[#1f5df9] hover:bg-blue-700 text-white rounded-[4px] font-bold transition-all shadow-md active:scale-[0.98]"
             >
               <Plus size={18} />
               <span>{t.btnCreateRuleSet}</span>
@@ -129,7 +129,7 @@ export const RuleList = ({ rules, onSelect, onCreate, onDelete, onToggleStatus, 
                 <div className="flex items-center gap-2">
                   <button 
                     onClick={(e) => confirmDelete(e, rule)}
-                    className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 hover:bg-red-50 hover:text-red-600 transition-all opacity-0 group-hover:opacity-100"
+                    className="w-10 h-10 rounded-[4px] bg-slate-50 flex items-center justify-center text-slate-300 hover:bg-red-50 hover:text-red-600 transition-all opacity-0 group-hover:opacity-100"
                   >
                     <Trash2 size={18} />
                   </button>

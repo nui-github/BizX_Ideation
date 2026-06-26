@@ -411,7 +411,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
       {/* Header Bar */}
       <div className="flex items-center justify-between pb-4 border-b border-slate-100 mb-2">
         <div className="flex items-center gap-4 flex-1 min-w-0">
-          <button onClick={onBack} className="w-10 h-10 rounded-lg bg-slate-50 hover:bg-slate-100 flex items-center justify-center text-slate-600 transition-colors flex-shrink-0">
+          <button onClick={onBack} className="w-10 h-10 rounded-[4px] bg-slate-50 hover:bg-slate-100 flex items-center justify-center text-slate-600 transition-colors flex-shrink-0">
             <ArrowLeft size={20} />
           </button>
           <div className="flex-1 min-w-0">
@@ -468,7 +468,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                  const newStatus = activeRule.status === 'Active' ? 'Inactive' : 'Active';
                  setActiveRule({...activeRule, status: newStatus});
                }}
-               className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+               className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-[4px] border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
                  activeRule.status === 'Active' ? 'bg-emerald-500' : 'bg-slate-300'
                }`}
              >
@@ -480,7 +480,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                />
              </button>
            </div>
-           <button onClick={handleAddDocType} className="flex items-center gap-2 px-3 py-1.5 bg-white border border-blue-600 hover:bg-blue-50 text-blue-600 rounded-lg transition-colors font-bold text-xs md:text-sm tracking-tight w-full sm:w-auto h-9 shadow-sm whitespace-nowrap">
+           <button onClick={handleAddDocType} className="flex items-center gap-2 px-3 py-1.5 bg-white border border-blue-600 hover:bg-blue-50 text-blue-600 rounded-[4px] transition-colors font-bold text-xs md:text-sm tracking-tight w-full sm:w-auto h-9 shadow-sm whitespace-nowrap">
              <FilePlus size={14} />
              <span>{language === 'TH' ? 'เพิ่ม Doc Type' : 'Add Doc Type'}</span>
            </button>
@@ -490,7 +490,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                setToastMessage(language === 'TH' ? 'บันทึกกฎเกณฑ์สำเร็จ' : 'Rule saved successfully');
                setTimeout(() => onBack(), 700);
              }} 
-             className="flex items-center gap-2 px-4 py-1.5 bg-blue-600 border border-transparent hover:bg-blue-700 text-white rounded-lg transition-colors font-bold text-xs md:text-sm tracking-tight w-full sm:w-auto h-9 shadow-sm whitespace-nowrap"
+             className="flex items-center gap-2 px-4 py-1.5 bg-blue-600 border border-transparent hover:bg-blue-700 text-white rounded-[4px] transition-colors font-bold text-xs md:text-sm tracking-tight w-full sm:w-auto h-9 shadow-sm whitespace-nowrap"
            >
              <Check size={14} />
              <span>{language === 'TH' ? 'บันทึกกฎเกณฑ์' : 'Save Rule'}</span>
@@ -518,7 +518,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                             <button 
                               type="button"
                               onClick={() => handleMoveDocType(idx, 'left')} 
-                              className="opacity-0 group-hover/head:opacity-100 text-slate-400 hover:text-blue-600 transition-all p-0.5 rounded hover:bg-slate-200 flex-shrink-0 active:scale-95 cursor-pointer"
+                              className="opacity-0 group-hover/head:opacity-100 text-slate-400 hover:text-blue-600 transition-all p-0.5 rounded-[4px] hover:bg-slate-200 flex-shrink-0 active:scale-95 cursor-pointer"
                               title={language === 'TH' ? 'ย้ายไปซ้าย' : 'Move Left'}
                             >
                               <ChevronLeft size={13} />
@@ -537,7 +537,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                             <button 
                               type="button"
                               onClick={() => handleMoveDocType(idx, 'right')} 
-                              className="opacity-0 group-hover/head:opacity-100 text-slate-400 hover:text-blue-600 transition-all p-0.5 rounded hover:bg-slate-200 flex-shrink-0 active:scale-95 cursor-pointer"
+                              className="opacity-0 group-hover/head:opacity-100 text-slate-400 hover:text-blue-600 transition-all p-0.5 rounded-[4px] hover:bg-slate-200 flex-shrink-0 active:scale-95 cursor-pointer"
                               title={language === 'TH' ? 'ย้ายไปขวา' : 'Move Right'}
                             >
                               <ChevronRight size={13} />
@@ -548,7 +548,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                             <button 
                               type="button"
                               onClick={() => handleDeleteDocType(idx)} 
-                              className="opacity-0 group-hover/head:opacity-100 text-slate-350 hover:text-red-500 transition-all p-0.5 rounded hover:bg-red-50 flex-shrink-0 cursor-pointer"
+                              className="opacity-0 group-hover/head:opacity-100 text-slate-350 hover:text-red-500 transition-all p-0.5 rounded-[4px] hover:bg-red-50 flex-shrink-0 cursor-pointer"
                               title={language === 'TH' ? 'ลบประเภทเอกสาร' : 'Delete Document Type'}
                             >
                               <Trash2 size={12} />
@@ -594,8 +594,8 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                                       const isRemarkCol = activeRule.docTypes[vIdx] === t.docTypeRemark;
                                       return v.type === 'NONE' || !v.type || isRemarkCol || !!v.schemaField;
                                     })}
-                                    className="px-3 py-1 bg-blue-600 text-white rounded text-[10px] font-bold uppercase tracking-widest shadow-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed">Save</button>
-                                  <button onClick={() => { setEditingFieldId(null); setOpenDrawerInfo(null); }} className="px-3 py-1 bg-slate-100 text-slate-600 rounded text-[10px] font-bold uppercase tracking-widest hover:bg-slate-200">Cancel</button>
+                                    className="px-3 py-1 bg-blue-600 text-white rounded-[4px] text-[10px] font-bold uppercase tracking-widest shadow-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed">Save</button>
+                                  <button onClick={() => { setEditingFieldId(null); setOpenDrawerInfo(null); }} className="px-3 py-1 bg-slate-100 text-slate-600 rounded-[4px] text-[10px] font-bold uppercase tracking-widest hover:bg-slate-200">Cancel</button>
                                </div>
                              </div>
                           ) : (
@@ -603,12 +603,12 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                                <span>{language === 'TH' && row.detailTh ? row.detailTh : row.detail}</span>
                                <div className="flex items-center gap-1 opacity-100 transition-opacity">
                                  <Tooltip content="แก้ไข">
-                                   <button onClick={() => startEdit(row)} className="w-6 h-6 rounded flex items-center justify-center text-slate-300 hover:text-blue-600 hover:bg-blue-50 transition-colors">
+                                   <button onClick={() => startEdit(row)} className="w-6 h-6 rounded-[4px] flex items-center justify-center text-slate-300 hover:text-blue-600 hover:bg-blue-50 transition-colors">
                                      <Pencil size={12} />
                                    </button>
                                  </Tooltip>
                                  <Tooltip content="ลบ">
-                                   <button onClick={() => handleDeleteField(sIdx, rIdx)} className="w-6 h-6 rounded flex items-center justify-center text-slate-300 hover:text-red-600 hover:bg-red-50 transition-colors">
+                                   <button onClick={() => handleDeleteField(sIdx, rIdx)} className="w-6 h-6 rounded-[4px] flex items-center justify-center text-slate-300 hover:text-red-600 hover:bg-red-50 transition-colors">
                                      <Trash2 size={12} />
                                    </button>
                                  </Tooltip>
@@ -985,7 +985,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                                                 });
                                               }
                                             }}
-                                            className={`p-1.5 rounded transition-all shrink-0 cursor-pointer ${
+                                            className={`p-1.5 rounded-[4px] transition-all shrink-0 cursor-pointer ${
                                               openDrawerInfo && openDrawerInfo.rowId === row.id && openDrawerInfo.colIdx === vIdx
                                                 ? 'bg-blue-600 text-white hover:bg-blue-700'
                                                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-blue-600'
@@ -1007,15 +1007,23 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                                     </div>
                                   ) : (
                                   <div className="flex flex-col gap-1 items-center justify-center relative w-full px-2">
-                                    {val?.schemaField && (val?.isMain || (val?.type !== 'NONE' && val?.type)) && (
-                                      <div className="w-full text-center px-1.5 py-0.5 rounded border border-slate-200 bg-slate-50 mb-1 max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
-                                        <span className="text-[9px] font-bold text-slate-600 block">{val.schemaField}</span>
+                                    {val?.schemaField && (val?.isMain || (val?.type !== 'NONE' && val?.type)) ? (
+                                      <div className="flex items-center gap-1.5 w-full mb-1">
+                                        <div className="flex-1 text-center px-1.5 py-0.5 rounded border border-slate-200 bg-slate-50 max-w-full overflow-hidden text-ellipsis whitespace-nowrap h-[22px] flex items-center justify-center">
+                                          <span className="text-[9px] font-bold text-slate-600 block truncate">{val.schemaField}</span>
+                                        </div>
+                                        {val?.isMain && (
+                                          <div className="bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded text-[8px] font-black border border-blue-200 h-[22px] flex items-center justify-center shrink-0">
+                                            MAIN
+                                          </div>
+                                        )}
                                       </div>
-                                    )}
-                                    {val?.isMain && (
-                                      <div className="absolute -top-3 right-0 bg-blue-100 text-blue-700 px-1.5 rounded text-[8px] font-black border border-blue-200">
-                                        MAIN
-                                      </div>
+                                    ) : (
+                                      val?.isMain && (
+                                        <div className="bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded text-[8px] font-black border border-blue-200 h-[22px] flex items-center justify-center mb-1">
+                                          MAIN
+                                        </div>
+                                      )
                                     )}
                                     {val?.isMain ? (
                                       <>
@@ -1140,13 +1148,13 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
               <div className="flex gap-3">
                 <button 
                   onClick={() => setDeletingField(null)} 
-                  className="flex-1 py-2.5 rounded-xl text-slate-600 font-bold bg-slate-100 hover:bg-slate-200 transition-colors"
+                  className="flex-1 py-2.5 rounded-[4px] text-slate-600 font-bold bg-slate-100 hover:bg-slate-200 transition-colors"
                 >
                   ยกเลิก
                 </button>
                 <button 
                   onClick={confirmDelete}
-                  className="flex-1 py-2.5 rounded-xl text-white font-bold bg-red-600 hover:bg-red-700 transition-colors shadow-sm"
+                  className="flex-1 py-2.5 rounded-[4px] text-white font-bold bg-red-600 hover:bg-red-700 transition-colors shadow-sm"
                 >
                   ลบข้อมูล
                 </button>
@@ -1167,7 +1175,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
               </h2>
               <button 
                 onClick={() => setIsAddDocTypeModalOpen(false)}
-                className="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-200 hover:text-slate-600 transition-colors"
+                className="w-8 h-8 flex items-center justify-center rounded-[4px] text-slate-400 hover:bg-slate-200 hover:text-slate-600 transition-colors"
               >
                 <X size={18} />
               </button>
@@ -1214,14 +1222,14 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
             <div className="p-5 border-t border-slate-100 bg-slate-50 flex items-center justify-end gap-3 rounded-b-xl">
               <button 
                 onClick={() => setIsAddDocTypeModalOpen(false)} 
-                className="px-5 py-2.5 rounded-lg text-slate-600 font-bold text-sm bg-white border border-slate-200 hover:bg-slate-50 transition-colors"
+                className="px-5 py-2.5 rounded-[4px] text-slate-600 font-bold text-sm bg-white border border-slate-200 hover:bg-slate-50 transition-colors"
               >
                 {isTh ? 'ยกเลิก' : 'Cancel'}
               </button>
               <button 
                 onClick={confirmAddDocType}
                 disabled={selectedNewDocTypes.length === 0}
-                className="px-5 py-2.5 rounded-lg text-white font-bold text-sm bg-blue-600 hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                className="px-5 py-2.5 rounded-[4px] text-white font-bold text-sm bg-blue-600 hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
               >
                 {isTh ? 'เพิ่มข้อมูล' : 'Add Selected'}
               </button>
@@ -1241,13 +1249,13 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
               <div className="flex gap-3">
                 <button 
                   onClick={() => setDeletingDocType(null)} 
-                  className="flex-1 py-2.5 rounded-xl text-slate-600 font-bold bg-slate-100 hover:bg-slate-200 transition-colors"
+                  className="flex-1 py-2.5 rounded-[4px] text-slate-600 font-bold bg-slate-100 hover:bg-slate-200 transition-colors"
                 >
                   ยกเลิก
                 </button>
                 <button 
                   onClick={confirmDeleteDocType}
-                  className="flex-1 py-2.5 rounded-xl text-white font-bold bg-red-600 hover:bg-red-700 transition-colors shadow-sm"
+                  className="flex-1 py-2.5 rounded-[4px] text-white font-bold bg-red-600 hover:bg-red-700 transition-colors shadow-sm"
                 >
                   ลบข้อมูล
                 </button>
@@ -1285,7 +1293,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
               </div>
               <button 
                 onClick={() => setOpenDrawerInfo(null)}
-                className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all cursor-pointer"
+                className="w-8 h-8 rounded-[4px] flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all cursor-pointer"
               >
                 <X size={16} />
               </button>
@@ -1438,7 +1446,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                                   };
                                   setEditFormData({...editFormData, values: newValues});
                                 }}
-                                className={`flex-1 py-1 rounded text-xs font-bold border transition-all cursor-pointer ${
+                                className={`flex-1 py-1 rounded-[4px] text-xs font-bold border transition-all cursor-pointer ${
                                   (drawerVal.threshold !== undefined ? drawerVal.threshold : 80) === preset
                                     ? 'bg-blue-600 border-blue-600 text-white shadow-sm'
                                     : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'

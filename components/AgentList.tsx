@@ -102,7 +102,7 @@ export const AgentList: React.FC<AgentListProps> = ({ agents, role, language, on
         {role === UserRole.ADMIN && (
           <button 
              onClick={onCreate}
-             className="flex items-center gap-2 bg-[#0ea5e9] hover:bg-[#0284c7] text-white px-5 py-2.5 rounded-lg font-medium transition-colors shadow-sm"
+             className="flex items-center gap-2 bg-[#0ea5e9] hover:bg-[#0284c7] text-white px-5 py-2.5 rounded-[4px] font-medium transition-colors shadow-sm"
           >
             <Plus size={18} />
             {t.createAgent}
@@ -217,7 +217,7 @@ export const AgentList: React.FC<AgentListProps> = ({ agents, role, language, on
                         <Tooltip content={t.viewDetails}>
                           <button 
                             onClick={() => onView(agent)}
-                            className="p-1.5 text-slate-500 hover:text-sky-600 hover:bg-sky-50 rounded transition-colors"
+                            className="p-1.5 text-slate-500 hover:text-sky-600 hover:bg-sky-50 rounded-[4px] transition-colors"
                           >
                             <Eye size={16} />
                           </button>
@@ -227,7 +227,7 @@ export const AgentList: React.FC<AgentListProps> = ({ agents, role, language, on
                             <Tooltip content={t.editConfig}>
                               <button 
                                 onClick={() => onEdit(agent)}
-                                className="p-1.5 text-slate-500 hover:text-sky-600 hover:bg-sky-50 rounded transition-colors"
+                                className="p-1.5 text-slate-500 hover:text-sky-600 hover:bg-sky-50 rounded-[4px] transition-colors"
                               >
                                 <Pencil size={16} />
                               </button>
@@ -235,7 +235,7 @@ export const AgentList: React.FC<AgentListProps> = ({ agents, role, language, on
                             <Tooltip content={agent.status === AgentStatus.ACTIVE ? t.disableAgent : t.enableAgent}>
                               <button 
                                 onClick={() => onToggleStatus(agent)}
-                                className={`p-1.5 rounded transition-colors ${
+                                className={`p-1.5 rounded-[4px] transition-colors ${
                                   agent.status === AgentStatus.ACTIVE 
                                   ? 'text-slate-500 hover:text-red-600 hover:bg-red-50'
                                   : 'text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50'
@@ -247,7 +247,7 @@ export const AgentList: React.FC<AgentListProps> = ({ agents, role, language, on
                             <Tooltip content={t.deleteAgent}>
                               <button 
                                 onClick={() => onDelete(agent)}
-                                className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                                className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-[4px] transition-colors"
                               >
                                 <Trash2 size={16} />
                               </button>
@@ -303,7 +303,7 @@ export const AgentList: React.FC<AgentListProps> = ({ agents, role, language, on
              <button 
                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                disabled={currentPage === 1 || totalPages === 0}
-               className="p-1.5 rounded hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+               className="p-1.5 rounded-[4px] hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
              >
                <ChevronLeft size={16} />
              </button>
@@ -313,7 +313,7 @@ export const AgentList: React.FC<AgentListProps> = ({ agents, role, language, on
                     <button
                         key={number}
                         onClick={() => paginate(number)}
-                        className={`min-w-[28px] h-7 px-1 rounded text-xs font-medium transition-colors flex items-center justify-center ${
+                        className={`min-w-[28px] h-7 px-1 rounded-[4px] text-xs font-medium transition-colors flex items-center justify-center ${
                             currentPage === number 
                             ? 'bg-sky-50 text-sky-600 border border-sky-200' 
                             : 'text-slate-600 hover:bg-slate-100'
@@ -327,7 +327,7 @@ export const AgentList: React.FC<AgentListProps> = ({ agents, role, language, on
              <button 
                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                disabled={currentPage === totalPages || totalPages === 0}
-               className="p-1.5 rounded hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+               className="p-1.5 rounded-[4px] hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
              >
                <ChevronRight size={16} />
              </button>

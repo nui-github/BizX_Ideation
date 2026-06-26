@@ -337,7 +337,7 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ workflow, lang
             <div className="px-6 py-4 border-t border-slate-200 bg-slate-50 flex justify-end">
               <button 
                 onClick={() => setIsDataSourceModalOpen(false)}
-                className="px-6 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors"
+                className="px-6 py-2 bg-blue-500 text-white rounded-[4px] font-medium hover:bg-blue-600 transition-colors"
               >
                 Done
               </button>
@@ -403,7 +403,7 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ workflow, lang
               <button 
                 onClick={() => setIsTesting(false)}
                 disabled={testStatus === 'running'}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${testStatus === 'running' ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'}`}
+                className={`px-4 py-2 rounded-[4px] font-medium transition-colors ${testStatus === 'running' ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'}`}
               >
                 {testStatus === 'running' ? 'Running...' : 'Close'}
               </button>
@@ -418,7 +418,7 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ workflow, lang
           <div className="flex items-center gap-4 flex-1 min-w-0 w-full">
             <button 
               onClick={onBack}
-              className="p-2 hover:bg-slate-100 rounded-2xl text-slate-500 transition-all shrink-0"
+              className="p-2 hover:bg-slate-100 rounded-[4px] text-slate-500 transition-all shrink-0"
             >
               <ArrowLeft size={20} />
             </button>
@@ -449,7 +449,7 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ workflow, lang
                         onSave({ ...workflow, status: newStatus });
                       }
                     }}
-                    className={`relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus:outline-none ${
+                    className={`relative inline-flex h-4 w-7 items-center rounded-[4px] transition-colors focus:outline-none ${
                       workflow?.status === 'ACTIVE' ? 'bg-emerald-500' : 'bg-slate-300'
                     }`}
                   >
@@ -473,14 +473,14 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ workflow, lang
           <div className="flex flex-wrap items-center gap-3 md:gap-4 shrink-0 w-full sm:w-auto">
             <button 
               onClick={handleTestRun}
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm active:scale-95 group shrink-0"
+              className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-[4px] font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm active:scale-95 group shrink-0"
             >
               <Play size={16} className="text-blue-500 group-hover:scale-110 transition-transform" />
               <span>Test Run</span>
             </button>
             <button 
               onClick={handleSave}
-              className="flex items-center gap-3 px-4 md:px-8 py-2 bg-blue-600 text-white rounded-2xl font-black text-xs md:text-sm hover:bg-blue-700 transition-all shadow-[0_8px_20px_-4px_rgba(37,99,235,0.4)] active:scale-95 group shrink-0"
+              className="flex items-center gap-3 px-4 md:px-8 py-2 bg-blue-600 text-white rounded-[4px] font-black text-xs md:text-sm hover:bg-blue-700 transition-all shadow-[0_8px_20px_-4px_rgba(37,99,235,0.4)] active:scale-95 group shrink-0"
             >
               <Save size={18} className="group-hover:scale-110 transition-transform" />
               <span>Save Workflow</span>
@@ -538,7 +538,7 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ workflow, lang
                 
                 setSelectedNodeId(newNodeId);
               }}
-              className="flex items-center gap-4 px-6 py-4 bg-[#0ea5e9] text-white shadow-lg rounded-2xl text-sm font-black uppercase tracking-tight hover:bg-[#0284c7] transition-all transform hover:scale-105 active:scale-95"
+              className="flex items-center gap-4 px-6 py-4 bg-[#0ea5e9] text-white shadow-lg rounded-[4px] text-sm font-black uppercase tracking-tight hover:bg-[#0284c7] transition-all transform hover:scale-105 active:scale-95"
             >
               <Plus size={18} strokeWidth={3} />
               Add Data Source
@@ -548,7 +548,7 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ workflow, lang
               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Canvas Controls</p>
               <button 
                 onClick={(e) => { e.stopPropagation(); setPan({ x: 0, y: 0 }); }}
-                className="text-[10px] font-black text-slate-600 hover:text-blue-600 px-1 py-1 rounded-lg hover:bg-slate-100 text-left uppercase tracking-wider"
+                className="text-[10px] font-black text-slate-600 hover:text-blue-600 px-1 py-1 rounded-[4px] hover:bg-slate-100 text-left uppercase tracking-wider"
               >
                 Reset View
               </button>
@@ -688,7 +688,7 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ workflow, lang
                         setEdges(prev => prev.filter(e => e.source !== selectedNode.id && e.target !== selectedNode.id));
                         setSelectedNodeId(null);
                       }}
-                      className="p-1 hover:bg-red-100 text-red-500 rounded transition-colors"
+                      className="p-1 hover:bg-red-100 text-red-500 rounded-[4px] transition-colors"
                       title="Delete Node"
                     >
                       <Trash2 size={16} />
@@ -696,7 +696,7 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ workflow, lang
                   )}
                   <button 
                     onClick={() => setSelectedNodeId(null)}
-                    className="p-1 hover:bg-slate-200 rounded text-slate-500 transition-colors"
+                    className="p-1 hover:bg-slate-200 rounded-[4px] text-slate-500 transition-colors"
                   >
                     <X size={16} />
                   </button>
@@ -751,7 +751,7 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ workflow, lang
                       
                       <button 
                         onClick={() => setIsDataSourceModalOpen(true)}
-                        className="mt-4 w-full py-2 border-2 border-dashed border-slate-300 rounded-lg text-slate-500 font-bold text-xs flex items-center justify-center gap-2 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                        className="mt-4 w-full py-2 border-2 border-dashed border-slate-300 rounded-[4px] text-slate-500 font-bold text-xs flex items-center justify-center gap-2 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
                       >
                         <Plus size={14} />
                         Add Data Source
@@ -1096,7 +1096,7 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ workflow, lang
                 <div className="flex justify-end gap-3">
                   <button 
                     onClick={() => setConfirmToggleDialog(false)}
-                    className="px-6 py-3 rounded-2xl text-slate-600 font-bold hover:bg-slate-100 transition-colors text-sm"
+                    className="px-6 py-3 rounded-[4px] text-slate-600 font-bold hover:bg-slate-100 transition-colors text-sm"
                   >
                     {language === 'TH' ? 'ยกเลิก' : 'Cancel'}
                   </button>
@@ -1107,7 +1107,7 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ workflow, lang
                       }
                       setConfirmToggleDialog(false);
                     }}
-                    className="px-6 py-3 rounded-2xl bg-amber-500 text-white font-bold hover:bg-amber-600 transition-colors shadow-sm text-sm"
+                    className="px-6 py-3 rounded-[4px] bg-amber-500 text-white font-bold hover:bg-amber-600 transition-colors shadow-sm text-sm"
                   >
                     {language === 'TH' ? 'ยืนยันการเปิดใช้งาน' : 'Confirm Enable'}
                   </button>

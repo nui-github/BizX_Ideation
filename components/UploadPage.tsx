@@ -149,7 +149,7 @@ export const UploadPage: React.FC<UploadPageProps> = ({ language, onUpload }) =>
                                 <td className="px-4 py-3 text-center">
                                     <button 
                                         onClick={() => removeFile(idx)}
-                                        className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                                        className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-[4px] transition-colors"
                                     >
                                         <Trash2 size={16} />
                                     </button>
@@ -167,13 +167,13 @@ export const UploadPage: React.FC<UploadPageProps> = ({ language, onUpload }) =>
           <div className="px-6 py-4 border-t border-slate-200 bg-white flex justify-end gap-3">
               <button 
                   onClick={() => setFiles([])}
-                  className="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 font-medium hover:bg-slate-50 transition-colors"
+                  className="px-4 py-2 border border-slate-300 rounded-[4px] text-slate-700 font-medium hover:bg-slate-50 transition-colors"
               >
                   {t.btnDeleteAll}
               </button>
               <button 
                   onClick={() => onUpload(files)}
-                  className="px-4 py-2 bg-[#1f5df9] text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm"
+                  className="px-4 py-2 bg-[#1f5df9] text-white rounded-[4px] font-medium hover:bg-blue-700 transition-colors shadow-sm"
               >
                   {t.btnUploadAll} ({files.length} {language === 'TH' ? 'ไฟล์' : 'files'})
               </button>
@@ -215,7 +215,7 @@ export const UploadPage: React.FC<UploadPageProps> = ({ language, onUpload }) =>
 
                       <button 
                           onClick={() => setErrorModal({ open: false })}
-                          className="w-full py-2.5 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 transition-colors"
+                          className="w-full py-2.5 bg-slate-900 text-white rounded-[4px] font-medium hover:bg-slate-800 transition-colors"
                       >
                           {t.btnClose}
                       </button>

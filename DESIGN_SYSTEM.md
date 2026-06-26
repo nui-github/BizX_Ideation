@@ -27,7 +27,7 @@ This design system defines the visual language, ensuring a polished, consistent,
 
 ## 4. Structural Geometry (Border Radius Rules)
 To maintain structural consistency, custom border radii should be tightly controlled via SCSS overrides:
-- **4px:** Interactive micro-elements (`Inputs`, `Text Fields`, `Text Areas`, `Dropdowns`, `Selects`, `Box Uploads`, and `Buttons`).
+- **4px:** All buttons (including `<button>`, `nz-button`), inputs, text fields, text areas, dropdowns, selects, and box uploads MUST strictly use a border-radius of 4px (`rounded-[4px]`).
 - **8px:** Container subgroups (`Sub-sections`, `Data Cards`, list items).
 - **16px:** Major structural regions (`Main Sections`, application containers, wide layout wrappers).
 

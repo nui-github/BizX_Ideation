@@ -305,7 +305,7 @@ export const AgentForm: React.FC<AgentFormProps> = ({ initialData, role, languag
       {/* Header */}
       <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="flex items-center gap-4">
-           <button onClick={onBack} className="p-2 hover:bg-slate-200 rounded-full transition-colors text-slate-500">
+           <button onClick={onBack} className="p-2 hover:bg-slate-200 rounded-[4px] transition-colors text-slate-500">
              <ArrowLeft size={20} />
            </button>
            <div>
@@ -329,7 +329,7 @@ export const AgentForm: React.FC<AgentFormProps> = ({ initialData, role, languag
                 <Tooltip content={t.viewSidebar}>
                   <button 
                      onClick={() => setViewMode('SIDEBAR')}
-                     className={`p-1.5 rounded-md transition-all ${viewMode === 'SIDEBAR' ? 'bg-white shadow text-sky-600' : 'text-slate-400 hover:text-slate-600'}`}
+                     className={`p-1.5 rounded-[4px] transition-all ${viewMode === 'SIDEBAR' ? 'bg-white shadow text-sky-600' : 'text-slate-400 hover:text-slate-600'}`}
                   >
                       <PanelLeft size={16} />
                   </button>
@@ -337,7 +337,7 @@ export const AgentForm: React.FC<AgentFormProps> = ({ initialData, role, languag
                 <Tooltip content={t.viewTabs}>
                   <button 
                      onClick={() => setViewMode('TOP_TABS')}
-                     className={`p-1.5 rounded-md transition-all ${viewMode === 'TOP_TABS' ? 'bg-white shadow text-sky-600' : 'text-slate-400 hover:text-slate-600'}`}
+                     className={`p-1.5 rounded-[4px] transition-all ${viewMode === 'TOP_TABS' ? 'bg-white shadow text-sky-600' : 'text-slate-400 hover:text-slate-600'}`}
                   >
                       <PanelTop size={16} />
                   </button>
@@ -348,14 +348,14 @@ export const AgentForm: React.FC<AgentFormProps> = ({ initialData, role, languag
               <div className="flex items-center gap-2">
                   <button 
                     onClick={() => handleSubmit(AgentStatus.DRAFT)}
-                    className="px-4 py-2 text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 font-medium text-sm transition-colors"
+                    className="px-4 py-2 text-slate-600 bg-white border border-slate-200 rounded-[4px] hover:bg-slate-50 font-medium text-sm transition-colors"
                   >
                     {t.saveDraft}
                   </button>
                   <button 
                     onClick={() => handleSubmit(AgentStatus.ACTIVE)}
                     disabled={!!errors.workflowId || (formData.workflowId !== 'time-range' && !!errors.triggerEvent)}
-                    className="flex items-center gap-2 px-4 py-2 bg-sky-500 text-white rounded-lg hover:bg-sky-600 font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex items-center gap-2 px-4 py-2 bg-sky-500 text-white rounded-[4px] hover:bg-sky-600 font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                       <Check size={16} />
                       {formData.status === AgentStatus.ACTIVE ? t.saveChanges : t.publishEnable}
@@ -363,7 +363,7 @@ export const AgentForm: React.FC<AgentFormProps> = ({ initialData, role, languag
                   {formData.status === AgentStatus.ACTIVE && (
                       <button 
                         onClick={() => handleSubmit(AgentStatus.INACTIVE)}
-                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg border border-transparent hover:border-red-100 transition-colors"
+                        className="p-2 text-red-500 hover:bg-red-50 rounded-[4px] border border-transparent hover:border-red-100 transition-colors"
                         title={t.disableAgent}
                       >
                         <Power size={20} />
@@ -584,7 +584,7 @@ export const AgentForm: React.FC<AgentFormProps> = ({ initialData, role, languag
                               </div>
                               <button 
                                 onClick={() => !isFormReadOnly && handleNestedChange('mailConfig', 'enableFilter', !formData.mailConfig?.enableFilter)}
-                                className={`w-11 h-6 flex items-center rounded-full px-1 transition-colors ${formData.mailConfig?.enableFilter ? 'bg-sky-500' : 'bg-slate-300'}`}
+                                className={`w-11 h-6 flex items-center rounded-[4px] px-1 transition-colors ${formData.mailConfig?.enableFilter ? 'bg-sky-500' : 'bg-slate-300'}`}
                                 disabled={isFormReadOnly}
                               >
                                 <div className={`w-4 h-4 bg-white rounded-full transition-transform ${formData.mailConfig?.enableFilter ? 'translate-x-5' : 'translate-x-0'}`} />
@@ -660,7 +660,7 @@ export const AgentForm: React.FC<AgentFormProps> = ({ initialData, role, languag
                                     <Tooltip key={v} content={t.clickToCopy}>
                                         <button 
                                           onClick={() => handleCopyVariable(v)}
-                                          className="text-xs bg-white text-blue-600 border border-blue-200 px-2 py-1 rounded hover:border-blue-400 hover:text-blue-800 transition-colors cursor-pointer"
+                                          className="text-xs bg-white text-blue-600 border border-blue-200 px-2 py-1 rounded-[4px] hover:border-blue-400 hover:text-blue-800 transition-colors cursor-pointer"
                                         >
                                           {v}
                                         </button>
@@ -738,7 +738,7 @@ export const AgentForm: React.FC<AgentFormProps> = ({ initialData, role, languag
                       </div>
                       <button 
                         onClick={() => !isFormReadOnly && handleNestedChange('driveConfig', 'autoSave', !formData.driveConfig?.autoSave)}
-                        className={`w-11 h-6 flex items-center rounded-full px-1 transition-colors ${formData.driveConfig?.autoSave ? 'bg-sky-500' : 'bg-slate-300'}`}
+                        className={`w-11 h-6 flex items-center rounded-[4px] px-1 transition-colors ${formData.driveConfig?.autoSave ? 'bg-sky-500' : 'bg-slate-300'}`}
                         disabled={isFormReadOnly}
                       >
                         <div className={`w-4 h-4 bg-white rounded-full transition-transform ${formData.driveConfig?.autoSave ? 'translate-x-5' : 'translate-x-0'}`} />
@@ -757,7 +757,7 @@ export const AgentForm: React.FC<AgentFormProps> = ({ initialData, role, languag
                                placeholder="/My Drive/Agent_Output/"
                                className={`flex-1 px-3 py-2 rounded-lg border focus:ring-2 focus:outline-none ${errors.targetPath ? 'border-red-500 focus:ring-red-200' : 'border-slate-300 focus:ring-sky-200 focus:border-sky-500'}`}
                              />
-                             <button className="px-3 bg-slate-100 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-200"><CheckCircle size={18} /></button>
+                             <button className="px-3 bg-slate-100 border border-slate-200 rounded-[4px] text-slate-600 hover:bg-slate-200"><CheckCircle size={18} /></button>
                           </div>
                           {errors.targetPath && <p className="mt-1 text-xs text-red-500">{errors.targetPath}</p>}
                       </div>
@@ -776,7 +776,7 @@ export const AgentForm: React.FC<AgentFormProps> = ({ initialData, role, languag
                       </div>
                       <button 
                         onClick={() => !isFormReadOnly && handleNestedChange('driveConfig', 'autoRename', !formData.driveConfig?.autoRename)}
-                        className={`w-11 h-6 flex items-center rounded-full px-1 transition-colors ${formData.driveConfig?.autoRename ? 'bg-sky-500' : 'bg-slate-300'}`}
+                        className={`w-11 h-6 flex items-center rounded-[4px] px-1 transition-colors ${formData.driveConfig?.autoRename ? 'bg-sky-500' : 'bg-slate-300'}`}
                         disabled={isFormReadOnly}
                       >
                         <div className={`w-4 h-4 bg-white rounded-full transition-transform ${formData.driveConfig?.autoRename ? 'translate-x-5' : 'translate-x-0'}`} />
@@ -809,7 +809,7 @@ export const AgentForm: React.FC<AgentFormProps> = ({ initialData, role, languag
                              <span className="text-slate-500 self-center mr-1">{t.labelSupportedVars}:</span>
                              {ALLOWED_VARIABLES.map(v => (
                                 <Tooltip key={v} content={t.clickToCopy}>
-                                    <button onClick={() => handleCopyVariable(v)} className="px-2 py-1 bg-slate-100 rounded hover:bg-slate-200 hover:text-sky-600 transition-colors">{v}</button>
+                                    <button onClick={() => handleCopyVariable(v)} className="px-2 py-1 bg-slate-100 rounded-[4px] hover:bg-slate-200 hover:text-sky-600 transition-colors">{v}</button>
                                 </Tooltip>
                              ))}
                           </div>
@@ -829,7 +829,7 @@ export const AgentForm: React.FC<AgentFormProps> = ({ initialData, role, languag
                       </div>
                       <button 
                         onClick={() => !isFormReadOnly && handleNestedChange('driveConfig', 'autoCreateFolder', !formData.driveConfig?.autoCreateFolder)}
-                        className={`w-11 h-6 flex items-center rounded-full px-1 transition-colors ${formData.driveConfig?.autoCreateFolder ? 'bg-sky-500' : 'bg-slate-300'}`}
+                        className={`w-11 h-6 flex items-center rounded-[4px] px-1 transition-colors ${formData.driveConfig?.autoCreateFolder ? 'bg-sky-500' : 'bg-slate-300'}`}
                         disabled={isFormReadOnly}
                       >
                         <div className={`w-4 h-4 bg-white rounded-full transition-transform ${formData.driveConfig?.autoCreateFolder ? 'translate-x-5' : 'translate-x-0'}`} />
@@ -862,7 +862,7 @@ export const AgentForm: React.FC<AgentFormProps> = ({ initialData, role, languag
                              <span className="text-slate-500 self-center mr-1">{t.labelSupportedVars}:</span>
                              {ALLOWED_VARIABLES.map(v => (
                                 <Tooltip key={v} content={t.clickToCopy}>
-                                    <button onClick={() => handleCopyVariable(v)} className="px-2 py-1 bg-slate-100 rounded hover:bg-slate-200 hover:text-sky-600 transition-colors">{v}</button>
+                                    <button onClick={() => handleCopyVariable(v)} className="px-2 py-1 bg-slate-100 rounded-[4px] hover:bg-slate-200 hover:text-sky-600 transition-colors">{v}</button>
                                 </Tooltip>
                              ))}
                           </div>
@@ -885,7 +885,7 @@ export const AgentForm: React.FC<AgentFormProps> = ({ initialData, role, languag
                           <button 
                             onClick={runTest}
                             disabled={testStatus === 'RUNNING'}
-                            className="bg-sky-600 hover:bg-sky-500 text-white px-5 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 disabled:opacity-50 transition-colors shadow-sm"
+                            className="bg-sky-600 hover:bg-sky-500 text-white px-5 py-2.5 rounded-[4px] text-sm font-medium flex items-center gap-2 disabled:opacity-50 transition-colors shadow-sm"
                           >
                             {testStatus === 'RUNNING' ? <Loader2 size={16} className="animate-spin" /> : (testStatus === 'COMPLETED' ? <RotateCcw size={16} /> : <Play size={16} />)}
                             {testStatus === 'COMPLETED' ? t.btnRestartTest : t.btnRunTest}

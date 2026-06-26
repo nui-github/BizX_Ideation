@@ -682,7 +682,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
               {searchQuery && (
                 <button 
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 p-0.5 hover:bg-slate-100 rounded text-slate-400 hover:text-slate-600 cursor-pointer"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 p-0.5 hover:bg-slate-100 rounded-[4px] text-slate-400 hover:text-slate-600 cursor-pointer"
                 >
                   <X size={12} />
                 </button>
@@ -695,7 +695,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
                 <button
                   type="button"
                   onClick={() => setViewMode('GRID')}
-                  className={`h-full px-2.5 rounded-sm transition-all duration-200 flex items-center justify-center cursor-pointer ${
+                  className={`h-full px-2.5 rounded-[4px]-sm transition-all duration-200 flex items-center justify-center cursor-pointer ${
                     viewMode === 'GRID'
                       ? 'bg-white text-blue-600 shadow-sm'
                       : 'text-slate-500 hover:text-slate-800'
@@ -708,7 +708,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
                 <button
                   type="button"
                   onClick={() => setViewMode('LIST')}
-                  className={`h-full px-2.5 rounded-sm transition-all duration-200 flex items-center justify-center cursor-pointer ${
+                  className={`h-full px-2.5 rounded-[4px]-sm transition-all duration-200 flex items-center justify-center cursor-pointer ${
                     viewMode === 'LIST'
                       ? 'bg-white text-blue-600 shadow-sm'
                       : 'text-slate-500 hover:text-slate-800'
@@ -875,7 +875,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
                               <Tooltip title={isTh ? 'แก้ไขสคีมา' : 'Edit Schema'}>
                                 <button
                                   onClick={() => handleOpenEdit(schema)}
-                                  className="p-2 hover:bg-slate-50 text-slate-400 hover:text-[#1f5df9] bg-white border border-slate-150 rounded-xl transition-all cursor-pointer"
+                                  className="p-2 hover:bg-slate-50 text-slate-400 hover:text-[#1f5df9] bg-white border border-slate-150 rounded-[4px] transition-all cursor-pointer"
                                 >
                                   <Edit3 size={14} />
                                 </button>
@@ -883,7 +883,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
 
                               <button
                                 onClick={() => setSchemaToDelete(schema)}
-                                className="p-2 hover:bg-rose-50 text-slate-400 hover:text-rose-600 bg-white border border-slate-150 rounded-xl transition-all cursor-pointer"
+                                className="p-2 hover:bg-rose-50 text-slate-400 hover:text-rose-600 bg-white border border-slate-150 rounded-[4px] transition-all cursor-pointer"
                               >
                                 <Trash2 size={14} />
                               </button>
@@ -934,7 +934,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
                               <button
                                 type="button"
                                 onClick={() => handleOpenEdit(schema)}
-                                className="p-1.5 hover:bg-slate-100 text-slate-500 hover:text-blue-600 rounded-lg transition-colors cursor-pointer"
+                                className="p-1.5 hover:bg-slate-100 text-slate-500 hover:text-blue-600 rounded-[4px] transition-colors cursor-pointer"
                                 title={isTh ? 'แก้ไขสคีมา' : 'Edit Schema'}
                               >
                                 <Edit3 size={13} />
@@ -942,7 +942,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
                               <button
                                 type="button"
                                 onClick={() => setSchemaToDelete(schema)}
-                                className="p-1.5 hover:bg-rose-50 text-slate-500 hover:text-destructive rounded-lg transition-colors cursor-pointer"
+                                className="p-1.5 hover:bg-rose-50 text-slate-500 hover:text-destructive rounded-[4px] transition-colors cursor-pointer"
                                 title="Delete"
                               >
                                 <Trash2 size={13} />
@@ -1069,14 +1069,14 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
           <div className="flex justify-end gap-3 px-2 py-1">
             <Button 
               onClick={() => setShowModal(false)} 
-              className="text-slate-500 font-bold hover:bg-slate-50 px-6 py-2.5 rounded-xl border border-slate-200 cursor-pointer text-xs uppercase tracking-wider h-[40px]"
+              className="text-slate-500 font-bold hover:bg-slate-50 px-6 py-2.5 rounded-[4px] border border-slate-200 cursor-pointer text-xs uppercase tracking-wider h-[40px]"
             >
               {isTh ? 'ยกเลิก' : 'Cancel'}
             </Button>
             <Button 
               onClick={handleSave} 
               type="primary" 
-              className="bg-[#1f5df9] hover:bg-[#0352cc] text-white font-black px-6 py-2.5 rounded-xl border-none shadow-md shadow-blue-500/10 cursor-pointer text-xs uppercase tracking-wider h-[40px]"
+              className="bg-[#1f5df9] hover:bg-[#0352cc] text-white font-black px-6 py-2.5 rounded-[4px] border-none shadow-md shadow-blue-500/10 cursor-pointer text-xs uppercase tracking-wider h-[40px]"
             >
               {isTh ? 'บันทึกข้อมูล' : 'Save Schema'}
             </Button>
@@ -1193,7 +1193,7 @@ Your task is to highly accurately extract structured elements from the uploaded 
                   type="primary"
                   onClick={handleAddNewDocTypeClick}
                   disabled={!selectedDocTypeToAdd}
-                  className="bg-[#1f5df9] hover:bg-[#0352cc] hover:shadow-xs text-white font-bold h-[32px] rounded-lg border-none flex items-center px-3.5 text-xs shadow-3xs transition-all duration-200"
+                  className="bg-[#1f5df9] hover:bg-[#0352cc] hover:shadow-xs text-white font-bold h-[32px] rounded-[4px] border-none flex items-center px-3.5 text-xs shadow-3xs transition-all duration-200"
                 >
                   <Plus size={13} className="mr-1" />
                   <span>{isTh ? 'เพิ่ม' : 'Add'}</span>
@@ -1250,7 +1250,7 @@ Your task is to highly accurately extract structured elements from the uploaded 
                             e.stopPropagation(); // prevent accordion toggle when deleting
                             handleRemoveDocTypeConfig(config.docTypeId);
                           }}
-                          className="px-2.5 py-1 text-xs font-bold text-slate-500 hover:text-rose-600 bg-white hover:bg-rose-50 border border-slate-200 hover:border-rose-200 rounded-lg transition-all flex items-center gap-1 cursor-pointer"
+                          className="px-2.5 py-1 text-xs font-bold text-slate-500 hover:text-rose-600 bg-white hover:bg-rose-50 border border-slate-200 hover:border-rose-200 rounded-[4px] transition-all flex items-center gap-1 cursor-pointer"
                         >
                           <X size={12} />
                           <span>{isTh ? 'ลบออก' : 'Remove'}</span>
@@ -1313,7 +1313,7 @@ Your task is to highly accurately extract structured elements from the uploaded 
                                       <button
                                         type="button"
                                         onClick={() => handleAddLabelRow(config.docTypeId, sect.key)}
-                                        className="px-3 py-1.5 border border-dashed border-[#1f5df9]/40 hover:border-[#1f5df9]/70 hover:bg-[#1f5df9]/5 hover:text-[#1f5df9] text-[#1f5df9]/80 font-black text-xs rounded-lg transition-all flex items-center gap-1 bg-white cursor-pointer active:scale-98"
+                                        className="px-3 py-1.5 border border-dashed border-[#1f5df9]/40 hover:border-[#1f5df9]/70 hover:bg-[#1f5df9]/5 hover:text-[#1f5df9] text-[#1f5df9]/80 font-black text-xs rounded-[4px] transition-all flex items-center gap-1 bg-white cursor-pointer active:scale-98"
                                       >
                                         <Plus size={12} className="text-[#1f5df9]" />
                                         <span>{isTh ? '+ เพิ่ม Field' : '+ Add Field'}</span>
@@ -1385,7 +1385,7 @@ Your task is to highly accurately extract structured elements from the uploaded 
                                                 <button
                                                   type="button"
                                                   onClick={() => handleRemoveLabelRow(config.docTypeId, label.id)}
-                                                  className="p-2 text-rose-500 hover:text-rose-750 hover:bg-rose-50 active:scale-95 border border-transparent rounded-lg transition-all cursor-pointer flex items-center justify-center h-[40px] w-[40px]"
+                                                  className="p-2 text-rose-500 hover:text-rose-750 hover:bg-rose-50 active:scale-95 border border-transparent rounded-[4px] transition-all cursor-pointer flex items-center justify-center h-[40px] w-[40px]"
                                                   title={isTh ? 'ลบ Field' : 'Delete field'}
                                                 >
                                                   <Trash2 size={16} />
@@ -1403,7 +1403,7 @@ Your task is to highly accurately extract structured elements from the uploaded 
                                                     <Button
                                                       type="dashed"
                                                       onClick={() => handleAddSubLabelRow(config.docTypeId, label.id)}
-                                                      className="border-dashed border-[#1f5df9]/50 text-[#1f5df9] hover:text-[#0352cc] hover:border-[#0352cc] text-[11px] h-[26px] py-0 px-2.5 rounded-md flex items-center font-bold"
+                                                      className="border-dashed border-[#1f5df9]/50 text-[#1f5df9] hover:text-[#0352cc] hover:border-[#0352cc] text-[11px] h-[26px] py-0 px-2.5 rounded-[4px] flex items-center font-bold"
                                                     >
                                                       <Plus size={12} className="mr-1" />
                                                       {isTh ? 'เพิ่ม Field ย่อย' : 'Add Sub Field'}
@@ -1464,7 +1464,7 @@ Your task is to highly accurately extract structured elements from the uploaded 
                                                           <button
                                                             type="button"
                                                             onClick={() => handleRemoveSubLabelRow(config.docTypeId, label.id, subLabel.id)}
-                                                            className="p-1.5 text-rose-500 hover:text-rose-750 hover:bg-rose-50 active:scale-95 border border-transparent rounded-lg transition-all cursor-pointer flex items-center justify-center h-[32px] w-[32px]"
+                                                            className="p-1.5 text-rose-500 hover:text-rose-750 hover:bg-rose-50 active:scale-95 border border-transparent rounded-[4px] transition-all cursor-pointer flex items-center justify-center h-[32px] w-[32px]"
                                                             title={isTh ? 'ลบ field ย่อย' : 'Delete sub-field'}
                                                           >
                                                             <Trash2 size={13} />
@@ -1581,7 +1581,7 @@ Your task is to highly accurately extract structured elements from the uploaded 
                 setShowWarningModal(false);
                 setPendingSavePayload(null);
               }}
-              className="px-4 py-2.5 border border-slate-200 text-slate-500 hover:bg-slate-50 font-black text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer h-[40px]"
+              className="px-4 py-2.5 border border-slate-200 text-slate-500 hover:bg-slate-50 font-black text-xs uppercase tracking-wider rounded-[4px] transition-all cursor-pointer h-[40px]"
             >
               {isTh ? 'กลับไปแก้ไข' : 'Go back to edit'}
             </button>
@@ -1592,7 +1592,7 @@ Your task is to highly accurately extract structured elements from the uploaded 
                   submitSave(pendingSavePayload);
                 }
               }}
-              className="px-4 py-2.5 bg-[#1f5df9] text-white hover:bg-[#0352cc] font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shadow-blue-500/10 cursor-pointer h-[40px]"
+              className="px-4 py-2.5 bg-[#1f5df9] text-white hover:bg-[#0352cc] font-black text-xs uppercase tracking-wider rounded-[4px] transition-all shadow-md shadow-blue-500/10 cursor-pointer h-[40px]"
             >
               {isTh ? 'ต้องการบันทึกต่อไป' : 'Continue Saving'}
             </button>
@@ -1658,7 +1658,7 @@ Your task is to highly accurately extract structured elements from the uploaded 
               <button
                 type="button"
                 onClick={() => setSchemaToDelete(null)}
-                className="px-4 py-2.5 border border-slate-200 text-slate-500 hover:bg-slate-50 font-black text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer h-[40px]"
+                className="px-4 py-2.5 border border-slate-200 text-slate-500 hover:bg-slate-50 font-black text-xs uppercase tracking-wider rounded-[4px] transition-all cursor-pointer h-[40px]"
               >
                 {isTh ? 'ยกเลิก' : 'Cancel'}
               </button>
@@ -1668,7 +1668,7 @@ Your task is to highly accurately extract structured elements from the uploaded 
                   handleDeleteSchema(schemaToDelete.id);
                   setSchemaToDelete(null);
                 }}
-                className="px-4 py-2.5 bg-rose-500 text-white hover:bg-rose-600 font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shadow-rose-500/10 cursor-pointer h-[40px]"
+                className="px-4 py-2.5 bg-rose-500 text-white hover:bg-rose-600 font-black text-xs uppercase tracking-wider rounded-[4px] transition-all shadow-md shadow-rose-500/10 cursor-pointer h-[40px]"
               >
                 {isTh ? 'ลบทันที' : 'Confirm Delete'}
               </button>

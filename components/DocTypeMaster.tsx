@@ -379,7 +379,7 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
             {onBack && (
               <button 
                 onClick={onBack}
-                className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-500 hover:text-slate-700 transition"
+                className="p-1.5 hover:bg-slate-100 rounded-[4px] text-slate-500 hover:text-slate-700 transition"
                 title={text.backBtn}
               >
                 <ArrowLeft size={16} />
@@ -443,7 +443,7 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
               {searchQuery && (
                 <button 
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 p-0.5 hover:bg-slate-100 rounded text-slate-400 hover:text-slate-600 cursor-pointer"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 p-0.5 hover:bg-slate-100 rounded-[4px] text-slate-400 hover:text-slate-600 cursor-pointer"
                 >
                   <X size={12} />
                 </button>
@@ -456,7 +456,7 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
                 <button
                   type="button"
                   onClick={() => setViewMode('CARD')}
-                  className={`h-full px-2.5 rounded-sm transition-all duration-200 flex items-center justify-center cursor-pointer ${
+                  className={`h-full px-2.5 rounded-[4px]-sm transition-all duration-200 flex items-center justify-center cursor-pointer ${
                     viewMode === 'CARD'
                       ? 'bg-white text-blue-600 shadow-sm'
                       : 'text-slate-500 hover:text-slate-800'
@@ -469,7 +469,7 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
                 <button
                   type="button"
                   onClick={() => setViewMode('LIST')}
-                  className={`h-full px-2.5 rounded-sm transition-all duration-200 flex items-center justify-center cursor-pointer ${
+                  className={`h-full px-2.5 rounded-[4px]-sm transition-all duration-200 flex items-center justify-center cursor-pointer ${
                     viewMode === 'LIST'
                       ? 'bg-white text-blue-600 shadow-sm'
                       : 'text-slate-500 hover:text-slate-800'
@@ -511,7 +511,7 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
           </div>
           <button
             onClick={handleOpenAddModal}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase tracking-wider rounded-xl transition shadow-md shadow-blue-500/10 hover:shadow-blue-500/20 active:scale-95 cursor-pointer mx-auto"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase tracking-wider rounded-[4px] transition shadow-md shadow-blue-500/10 hover:shadow-blue-500/20 active:scale-95 cursor-pointer mx-auto"
           >
             <Plus size={16} strokeWidth={2.5} />
             <span>{text.addBtn}</span>
@@ -546,7 +546,7 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
                     <button
                       type="button"
                       onClick={() => handleOpenEditModal(dt)}
-                      className="p-1.5 hover:bg-slate-100 text-slate-500 hover:text-blue-600 rounded-lg transition-colors cursor-pointer"
+                      className="p-1.5 hover:bg-slate-100 text-slate-500 hover:text-blue-600 rounded-[4px] transition-colors cursor-pointer"
                       title={text.modalEditTitle}
                     >
                       <Edit3 size={13} />
@@ -554,7 +554,7 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
                     <button
                       type="button"
                       onClick={() => handleDelete(dt)}
-                      className="p-1.5 hover:bg-rose-50 text-slate-500 hover:text-destructive rounded-lg transition-colors cursor-pointer"
+                      className="p-1.5 hover:bg-rose-50 text-slate-500 hover:text-destructive rounded-[4px] transition-colors cursor-pointer"
                       title="Delete"
                     >
                       <Trash2 size={13} />
@@ -713,7 +713,7 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
                       <button
                         type="button"
                         onClick={() => handleOpenEditModal(dt)}
-                        className="p-1.5 hover:bg-slate-100 text-slate-500 hover:text-blue-600 rounded-lg transition-colors cursor-pointer"
+                        className="p-1.5 hover:bg-slate-100 text-slate-500 hover:text-blue-600 rounded-[4px] transition-colors cursor-pointer"
                         title={text.modalEditTitle}
                       >
                         <Edit3 size={13} />
@@ -721,7 +721,7 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
                       <button
                         type="button"
                         onClick={() => handleDelete(dt)}
-                        className="p-1.5 hover:bg-rose-50 text-slate-500 hover:text-destructive rounded-lg transition-colors cursor-pointer"
+                        className="p-1.5 hover:bg-rose-50 text-slate-500 hover:text-destructive rounded-[4px] transition-colors cursor-pointer"
                         title="Delete"
                       >
                         <Trash2 size={13} />
@@ -783,7 +783,7 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
                   <button
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="w-8 h-8 rounded-full bg-white hover:bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center border border-slate-200/50 shadow-sm transition active:scale-90"
+                    className="w-8 h-8 rounded-[4px] bg-white hover:bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center border border-slate-200/50 shadow-sm transition active:scale-90"
                   >
                     <X size={14} />
                   </button>
@@ -849,7 +849,7 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
                           <button
                             type="button"
                             onClick={() => setFormTags(formTags.filter((_, tIdx) => tIdx !== idx))}
-                            className="hover:bg-blue-200/50 hover:text-blue-900 rounded-full p-0.5 text-blue-400 transition cursor-pointer"
+                            className="hover:bg-blue-200/50 hover:text-blue-900 rounded-[4px] p-0.5 text-blue-400 transition cursor-pointer"
                           >
                             <X size={10} strokeWidth={3} />
                           </button>
@@ -904,14 +904,14 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
                   <button
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="px-4 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 active:scale-95 text-slate-600 hover:text-slate-800 font-bold text-xs uppercase tracking-wider rounded-xl shadow-xs transition cursor-pointer"
+                    className="px-4 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 active:scale-95 text-slate-600 hover:text-slate-800 font-bold text-xs uppercase tracking-wider rounded-[4px] shadow-xs transition cursor-pointer"
                   >
                     {text.btnCancel}
                   </button>
                   <button
                     type="submit"
                     onClick={handleSubmit}
-                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md shadow-blue-500/10 transition cursor-pointer"
+                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-black text-xs uppercase tracking-wider rounded-[4px] shadow-md shadow-blue-500/10 transition cursor-pointer"
                   >
                     {text.btnSave}
                   </button>
@@ -1012,7 +1012,7 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
                   <button
                     type="button"
                     onClick={() => setDeleteConfirmDialog({ isOpen: false, docType: null, usingWorkflows: [] })}
-                    className="px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold hover:bg-slate-50 text-xs transition active:scale-95 cursor-pointer"
+                    className="px-4 py-2.5 rounded-[4px] border border-slate-200 bg-white text-slate-600 font-bold hover:bg-slate-50 text-xs transition active:scale-95 cursor-pointer"
                   >
                     {language === 'TH' ? 'ยกเลิก' : 'Cancel'}
                   </button>
@@ -1024,7 +1024,7 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
                       }
                       setDeleteConfirmDialog({ isOpen: false, docType: null, usingWorkflows: [] });
                     }}
-                    className={`px-4 py-2.5 rounded-xl text-white font-bold text-xs transition active:scale-95 cursor-pointer shadow-sm ${
+                    className={`px-4 py-2.5 rounded-[4px] text-white font-bold text-xs transition active:scale-95 cursor-pointer shadow-sm ${
                       deleteConfirmDialog.usingWorkflows.length > 0
                         ? 'bg-amber-600 hover:bg-amber-700 shadow-amber-200'
                         : 'bg-rose-600 hover:bg-rose-700 shadow-rose-200'

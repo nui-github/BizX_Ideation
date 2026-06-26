@@ -101,7 +101,7 @@ export const ComparisonWorkflow: React.FC<ComparisonWorkflowProps> = ({
         </div>
         <button 
           onClick={onCreate}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all font-black text-xs md:text-sm shadow-md"
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-[4px] hover:bg-blue-700 transition-all font-black text-xs md:text-sm shadow-md"
         >
           <Plus size={18} />
           {language === 'TH' ? 'สร้างเวิร์กโฟลว์ใหม่' : 'Create New Workflow'}
@@ -121,7 +121,7 @@ export const ComparisonWorkflow: React.FC<ComparisonWorkflowProps> = ({
           </p>
           <button 
             onClick={onCreate}
-            className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all font-black text-sm shadow-md"
+            className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-[4px] hover:bg-blue-700 transition-all font-black text-sm shadow-md"
           >
             <Plus size={20} />
             {language === 'TH' ? 'สร้างเวิร์กโฟลว์ใหม่' : 'Create New Workflow'}
@@ -147,7 +147,7 @@ export const ComparisonWorkflow: React.FC<ComparisonWorkflowProps> = ({
                 <button
                   key={status}
                   onClick={() => setStatusFilter(status as any)}
-                  className={`px-4 py-1.5 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${
+                  className={`px-4 py-1.5 rounded-[4px] text-xs font-black uppercase tracking-widest transition-all ${
                     statusFilter === status 
                       ? 'bg-white text-blue-600 shadow-sm' 
                       : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/20'
@@ -217,7 +217,7 @@ export const ComparisonWorkflow: React.FC<ComparisonWorkflowProps> = ({
                             e.stopPropagation();
                             onToggleStatus(workflow);
                           }}
-                          className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${
+                          className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-[4px] border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${
                             workflow.status === 'ACTIVE' ? 'bg-emerald-500' : 'bg-slate-300'
                           }`}
                         >
@@ -242,7 +242,7 @@ export const ComparisonWorkflow: React.FC<ComparisonWorkflowProps> = ({
                     <div className="relative group/tip">
                       <button 
                         onClick={() => onEdit(workflow)}
-                        className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 border-2 border-transparent hover:border-blue-200 rounded-lg transition-all"
+                        className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 border-2 border-transparent hover:border-blue-200 rounded-[4px] transition-all"
                       >
                         <Settings size={16} />
                       </button>
@@ -255,7 +255,7 @@ export const ComparisonWorkflow: React.FC<ComparisonWorkflowProps> = ({
                       <div className="relative group/tip">
                         <button 
                           onClick={() => handleOpenDuplicate(workflow)}
-                          className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all md:opacity-0 md:group-hover:opacity-100"
+                          className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-[4px] transition-all md:opacity-0 md:group-hover:opacity-100"
                         >
                           <Copy size={16} />
                         </button>
@@ -268,7 +268,7 @@ export const ComparisonWorkflow: React.FC<ComparisonWorkflowProps> = ({
                     <div className="relative group/tip">
                       <button 
                         onClick={() => onDelete(workflow)}
-                        className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all md:opacity-0 md:group-hover:opacity-100"
+                        className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-[4px] transition-all md:opacity-0 md:group-hover:opacity-100"
                       >
                         <Trash2 size={16} />
                       </button>
@@ -345,13 +345,13 @@ export const ComparisonWorkflow: React.FC<ComparisonWorkflowProps> = ({
                 <div className="flex justify-end gap-3">
                   <button 
                     onClick={() => setDuplicateModal(prev => ({ ...prev, isOpen: false }))}
-                    className="px-6 py-3 rounded-xl text-slate-600 font-bold hover:bg-slate-100 transition-colors text-sm"
+                    className="px-6 py-3 rounded-[4px] text-slate-600 font-bold hover:bg-slate-100 transition-colors text-sm"
                   >
                     {language === 'TH' ? 'ยกเลิก' : 'Cancel'}
                   </button>
                   <button 
                     onClick={submitDuplicate}
-                    className="px-6 py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition-colors shadow-sm shadow-blue-200 text-sm flex items-center gap-2"
+                    className="px-6 py-3 rounded-[4px] bg-blue-600 text-white font-bold hover:bg-blue-700 transition-colors shadow-sm shadow-blue-200 text-sm flex items-center gap-2"
                   >
                     <Copy size={16} />
                     {language === 'TH' ? 'ทำสำเนา' : 'Duplicate'}

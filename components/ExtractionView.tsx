@@ -471,14 +471,14 @@ export const ExtractionView: React.FC<ExtractionViewProps> = ({ item, language, 
         <div className="flex gap-2">
           <button 
             onClick={onBack}
-            className="flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-md text-slate-600 text-sm font-medium hover:bg-slate-50 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-[4px] text-slate-600 text-sm font-medium hover:bg-slate-50 transition-colors"
           >
             <ArrowLeft size={16} />
             {t.btnBack}
           </button>
           <button 
             onClick={onSave}
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 rounded-md text-slate-700 text-sm font-medium hover:bg-slate-50 transition-colors shadow-sm"
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 rounded-[4px] text-slate-700 text-sm font-medium hover:bg-slate-50 transition-colors shadow-sm"
           >
              <Save size={16} />
              {t.btnSaveDraft}
@@ -593,7 +593,7 @@ export const ExtractionView: React.FC<ExtractionViewProps> = ({ item, language, 
            <div className="absolute -left-3 top-6 z-30">
                 <button 
                     onClick={() => setIsPanelOpen(!isPanelOpen)}
-                    className="bg-white border border-slate-200 rounded-full p-1 shadow-md hover:bg-slate-50 text-slate-500 transition-transform active:scale-95"
+                    className="bg-white border border-slate-200 rounded-[4px] p-1 shadow-md hover:bg-slate-50 text-slate-500 transition-transform active:scale-95"
                     title={isPanelOpen ? t.tooltipHidePanel : t.tooltipShowPanel}
                 >
                     {isPanelOpen ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
@@ -652,7 +652,7 @@ export const ExtractionView: React.FC<ExtractionViewProps> = ({ item, language, 
                                     onClick={() => {
                                         navigator.clipboard.writeText(JSON.stringify(fields, null, 2));
                                     }}
-                                    className="absolute top-2 right-2 p-1.5 bg-white border border-slate-200 rounded text-slate-500 hover:text-blue-600"
+                                    className="absolute top-2 right-2 p-1.5 bg-white border border-slate-200 rounded-[4px] text-slate-500 hover:text-blue-600"
                                 >
                                     <Copy size={16} />
                                 </button>
@@ -732,7 +732,7 @@ export const ExtractionView: React.FC<ExtractionViewProps> = ({ item, language, 
                                                                     setChangingFieldId(isChanging ? null : field.id);
                                                                     setOpenMenuId(null);
                                                                 }}
-                                                                className="flex items-center gap-1 text-xs font-bold text-slate-500 uppercase tracking-wider hover:text-blue-600 hover:bg-blue-50 px-1.5 py-0.5 rounded transition-colors group/label"
+                                                                className="flex items-center gap-1 text-xs font-bold text-slate-500 uppercase tracking-wider hover:text-blue-600 hover:bg-blue-50 px-1.5 py-0.5 rounded-[4px] transition-colors group/label"
                                                              >
                                                                  {field.label}
                                                                  <ChevronDown size={12} className="opacity-0 group-hover/label:opacity-100 transition-opacity" />
@@ -766,7 +766,7 @@ export const ExtractionView: React.FC<ExtractionViewProps> = ({ item, language, 
                                                             <button 
                                                                 onClick={() => setMappingMode(isMapping ? null : field.id)}
                                                                 className={`
-                                                                    flex items-center gap-1.5 text-[10px] px-2 py-1 rounded-full font-medium transition-colors border
+                                                                    flex items-center gap-1.5 text-[10px] px-2 py-1 rounded-[4px] font-medium transition-colors border
                                                                     ${isMapping 
                                                                         ? 'bg-blue-600 text-white border-blue-600' 
                                                                         : isMapped
@@ -789,7 +789,7 @@ export const ExtractionView: React.FC<ExtractionViewProps> = ({ item, language, 
                                                             <div className="relative">
                                                                 <button 
                                                                     onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === field.id ? null : field.id); }}
-                                                                    className="p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded card-menu-btn"
+                                                                    className="p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-[4px] card-menu-btn"
                                                                 >
                                                                     <MoreVertical size={14} />
                                                                 </button>
@@ -869,7 +869,7 @@ export const ExtractionView: React.FC<ExtractionViewProps> = ({ item, language, 
                                     <button 
                                         onClick={() => availableFields.length > 0 && setIsAddDropdownOpen(!isAddDropdownOpen)}
                                         disabled={availableFields.length === 0}
-                                        className={`w-full py-2 border-2 border-dashed rounded-lg font-bold text-xs flex items-center justify-center gap-2 transition-colors ${availableFields.length === 0 ? 'border-slate-200 text-slate-400 cursor-not-allowed bg-slate-50' : 'border-slate-300 text-slate-500 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50'}`}
+                                        className={`w-full py-2 border-2 border-dashed rounded-[4px] font-bold text-xs flex items-center justify-center gap-2 transition-colors ${availableFields.length === 0 ? 'border-slate-200 text-slate-400 cursor-not-allowed bg-slate-50' : 'border-slate-300 text-slate-500 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50'}`}
                                     >
                                         <Plus size={14} />
                                         {availableFields.length === 0 ? t.noMoreFields : t.btnAddField}
@@ -915,7 +915,7 @@ export const ExtractionView: React.FC<ExtractionViewProps> = ({ item, language, 
                <div className="p-4 bg-white border-t border-slate-200 shrink-0">
                    <button 
                       onClick={onSave}
-                      className="w-full bg-[#1f5df9] hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-sm transition-all active:scale-[0.98] flex justify-center items-center gap-2"
+                      className="w-full bg-[#1f5df9] hover:bg-blue-700 text-white font-bold py-3 rounded-[4px] shadow-sm transition-all active:scale-[0.98] flex justify-center items-center gap-2"
                    >
                       <Check size={18} />
                       {getSaveButtonLabel()}

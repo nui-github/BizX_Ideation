@@ -302,7 +302,7 @@ export const TrackingPage: React.FC<TrackingPageProps> = ({ language, items, onV
           <h1 className="text-xl font-bold text-slate-800">{t.trackingTitle}</h1>
           <button 
               onClick={onUploadClick}
-              className="flex items-center gap-2 bg-[#1f5df9] hover:bg-blue-800 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"
+              className="flex items-center gap-2 bg-[#1f5df9] hover:bg-blue-800 text-white px-4 py-2 rounded-[4px] text-sm font-medium transition-colors shadow-sm"
           >
             <Upload size={16} />
             {t.btnUpload}
@@ -376,10 +376,10 @@ export const TrackingPage: React.FC<TrackingPageProps> = ({ language, items, onV
               </div>
             </div>
             <div className="flex items-end gap-2">
-              <button className="flex-1 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 px-4 py-2 rounded-md text-sm font-medium transition-colors">
+              <button className="flex-1 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 px-4 py-2 rounded-[4px] text-sm font-medium transition-colors">
                 {t.btnReset}
               </button>
-              <button className="flex-1 bg-[#1f5df9] hover:bg-blue-800 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm">
+              <button className="flex-1 bg-[#1f5df9] hover:bg-blue-800 text-white px-4 py-2 rounded-[4px] text-sm font-medium transition-colors shadow-sm">
                 {t.btnSearch}
               </button>
             </div>
@@ -443,18 +443,18 @@ export const TrackingPage: React.FC<TrackingPageProps> = ({ language, items, onV
               <button 
                   onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                   disabled={currentPage === 1}
-                  className="w-8 h-8 flex items-center justify-center border border-slate-200 bg-white rounded hover:bg-slate-50 disabled:opacity-50"
+                  className="w-8 h-8 flex items-center justify-center border border-slate-200 bg-white rounded-[4px] hover:bg-slate-50 disabled:opacity-50"
               >
                   <ChevronLeft size={16} />
               </button>
               {/* Mock Pagination buttons */}
-              <button className="w-8 h-8 flex items-center justify-center border border-sky-500 bg-white text-sky-600 rounded font-medium">1</button>
-              <button className="w-8 h-8 flex items-center justify-center border border-slate-200 bg-white rounded hover:bg-slate-50">2</button>
+              <button className="w-8 h-8 flex items-center justify-center border border-sky-500 bg-white text-sky-600 rounded-[4px] font-medium">1</button>
+              <button className="w-8 h-8 flex items-center justify-center border border-slate-200 bg-white rounded-[4px] hover:bg-slate-50">2</button>
               <span className="px-2">...</span>
               <button 
                   onClick={() => setCurrentPage(Math.min(Math.ceil(totalItems/itemsPerPage), currentPage + 1))}
                   disabled={currentPage >= Math.ceil(totalItems/itemsPerPage)}
-                  className="w-8 h-8 flex items-center justify-center border border-slate-200 bg-white rounded hover:bg-slate-50 disabled:opacity-50"
+                  className="w-8 h-8 flex items-center justify-center border border-slate-200 bg-white rounded-[4px] hover:bg-slate-50 disabled:opacity-50"
               >
                   <ChevronRight size={16} />
               </button>
@@ -539,13 +539,13 @@ export const TrackingPage: React.FC<TrackingPageProps> = ({ language, items, onV
                   <div className="px-6 py-4 border-t border-slate-100 bg-slate-50/50 flex gap-3 justify-end">
                       <button 
                           onClick={() => setReadModalOpen(false)}
-                          className="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 text-sm font-medium hover:bg-white hover:border-slate-400 transition-colors"
+                          className="px-4 py-2 border border-slate-300 rounded-[4px] text-slate-700 text-sm font-medium hover:bg-white hover:border-slate-400 transition-colors"
                       >
                           {t.btnCancel}
                       </button>
                       <button 
                           onClick={handleConfirmRead}
-                          className="px-6 py-2 bg-[#1f5df9] text-white rounded-lg text-sm font-medium hover:bg-blue-700 shadow-sm transition-colors"
+                          className="px-6 py-2 bg-[#1f5df9] text-white rounded-[4px] text-sm font-medium hover:bg-blue-700 shadow-sm transition-colors"
                       >
                           {t.btnStartRead}
                       </button>

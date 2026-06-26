@@ -1888,7 +1888,7 @@ const mockWorkflows: Workflow[] = [
                 </div>
                 <button 
                   onClick={() => setShowStatusGuide(false)}
-                  className="w-8 h-8 rounded-full hover:bg-white flex items-center justify-center text-slate-400 hover:text-rose-500 transition-all shadow-sm"
+                  className="w-8 h-8 rounded-[4px] hover:bg-white flex items-center justify-center text-slate-400 hover:text-rose-500 transition-all shadow-sm"
                 >
                   <X size={18} />
                 </button>
@@ -2258,7 +2258,7 @@ const mockWorkflows: Workflow[] = [
               {(['All', 'Email', 'Doc type'] as const).map(f => (
                 <button 
                   key={f}
-                  className={`px-4 py-2 rounded-xl font-bold uppercase tracking-wider text-[10px] transition-all border font-sans ${
+                  className={`px-4 py-2 rounded-[4px] font-bold uppercase tracking-wider text-[10px] transition-all border font-sans ${
                     pendingFilter === f 
                       ? 'bg-[#1f5df9] text-white border-[#1f5df9] shadow-md shadow-blue-200' 
                       : 'bg-white text-slate-500 border-slate-200 hover:border-blue-300 hover:text-[#1f5df9]'
@@ -2528,7 +2528,7 @@ const mockWorkflows: Workflow[] = [
                              <button
                                key={type}
                                onClick={() => setPendingDocTypeSelections(prev => ({ ...prev, [activeItem.id]: type }))}
-                               className={`p-4 rounded-xl border text-left flex flex-col items-start gap-2 transition-all font-sans relative overflow-hidden group ${
+                               className={`p-4 rounded-[4px] border text-left flex flex-col items-start gap-2 transition-all font-sans relative overflow-hidden group ${
                                  isSelected 
                                  ? 'border-[#1f5df9] bg-white shadow-[0_4px_12px_rgba(4,99,239,0.1)] ring-1 ring-[#1f5df9]' 
                                  : 'border-slate-200 bg-white hover:border-blue-300 hover:bg-slate-50/50'
@@ -2586,7 +2586,7 @@ const mockWorkflows: Workflow[] = [
             {(['ALL', 'JOB', 'PENDING'] as const).map(f => (
               <button
                 key={f}
-                className={`px-4 py-2 rounded-lg font-black uppercase tracking-widest text-[11px] transition-all font-sans ${
+                className={`px-4 py-2 rounded-[4px] font-black uppercase tracking-widest text-[11px] transition-all font-sans ${
                   logFilter === f 
                     ? 'bg-[#1f5df9] text-white shadow-md shadow-blue-200' 
                     : 'text-slate-500 hover:text-[#1f5df9] hover:bg-blue-50/50'
@@ -2653,7 +2653,7 @@ const mockWorkflows: Workflow[] = [
                         <button
                           type="button"
                           onClick={() => handleRestorePending(log)}
-                          className="shrink-0 px-3 py-1 bg-blue-50 hover:bg-[#1f5df9] text-[#1f5df9] hover:text-white border border-blue-100 rounded-lg text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-3xs cursor-pointer active:scale-95"
+                          className="shrink-0 px-3 py-1 bg-blue-50 hover:bg-[#1f5df9] text-[#1f5df9] hover:text-white border border-blue-100 rounded-[4px] text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-3xs cursor-pointer active:scale-95"
                           title={language === 'TH' ? 'กู้คืนรายการกลับสู่ Inbox' : 'Restore back to Inbox'}
                         >
                           <RotateCcw size={11} strokeWidth={3} />
@@ -2852,7 +2852,7 @@ const mockWorkflows: Workflow[] = [
                               e.stopPropagation();
                               setSelectedShipment(shipment.reference);
                             }}
-                            className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-[#1f5df9] font-black text-xs rounded-lg flex items-center gap-1 transition-all cursor-pointer"
+                            className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-[#1f5df9] font-black text-xs rounded-[4px] flex items-center gap-1 transition-all cursor-pointer"
                           >
                             <span>{language === 'TH' ? 'ดูงานย่อย' : 'VIEW JOBS'}</span>
                             <ArrowRight size={14} />
@@ -2939,7 +2939,7 @@ const mockWorkflows: Workflow[] = [
           <div className="flex items-center gap-3">
             <button 
               onClick={() => setSelectedShipment(null)}
-              className="p-2 hover:bg-slate-50 rounded-lg transition-all text-slate-600 flex items-center justify-center cursor-pointer"
+              className="p-2 hover:bg-slate-50 rounded-[4px] transition-all text-slate-600 flex items-center justify-center cursor-pointer"
             >
               <ArrowLeft size={20} />
             </button>
@@ -2947,7 +2947,7 @@ const mockWorkflows: Workflow[] = [
           </div>
           <button 
             onClick={() => setShowCreateJobModal(true)}
-            className="px-4 py-2 bg-[#1f5df9] text-white rounded-lg flex items-center gap-2 text-xs font-black uppercase tracking-widest hover:bg-blue-600 transition-all shadow-sm cursor-pointer"
+            className="px-4 py-2 bg-[#1f5df9] text-white rounded-[4px] flex items-center gap-2 text-xs font-black uppercase tracking-widest hover:bg-blue-600 transition-all shadow-sm cursor-pointer"
           >
             <Plus size={16} />
             {language === 'TH' ? 'สร้างรายการย่อย' : 'CREATE CHILD JOB'}
@@ -3026,7 +3026,7 @@ const mockWorkflows: Workflow[] = [
                                 setSelectedJob(job);
                                 setStep(1);
                               }}
-                              className={`p-2.5 rounded-xl transition-all ${isProcessing ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:text-[#1f5df9] hover:bg-blue-50'}`}
+                              className={`p-2.5 rounded-[4px] transition-all ${isProcessing ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:text-[#1f5df9] hover:bg-blue-50'}`}
                             >
                               <Eye size={20} />
                             </button>
@@ -3048,7 +3048,7 @@ const mockWorkflows: Workflow[] = [
                                   setSelectedExportPlatform('FTA');
                                 }
                               }}
-                              className={`p-2.5 transition-all rounded-xl ${job.status === JobStatus.READY && !isProcessing ? 'text-[#1f5df9] hover:bg-blue-50 cursor-pointer' : 'text-slate-200 cursor-not-allowed'}`}
+                              className={`p-2.5 transition-all rounded-[4px] ${job.status === JobStatus.READY && !isProcessing ? 'text-[#1f5df9] hover:bg-blue-50 cursor-pointer' : 'text-slate-200 cursor-not-allowed'}`}
                             >
                               <Send size={20} />
                             </button>
@@ -3356,7 +3356,7 @@ const mockWorkflows: Workflow[] = [
                               setSelectedJob(job);
                               setStep(1);
                             }}
-                            className={`p-2.5 rounded-xl transition-all ${isProcessing ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:text-[#1f5df9] hover:bg-blue-50'}`}
+                            className={`p-2.5 rounded-[4px] transition-all ${isProcessing ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:text-[#1f5df9] hover:bg-blue-50'}`}
                           >
                             <Eye size={20} />
                           </button>
@@ -3378,7 +3378,7 @@ const mockWorkflows: Workflow[] = [
                                 setSelectedExportPlatform('FTA');
                               }
                             }}
-                            className={`p-2.5 transition-all rounded-xl ${job.status === JobStatus.READY && !isProcessing ? 'text-[#1f5df9] hover:bg-blue-50 cursor-pointer' : 'text-slate-200 cursor-not-allowed'}`}
+                            className={`p-2.5 transition-all rounded-[4px] ${job.status === JobStatus.READY && !isProcessing ? 'text-[#1f5df9] hover:bg-blue-50 cursor-pointer' : 'text-slate-200 cursor-not-allowed'}`}
                           >
                             <Send size={20} />
                           </button>
@@ -3404,7 +3404,7 @@ const mockWorkflows: Workflow[] = [
                       e.stopPropagation();
                       setCurrentPage(prev => Math.max(1, prev - 1));
                     }}
-                    className="p-2 rounded-lg border border-slate-200 bg-white text-slate-400 hover:text-blue-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
+                    className="p-2 rounded-[4px] border border-slate-200 bg-white text-slate-400 hover:text-blue-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
                   >
                     <ChevronLeft size={16} />
                   </button>
@@ -3416,7 +3416,7 @@ const mockWorkflows: Workflow[] = [
                           e.stopPropagation();
                           setCurrentPage(i + 1);
                         }}
-                        className={`w-10 h-10 rounded-lg font-black text-xs transition-all ${currentPage === i + 1 ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20 scale-110' : 'bg-white border border-slate-100 text-slate-400 hover:border-blue-200 hover:bg-slate-50'}`}
+                        className={`w-10 h-10 rounded-[4px] font-black text-xs transition-all ${currentPage === i + 1 ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20 scale-110' : 'bg-white border border-slate-100 text-slate-400 hover:border-blue-200 hover:bg-slate-50'}`}
                       >
                         {i + 1}
                       </button>
@@ -3428,7 +3428,7 @@ const mockWorkflows: Workflow[] = [
                       e.stopPropagation();
                       setCurrentPage(prev => Math.min(totalPages, prev + 1));
                     }}
-                    className="p-2 rounded-lg border border-slate-200 bg-white text-slate-400 hover:text-blue-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
+                    className="p-2 rounded-[4px] border border-slate-200 bg-white text-slate-400 hover:text-blue-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
                   >
                     <ChevronRight size={16} />
                   </button>
@@ -3562,7 +3562,7 @@ const mockWorkflows: Workflow[] = [
                   setSelectedLocalFiles(new Set());
                   setGroupNameInput('');
                 }}
-                className="p-2 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+                className="p-2 hover:bg-slate-100 rounded-[4px] text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
                 id="close-upload-modal-btn"
               >
                 <X size={20} />
@@ -3672,7 +3672,7 @@ const mockWorkflows: Workflow[] = [
                                 e.stopPropagation();
                                 handleRemoveLocalFile(file.id);
                               }}
-                              className="p-1.5 hover:bg-rose-50 rounded-lg text-slate-300 hover:text-rose-500 transition-colors opacity-0 group-hover/file:opacity-100 cursor-pointer"
+                              className="p-1.5 hover:bg-rose-50 rounded-[4px] text-slate-300 hover:text-rose-500 transition-colors opacity-0 group-hover/file:opacity-100 cursor-pointer"
                             >
                               <Trash2 size={12} />
                             </button>
@@ -3731,7 +3731,7 @@ const mockWorkflows: Workflow[] = [
                           setGroupNameInput('');
                         }}
                         disabled={selectedLocalFiles.size === 0}
-                        className="w-full py-3 px-4 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all text-white bg-indigo-600 disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed hover:bg-indigo-700 hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 shadow-md shadow-indigo-100/50 cursor-pointer"
+                        className="w-full py-3 px-4 rounded-[4px] font-black text-[10px] uppercase tracking-widest transition-all text-white bg-indigo-600 disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed hover:bg-indigo-700 hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 shadow-md shadow-indigo-100/50 cursor-pointer"
                       >
                         <Plus size={14} />
                         {LOCAL_T[language].btnGroupSelected}
@@ -3778,7 +3778,7 @@ const mockWorkflows: Workflow[] = [
                             
                             <button
                               onClick={() => handleRemoveGroup(group.id)}
-                              className="p-1 px-2.5 bg-slate-50 hover:bg-rose-50 text-slate-400 hover:text-rose-500 rounded-xl border border-slate-200 hover:border-rose-200 transition-colors text-[9px] font-black uppercase tracking-wider shrink-0 cursor-pointer"
+                              className="p-1 px-2.5 bg-slate-50 hover:bg-rose-50 text-slate-400 hover:text-rose-500 rounded-[4px] border border-slate-200 hover:border-rose-200 transition-colors text-[9px] font-black uppercase tracking-wider shrink-0 cursor-pointer"
                             >
                               {language === 'TH' ? 'ยกเลิก' : 'Ungroup'}
                             </button>
@@ -3823,7 +3823,7 @@ const mockWorkflows: Workflow[] = [
 
                   <button
                     onClick={handleImportUploadedDocs}
-                    className="w-full py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all text-white bg-indigo-600 hover:bg-indigo-700 shadow-xl shadow-indigo-500/20 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                    className="w-full py-4 rounded-[4px] font-black text-xs uppercase tracking-widest transition-all text-white bg-indigo-600 hover:bg-indigo-700 shadow-xl shadow-indigo-500/20 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                     id="submit-upload-import-btn"
                   >
                     {LOCAL_T[language].importToJob}
@@ -3859,7 +3859,7 @@ const mockWorkflows: Workflow[] = [
                   setReplaceTargetColumn(null);
                   setReplaceUploadedFiles([]);
                 }}
-                className="p-2 hover:bg-slate-100 rounded-full text-slate-400 transition-colors"
+                className="p-2 hover:bg-slate-100 rounded-[4px] text-slate-400 transition-colors"
                 id="close-replace-modal-btn"
               >
                 <X size={20} />
@@ -3925,7 +3925,7 @@ const mockWorkflows: Workflow[] = [
                           e.stopPropagation();
                           handleRemoveReplaceFile(file.id);
                         }}
-                        className="p-1.5 hover:bg-rose-50 rounded-lg text-slate-300 hover:text-rose-500 transition-colors"
+                        className="p-1.5 hover:bg-rose-50 rounded-[4px] text-slate-300 hover:text-rose-500 transition-colors"
                       >
                         <Trash2 size={12} />
                       </button>
@@ -3953,7 +3953,7 @@ const mockWorkflows: Workflow[] = [
                 </label>
                 <button
                   onClick={handleConfirmReplace}
-                  className="w-full py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all text-white bg-indigo-600 hover:bg-indigo-700 shadow-xl shadow-indigo-500/20 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer disabled:bg-slate-300 disabled:shadow-none disabled:cursor-not-allowed"
+                  className="w-full py-4 rounded-[4px] font-black text-xs uppercase tracking-widest transition-all text-white bg-indigo-600 hover:bg-indigo-700 shadow-xl shadow-indigo-500/20 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer disabled:bg-slate-300 disabled:shadow-none disabled:cursor-not-allowed"
                   disabled={replaceUploadedFiles.length === 0}
                   id="submit-replace-import-btn"
                 >
@@ -4036,7 +4036,7 @@ const mockWorkflows: Workflow[] = [
                 {activeBoardTab !== 'pending' && (
                   <button
                     onClick={() => setShowPdfLogsModal(true)}
-                    className="px-4 h-10 rounded-full font-bold text-xs uppercase tracking-widest bg-slate-100 text-slate-500 hover:bg-indigo-600 hover:text-white transition-all flex items-center gap-2 cursor-pointer"
+                    className="px-4 h-10 rounded-[4px] font-bold text-xs uppercase tracking-widest bg-slate-100 text-slate-500 hover:bg-indigo-600 hover:text-white transition-all flex items-center gap-2 cursor-pointer"
                   >
                     <History size={16} />
                      {language === 'TH' ? 'ประวัติ (Log)' : 'Activity Log'}
@@ -4044,7 +4044,7 @@ const mockWorkflows: Workflow[] = [
                 )}
                 <button 
                   onClick={() => setPdfPreviewUrl(null)}
-                  className="w-10 h-10 rounded-full bg-slate-100 text-slate-400 hover:bg-rose-500 hover:text-white transition-all flex items-center justify-center cursor-pointer"
+                  className="w-10 h-10 rounded-[4px] bg-slate-100 text-slate-400 hover:bg-rose-500 hover:text-white transition-all flex items-center justify-center cursor-pointer"
                 >
                   <XCircle size={24} />
                 </button>
@@ -4062,7 +4062,7 @@ const mockWorkflows: Workflow[] = [
                     
                     {/* Left: Hamburger menu & Title */}
                     <div className="flex items-center gap-3 text-[#010136]">
-                      <button className="p-1 rounded hover:bg-slate-700/60 transition-colors text-slate-200 cursor-pointer">
+                      <button className="p-1 rounded-[4px] hover:bg-slate-700/60 transition-colors text-slate-200 cursor-pointer">
                         <Menu size={16} />
                       </button>
                       <span className="text-[11px] font-mono font-bold tracking-tight text-slate-300 max-w-[150px] truncate">
@@ -4075,7 +4075,7 @@ const mockWorkflows: Workflow[] = [
                       <button 
                         disabled={pdfCurrentPage === 1}
                         onClick={() => setPdfCurrentPage(prev => Math.max(1, prev - 1))}
-                        className={`w-7 h-7 flex items-center justify-center rounded transition-all ${
+                        className={`w-7 h-7 flex items-center justify-center rounded-[4px] transition-all ${
                           pdfCurrentPage === 1 ? 'text-slate-600 cursor-not-allowed' : 'bg-slate-700/60 hover:bg-slate-600 hover:text-white text-slate-300 cursor-pointer'
                         }`}
                         title={language === 'TH' ? 'หน้าก่อนหน้า' : 'Previous page'}
@@ -4088,7 +4088,7 @@ const mockWorkflows: Workflow[] = [
                       <button 
                         disabled={pdfCurrentPage === 3}
                         onClick={() => setPdfCurrentPage(prev => Math.min(3, prev + 1))}
-                        className={`w-7 h-7 flex items-center justify-center rounded transition-all ${
+                        className={`w-7 h-7 flex items-center justify-center rounded-[4px] transition-all ${
                           pdfCurrentPage === 3 ? 'text-slate-600 cursor-not-allowed' : 'bg-slate-700/60 hover:bg-slate-600 hover:text-white text-slate-300 cursor-pointer'
                         }`}
                         title={language === 'TH' ? 'หน้าถัดไป' : 'Next page'}
@@ -4101,7 +4101,7 @@ const mockWorkflows: Workflow[] = [
                       {/* Zoom Controls */}
                       <button 
                         onClick={() => setZoomLevel(prev => Math.max(0.4, Number((prev - 0.1).toFixed(2))))}
-                        className="w-7 h-7 flex items-center justify-center rounded bg-slate-700/60 hover:bg-slate-600 hover:text-white transition-all text-slate-300 cursor-pointer"
+                        className="w-7 h-7 flex items-center justify-center rounded-[4px] bg-slate-700/60 hover:bg-slate-600 hover:text-white transition-all text-slate-300 cursor-pointer"
                         title={language === 'TH' ? 'ย่อ (Zoom out)' : 'Zoom out'}
                       >
                         <ZoomOut size={14} className="text-white" />
@@ -4111,7 +4111,7 @@ const mockWorkflows: Workflow[] = [
                       </span>
                       <button 
                         onClick={() => setZoomLevel(prev => Math.min(1.6, Number((prev + 0.1).toFixed(2))))}
-                        className="w-7 h-7 flex items-center justify-center rounded bg-slate-700/60 hover:bg-slate-600 hover:text-white transition-all text-slate-300 cursor-pointer"
+                        className="w-7 h-7 flex items-center justify-center rounded-[4px] bg-slate-700/60 hover:bg-slate-600 hover:text-white transition-all text-slate-300 cursor-pointer"
                         title={language === 'TH' ? 'ขยาย (Zoom in)' : 'Zoom in'}
                       >
                         <ZoomIn size={14} className="text-white" />
@@ -4122,14 +4122,14 @@ const mockWorkflows: Workflow[] = [
                     <div className="flex items-center gap-2">
                       <button 
                         onClick={() => setRotationAngle(prev => (prev + 90) % 360)}
-                        className="w-7 h-7 flex items-center justify-center rounded bg-slate-700/60 hover:bg-slate-600 hover:text-white transition-all text-slate-300 cursor-pointer"
+                        className="w-7 h-7 flex items-center justify-center rounded-[4px] bg-slate-700/60 hover:bg-slate-600 hover:text-white transition-all text-slate-300 cursor-pointer"
                         title={language === 'TH' ? 'หมุนหน้า (Rotate)' : 'Rotate'}
                       >
                         <RotateCw size={14} className="text-white" />
                       </button>
                       <button 
                         onClick={() => window.print()}
-                        className="w-7 h-7 flex items-center justify-center rounded bg-slate-700/60 hover:bg-slate-600 hover:text-white transition-all text-slate-300 cursor-pointer"
+                        className="w-7 h-7 flex items-center justify-center rounded-[4px] bg-slate-700/60 hover:bg-slate-600 hover:text-white transition-all text-slate-300 cursor-pointer"
                         title={language === 'TH' ? 'พิมพ์ (Print)' : 'Print Document'}
                       >
                         <Printer size={14} className="text-white" />
@@ -4144,7 +4144,7 @@ const mockWorkflows: Workflow[] = [
                           element.click();
                           document.body.removeChild(element);
                         }}
-                        className="w-7 h-7 flex items-center justify-center rounded bg-slate-700/60 hover:bg-slate-600 hover:text-white transition-all text-slate-300 cursor-pointer"
+                        className="w-7 h-7 flex items-center justify-center rounded-[4px] bg-slate-700/60 hover:bg-slate-600 hover:text-white transition-all text-slate-300 cursor-pointer"
                         title={language === 'TH' ? 'ดาวน์โหลดเอกสาร' : 'Download Document'}
                       >
                         <Download size={14} className="text-white" />
@@ -4728,7 +4728,7 @@ const mockWorkflows: Workflow[] = [
                               document.body.removeChild(textarea);
                             });
                           }}
-                          className="px-3.5 py-2 text-[10px] font-black uppercase tracking-widest bg-white hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-600 transition-all flex items-center gap-2 shadow-sm font-sans cursor-pointer active:scale-95"
+                          className="px-3.5 py-2 text-[10px] font-black uppercase tracking-widest bg-white hover:bg-slate-100 border border-slate-200 rounded-[4px] text-slate-600 transition-all flex items-center gap-2 shadow-sm font-sans cursor-pointer active:scale-95"
                         >
                           {copiedJson ? (
                             <>
@@ -4762,7 +4762,7 @@ const mockWorkflows: Workflow[] = [
                     <button 
                       onClick={handleSaveOCR}
                       disabled={isUnassigned || !hasOCRChanges || selectedJob?.status === JobStatus.DONE}
-                      className={`w-full py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2 group cursor-pointer ${
+                      className={`w-full py-4 rounded-[4px] font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2 group cursor-pointer ${
                         (!isUnassigned && hasOCRChanges) && selectedJob?.status !== JobStatus.DONE
                           ? 'bg-[#1f5df9] text-white shadow-lg shadow-blue-500/25 hover:bg-blue-600' 
                           : 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-70 border border-slate-200/50 shadow-none'
@@ -4827,7 +4827,7 @@ const mockWorkflows: Workflow[] = [
                     </div>
                     <button 
                       onClick={() => setShowPdfLogsModal(false)}
-                      className="w-10 h-10 rounded-full bg-slate-100 text-slate-400 hover:bg-rose-500 hover:text-white transition-all flex items-center justify-center"
+                      className="w-10 h-10 rounded-[4px] bg-slate-100 text-slate-400 hover:bg-rose-500 hover:text-white transition-all flex items-center justify-center"
                     >
                       <X size={20} />
                     </button>
@@ -5065,7 +5065,7 @@ const mockWorkflows: Workflow[] = [
               </div>
               <button 
                 onClick={() => setExportJob(null)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer"
+                className="p-1.5 rounded-[4px] text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer"
                 id="close-export-modal-btn"
               >
                 <X size={18} />
@@ -5291,7 +5291,7 @@ const mockWorkflows: Workflow[] = [
                     <p className="text-slate-500 font-bold text-xs md:text-sm">{t.jobListDesc}</p>
                     <button
                       onClick={() => setShowStatusGuide(true)}
-                      className="inline-flex items-center justify-center p-1 rounded-full text-blue-500 hover:bg-blue-50 hover:text-blue-600 transition-all cursor-pointer group"
+                      className="inline-flex items-center justify-center p-1 rounded-[4px] text-blue-500 hover:bg-blue-50 hover:text-blue-600 transition-all cursor-pointer group"
                       title="STATUS GUIDE"
                       id="status-guide-icon-btn"
                     >
@@ -5301,7 +5301,7 @@ const mockWorkflows: Workflow[] = [
                 </div>
                 <button 
                   onClick={() => setShowCreateJobModal(true)}
-                  className="px-4 py-2 bg-[#1f5df9] text-white rounded-lg flex items-center gap-2 text-xs font-black uppercase tracking-widest hover:bg-blue-600 transition-all shadow-sm cursor-pointer"
+                  className="px-4 py-2 bg-[#1f5df9] text-white rounded-[4px] flex items-center gap-2 text-xs font-black uppercase tracking-widest hover:bg-blue-600 transition-all shadow-sm cursor-pointer"
                   id="create-new-job-btn"
                 >
                   <Plus size={16} />
@@ -5313,6 +5313,7 @@ const mockWorkflows: Workflow[] = [
                 activeKey={activeBoardTab} 
                 onChange={setActiveBoardTab}
                 className="custom-job-tabs mb-6"
+                style={{ borderRadius: '8px' }}
                 items={[
                   {
                     key: 'jobs',
@@ -5362,6 +5363,7 @@ const mockWorkflows: Workflow[] = [
           )}
           
           <style>{`
+            .custom-job-tabs { border-radius: 8px !important; }
             .custom-job-tabs .ant-tabs-nav { margin: 0 0 10px 0 !important; }
             .custom-job-tabs .ant-tabs-nav::before { border-bottom: 2px solid #f1f5f9; }
             .custom-job-tabs .ant-tabs-tab { padding: 4px 12px !important; margin: 0 24px 0 0 !important; }
@@ -5369,6 +5371,7 @@ const mockWorkflows: Workflow[] = [
             .custom-job-tabs .ant-tabs-tab-active svg { color: #1f5df9 !important; }
             .custom-job-tabs .ant-tabs-ink-bar { background: #1f5df9 !important; height: 3px !important; border-radius: 3px 3px 0 0; }
             .custom-job-tabs .ant-badge .ant-scroll-number-only-unit { color: white !important; }
+            .custom-job-tabs .ant-tabs-content-holder { border-radius: 8px !important; }
           `}</style>
         </div>
       )}
@@ -5383,7 +5386,7 @@ const mockWorkflows: Workflow[] = [
                     setStep(0);
                     setSelectedJob(null);
                   }}
-                  className="p-2.5 bg-white border border-slate-200 text-slate-400 hover:text-slate-600 rounded-2xl shadow-sm hover:shadow transition-all flex items-center justify-center group"
+                  className="p-2.5 bg-white border border-slate-200 text-slate-400 hover:text-slate-600 rounded-[4px] shadow-sm hover:shadow transition-all flex items-center justify-center group"
                 >
                   <ArrowLeft size={18} className="group-hover:-translate-x-0.5 transition-transform" />
                 </button>
@@ -5449,7 +5452,7 @@ const mockWorkflows: Workflow[] = [
                           <button 
                             type="button"
                             onClick={() => setShowClaimPrompt(true)}
-                            className="px-3.5 py-2.5 bg-[#1f5df9] hover:bg-[#1f5df9]/90 text-white font-black text-[11px] uppercase tracking-wider rounded-xl transition-all shadow-md shadow-blue-500/10 hover:shadow-blue-500/25 flex items-center gap-1.5 cursor-pointer h-10 select-none border-none shrink-0"
+                            className="px-3.5 py-2.5 bg-[#1f5df9] hover:bg-[#1f5df9]/90 text-white font-black text-[11px] uppercase tracking-wider rounded-[4px] transition-all shadow-md shadow-blue-500/10 hover:shadow-blue-500/25 flex items-center gap-1.5 cursor-pointer h-10 select-none border-none shrink-0"
                             id="claim-job-btn"
                           >
                             <UserPlus size={13} strokeWidth={3} />
@@ -5461,7 +5464,7 @@ const mockWorkflows: Workflow[] = [
                           <button 
                             type="button"
                             onClick={() => setShowUnclaimPrompt(true)}
-                            className="px-3.5 py-2.5 bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 font-black text-[11px] uppercase tracking-wider rounded-xl transition-all shadow-sm flex items-center gap-1.5 cursor-pointer h-10 select-none shrink-0"
+                            className="px-3.5 py-2.5 bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 font-black text-[11px] uppercase tracking-wider rounded-[4px] transition-all shadow-sm flex items-center gap-1.5 cursor-pointer h-10 select-none shrink-0"
                             id="unclaim-job-btn"
                           >
                             <UserMinus size={13} strokeWidth={3} />
@@ -5478,7 +5481,7 @@ const mockWorkflows: Workflow[] = [
                     <button 
                       disabled={isUnassigned}
                       onClick={() => setShowOnlyDiff(!showOnlyDiff)}
-                      className={`p-2.5 rounded-xl transition-all border flex items-center justify-center cursor-pointer shadow-sm disabled:opacity-30 disabled:cursor-not-allowed ${
+                      className={`p-2.5 rounded-[4px] transition-all border flex items-center justify-center cursor-pointer shadow-sm disabled:opacity-30 disabled:cursor-not-allowed ${
                         showOnlyDiff 
                           ? 'bg-rose-50 text-rose-600 border-rose-200 hover:bg-rose-100 shadow-[0_2px_8px_rgba(244,63,94,0.15)]' 
                           : 'bg-white text-slate-500 border-slate-200/60 hover:bg-slate-50'
@@ -5504,7 +5507,7 @@ const mockWorkflows: Workflow[] = [
                             <button
                               onClick={() => setHiddenLockedDocs(prev => prev.filter(x => x !== name))}
                               disabled={isUnassigned}
-                              className="p-0.5 hover:bg-slate-200 rounded text-blue-600 transform active:scale-95 transition-all cursor-pointer flex items-center disabled:opacity-30 disabled:cursor-not-allowed"
+                              className="p-0.5 hover:bg-slate-200 rounded-[4px] text-blue-600 transform active:scale-95 transition-all cursor-pointer flex items-center disabled:opacity-30 disabled:cursor-not-allowed"
                               title={language === 'TH' ? 'แสดงคอลัมน์นี้' : 'Unhide column'}
                             >
                               <Eye size={10} />
@@ -5528,7 +5531,7 @@ const mockWorkflows: Workflow[] = [
                             .map(([name]) => name);
                           handleOCRFiles(selectedJob.id, newDocs);
                         }}
-                        className="p-2.5 rounded-xl transition-all shadow-md flex items-center justify-center bg-emerald-600 hover:bg-emerald-700 text-white border border-emerald-700/20 shadow-emerald-500/10 cursor-pointer animate-pulse disabled:opacity-30 disabled:cursor-not-allowed disabled:animate-none"
+                        className="p-2.5 rounded-[4px] transition-all shadow-md flex items-center justify-center bg-emerald-600 hover:bg-emerald-700 text-white border border-emerald-700/20 shadow-emerald-500/10 cursor-pointer animate-pulse disabled:opacity-30 disabled:cursor-not-allowed disabled:animate-none"
                       >
                         <ScanSearch size={15} strokeWidth={2.5} />
                       </button>
@@ -5545,7 +5548,7 @@ const mockWorkflows: Workflow[] = [
                         setSelectedExportWorkflow(selectedJob.workflowName || '');
                         setSelectedExportPlatform('FTA');
                       }}
-                      className={`p-2.5 rounded-xl transition-all flex items-center justify-center border disabled:opacity-30 disabled:cursor-not-allowed ${
+                      className={`p-2.5 rounded-[4px] transition-all flex items-center justify-center border disabled:opacity-30 disabled:cursor-not-allowed ${
                         selectedJob.status === JobStatus.READY 
                           ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-blue-700/20 hover:from-blue-700 hover:to-indigo-700 shadow-md shadow-blue-500/10' 
                           : 'bg-white border-slate-200/60 text-slate-400 opacity-50 cursor-not-allowed'
@@ -5612,7 +5615,7 @@ const mockWorkflows: Workflow[] = [
                                                   handleOCRFiles(selectedJob.id, [docName]);
                                                }
                                              }}
-                                             className="w-full h-7 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/25 transition-all transform active:scale-95 border-none cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed disabled:transform-none disabled:active:scale-100 disabled:hover:bg-emerald-600"
+                                             className="w-full h-7 bg-emerald-600 hover:bg-emerald-700 text-white rounded-[4px] flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/25 transition-all transform active:scale-95 border-none cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed disabled:transform-none disabled:active:scale-100 disabled:hover:bg-emerald-600"
                                            >
                                              {docStatus === ComparisonDocStatus.MISSING ? (
                                                 <Upload size={10} strokeWidth={2.5} />
@@ -5689,7 +5692,7 @@ const mockWorkflows: Workflow[] = [
                                                           setReplaceTargetColumn(docName);
                                                           setShowReplaceModal(true);
                                                         }}
-                                                        className={`p-1 rounded-lg bg-white border border-slate-200 transition-all ${
+                                                        className={`p-1 rounded-[4px] bg-white border border-slate-200 transition-all ${
                                                           (isUnassigned || selectedJob.status === JobStatus.DONE)
                                                           ? 'text-slate-200 cursor-not-allowed opacity-50'
                                                           : 'text-indigo-400 hover:bg-indigo-500 hover:text-white hover:border-indigo-500 hover:shadow-lg shadow-sm cursor-pointer'

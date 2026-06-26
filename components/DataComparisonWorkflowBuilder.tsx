@@ -133,7 +133,7 @@ const FolderHierarchyEditor: React.FC<FolderHierarchyEditorProps> = ({ value, on
             {levels.length > 1 && (
               <button 
                 onClick={() => removeLevel(index)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all rounded-2xl hover:bg-rose-50"
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all rounded-[4px] hover:bg-rose-50"
               >
                 <Trash2 size={14} />
               </button>
@@ -144,7 +144,7 @@ const FolderHierarchyEditor: React.FC<FolderHierarchyEditorProps> = ({ value, on
       {levels.length < 6 && (
         <button
           onClick={addLevel}
-          className="w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl flex items-center justify-center gap-4 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 hover:border-emerald-200 transition-all group mt-1"
+          className="w-full py-4 border-2 border-dashed border-slate-200 rounded-[4px] flex items-center justify-center gap-4 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 hover:border-emerald-200 transition-all group mt-1"
         >
           <Plus size={16} className="group-hover:rotate-90 transition-transform duration-300" />
           <span className="text-[10px] font-black uppercase tracking-widest">{language === 'TH' ? 'เพิ่มโฟลเดอร์ย่อย' : 'Add Subfolder'}</span>
@@ -1156,7 +1156,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
       <div className="bg-white border-b border-slate-200 shrink-0 z-10 shadow-sm rounded-t-2xl">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center px-6 py-4 gap-4">
           <div className="flex items-center gap-4 flex-1 min-w-0 w-full">
-            <button onClick={onBack} className="p-2 hover:bg-slate-100 rounded-2xl text-slate-500 transition-all shrink-0">
+            <button onClick={onBack} className="p-2 hover:bg-slate-100 rounded-[4px] text-slate-500 transition-all shrink-0">
               <ArrowLeft size={20} />
             </button>
             <div className="h-8 w-px bg-slate-100 mx-1 shrink-0"></div>
@@ -1190,13 +1190,13 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                     }
                   }
                 }}
-                className={`px-3 md:px-4 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${status === 'ACTIVE' ? 'bg-emerald-500 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                className={`px-3 md:px-4 py-1.5 rounded-[4px] text-[10px] font-black uppercase transition-all ${status === 'ACTIVE' ? 'bg-emerald-500 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
               >
                 {t.statusActive}
               </button>
               <button 
                 onClick={() => setStatus('INACTIVE')}
-                className={`px-3 md:px-4 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${status === 'INACTIVE' ? 'bg-slate-300 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                className={`px-3 md:px-4 py-1.5 rounded-[4px] text-[10px] font-black uppercase transition-all ${status === 'INACTIVE' ? 'bg-slate-300 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
               >
                 {t.statusInactive}
               </button>
@@ -1204,7 +1204,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
 
             <button 
               onClick={() => setShowHistoryDrawer(true)}
-              className="flex items-center gap-3 px-4 py-2 bg-[#f1f5f9] border border-slate-200 rounded-lg font-black text-slate-600 hover:bg-slate-100 transition-all shadow-sm active:scale-95 group shrink-0"
+              className="flex items-center gap-3 px-4 py-2 bg-[#f1f5f9] border border-slate-200 rounded-[4px] font-black text-slate-600 hover:bg-slate-100 transition-all shadow-sm active:scale-95 group shrink-0"
             >
               <History size={18} className="text-blue-500 group-hover:rotate-12 transition-transform" />
               <div className="flex flex-col items-start leading-none">
@@ -1219,7 +1219,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
 
             <button 
               onClick={handleSave} 
-              className="flex items-center gap-2 md:gap-3 px-4 md:px-8 py-2 bg-blue-600 text-white rounded-lg font-black text-xs md:text-sm hover:bg-blue-700 transition-all shadow-[0_8px_20px_-4px_rgba(37,99,235,0.4)] active:scale-95 group shrink-0"
+              className="flex items-center gap-2 md:gap-3 px-4 md:px-8 py-2 bg-blue-600 text-white rounded-[4px] font-black text-xs md:text-sm hover:bg-blue-700 transition-all shadow-[0_8px_20px_-4px_rgba(37,99,235,0.4)] active:scale-95 group shrink-0"
             >
               <Save size={18} className="group-hover:scale-110 transition-transform" />
               <span>{language === 'TH' ? 'บันทึก' : 'Save'}</span>
@@ -1348,19 +1348,19 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                   <div className="flex bg-slate-100 p-1 rounded-2xl">
                     <button 
                       onClick={() => updateEdgeStyle(edge.id, 'smooth')}
-                      className={`px-3 py-1.5 rounded-2xl text-[9px] font-black uppercase transition-all ${(!edge.style || edge.style === 'smooth') ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                      className={`px-3 py-1.5 rounded-[4px] text-[9px] font-black uppercase transition-all ${(!edge.style || edge.style === 'smooth') ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                     >
                       Smooth
                     </button>
                     <button 
                       onClick={() => updateEdgeStyle(edge.id, 'straight')}
-                      className={`px-3 py-1.5 rounded-2xl text-[9px] font-black uppercase transition-all ${edge.style === 'straight' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                      className={`px-3 py-1.5 rounded-[4px] text-[9px] font-black uppercase transition-all ${edge.style === 'straight' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                     >
                       Straight
                     </button>
                     <button 
                       onClick={() => updateEdgeStyle(edge.id, 'elbow')}
-                      className={`px-3 py-1.5 rounded-2xl text-[9px] font-black uppercase transition-all ${edge.style === 'elbow' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                      className={`px-3 py-1.5 rounded-[4px] text-[9px] font-black uppercase transition-all ${edge.style === 'elbow' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                     >
                       Elbow
                     </button>
@@ -1368,14 +1368,14 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                   <div className="w-px h-6 bg-slate-200 mx-1"></div>
                   <button 
                     onClick={() => deleteEdge(edge.id)}
-                    className="p-2 text-red-500 hover:bg-red-50 rounded-2xl transition-all"
+                    className="p-2 text-red-500 hover:bg-red-50 rounded-[4px] transition-all"
                     title="Delete connection"
                   >
                     <Trash2 size={16} />
                   </button>
                   <button 
                     onClick={() => setSelectedEdgeId(null)}
-                    className="p-2 text-slate-400 hover:bg-slate-50 rounded-2xl transition-all"
+                    className="p-2 text-slate-400 hover:bg-slate-50 rounded-[4px] transition-all"
                   >
                     <X size={16} />
                   </button>
@@ -1449,7 +1449,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                               e.stopPropagation();
                               setDrawerNodeId(node.id);
                             }}
-                            className="p-1.5 hover:bg-slate-100 rounded-2xl text-slate-400 hover:text-slate-600 transition-all"
+                            className="p-1.5 hover:bg-slate-100 rounded-[4px] text-slate-400 hover:text-slate-600 transition-all"
                             title="Configure Node"
                           >
                             <Settings size={14} />
@@ -1644,7 +1644,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                                    e.stopPropagation();
                                    updateNodeData(node.id, { priority: p });
                                  }}
-                                 className={`flex-1 py-4 rounded-2xl text-[10px] font-black uppercase border-2 transition-all ${node.data.priority === p ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-100 bg-slate-50 text-slate-400'}`}
+                                 className={`flex-1 py-4 rounded-[4px] text-[10px] font-black uppercase border-2 transition-all ${node.data.priority === p ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-100 bg-slate-50 text-slate-400'}`}
                                >
                                  {p}
                                </button>
@@ -1824,7 +1824,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                           y: node.position.y 
                         });
                       }}
-                      className="w-10 h-10 rounded-2xl bg-slate-900 text-white flex items-center justify-center shadow-xl shadow-slate-200 hover:scale-110 active:scale-95 transition-all group/add-btn"
+                      className="w-10 h-10 rounded-[4px] bg-slate-900 text-white flex items-center justify-center shadow-xl shadow-slate-200 hover:scale-110 active:scale-95 transition-all group/add-btn"
                     >
                       <Plus size={20} strokeWidth={3} className="group-hover/add-btn:rotate-90 transition-transform duration-300" />
                     </button>
@@ -1836,7 +1836,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                       e.stopPropagation();
                       handleDeleteNode(node.id);
                     }}
-                    className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-red-100 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center border-2 border-white shadow-lg hover:bg-red-500 hover:text-white transition-all scale-110 active:scale-95"
+                    className="absolute -top-3 -right-3 w-8 h-8 rounded-[4px] bg-red-100 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center border-2 border-white shadow-lg hover:bg-red-500 hover:text-white transition-all scale-110 active:scale-95"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -1888,7 +1888,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                           <button 
                             key={idx}
                             onClick={() => addNodeAfter(addNodeMenu.nodeId, option.type)}
-                            className="flex items-center gap-3 w-full p-2.5 rounded-lg hover:bg-slate-50 transition-all group"
+                            className="flex items-center gap-3 w-full p-2.5 rounded-[4px] hover:bg-slate-50 transition-all group"
                           >
                             <div className={`w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center ${option.color} group-hover:bg-slate-900 group-hover:text-white transition-all`}>
                               {option.icon(16)}
@@ -1956,7 +1956,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                   </div>
                   <button 
                     onClick={() => setShowCanvasNodeMenu(null)} 
-                    className="w-5 h-5 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-all"
+                    className="w-5 h-5 flex items-center justify-center rounded-[4px] hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-all"
                   >
                     <X size={10} />
                   </button>
@@ -2018,17 +2018,17 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
 
           {/* Floating Zoom Controls (Top Right) */}
           <div className="absolute top-6 right-6 flex items-center bg-white/90 backdrop-blur-sm border border-slate-200 rounded-full px-2 py-1 shadow-lg z-30">
-            <button onClick={handleZoomOut} className="p-2 hover:bg-slate-100 rounded-full text-slate-500 transition-all">
+            <button onClick={handleZoomOut} className="p-2 hover:bg-slate-100 rounded-[4px] text-slate-500 transition-all">
               <ZoomOut size={16} />
             </button>
             <div className="px-3 text-[11px] font-black text-slate-600 min-w-[45px] text-center">
               {Math.round(zoom * 100)}%
             </div>
-            <button onClick={handleZoomIn} className="p-2 hover:bg-slate-100 rounded-full text-slate-500 transition-all">
+            <button onClick={handleZoomIn} className="p-2 hover:bg-slate-100 rounded-[4px] text-slate-500 transition-all">
               <ZoomIn size={16} />
             </button>
             <div className="w-px h-4 bg-slate-200 mx-1.5"></div>
-            <button onClick={handleFitView} className="p-2 hover:bg-slate-100 rounded-full text-slate-500 transition-all" title="Fit Content">
+            <button onClick={handleFitView} className="p-2 hover:bg-slate-100 rounded-[4px] text-slate-500 transition-all" title="Fit Content">
               <Maximize size={16} />
             </button>
           </div>
@@ -2111,7 +2111,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                       });
                     }
                   }}
-                  className="pointer-events-auto flex items-center gap-2 px-8 py-3 bg-blue-600 text-white rounded-2xl font-black text-sm hover:bg-blue-700 hover:scale-105 active:scale-95 transition-all shadow-xl shadow-blue-200 mt-2"
+                  className="pointer-events-auto flex items-center gap-2 px-8 py-3 bg-blue-600 text-white rounded-[4px] font-black text-sm hover:bg-blue-700 hover:scale-105 active:scale-95 transition-all shadow-xl shadow-blue-200 mt-2"
                 >
                   <Plus size={20} strokeWidth={3} />
                   {language === 'TH' ? 'เพิ่มโหนดแรก' : 'Add First Node'}
@@ -2129,7 +2129,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                 });
               }}
               title="Add Node"
-              className="w-14 h-14 rounded-lg bg-slate-900 text-white flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all hover:bg-slate-800 group"
+              className="w-14 h-14 rounded-[4px] bg-slate-900 text-white flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all hover:bg-slate-800 group"
             >
               <Plus size={24} strokeWidth={3} className="group-hover:rotate-90 transition-transform duration-300" />
             </button>
@@ -2164,7 +2164,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                 </div>
                 <button 
                   onClick={() => setDrawerNodeId(null)}
-                  className="p-2 hover:bg-slate-200 rounded-2xl text-slate-400 hover:text-slate-600 transition-all"
+                  className="p-2 hover:bg-slate-200 rounded-[4px] text-slate-400 hover:text-slate-600 transition-all"
                 >
                   <X size={20} />
                 </button>
@@ -2255,7 +2255,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                         <button 
                           onClick={handleTestConnection}
                           disabled={isTestingConnection}
-                          className={`w-full py-2.5 rounded-2xl text-[10px] font-black uppercase transition-all mt-2 flex items-center justify-center gap-2 ${
+                          className={`w-full py-2.5 rounded-[4px] text-[10px] font-black uppercase transition-all mt-2 flex items-center justify-center gap-2 ${
                             isTestingConnection 
                               ? 'bg-slate-100 text-slate-400 cursor-not-allowed' 
                               : testConnectionResult === 'success'
@@ -2342,7 +2342,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                         </div>
                         <button 
                           onClick={() => updateNodeData(node.id, { markAsRead: !node.data.markAsRead })}
-                          className={`w-12 h-6 rounded-full transition-all relative ${node.data.markAsRead ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]' : 'bg-slate-300'}`}
+                          className={`w-12 h-6 rounded-[4px] transition-all relative ${node.data.markAsRead ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]' : 'bg-slate-300'}`}
                         >
                           <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${node.data.markAsRead ? 'left-7' : 'left-1'}`}></div>
                         </button>
@@ -2451,7 +2451,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                             </div>
                             <button 
                               onClick={() => updateNodeData(node.id, { mustHaveAttachment: !node.data.mustHaveAttachment })}
-                              className={`w-10 h-5 rounded-full transition-all relative ${node.data.mustHaveAttachment ? 'bg-orange-500' : 'bg-slate-300'}`}
+                              className={`w-10 h-5 rounded-[4px] transition-all relative ${node.data.mustHaveAttachment ? 'bg-orange-500' : 'bg-slate-300'}`}
                             >
                               <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${node.data.mustHaveAttachment ? 'left-5' : 'left-0.5'}`}></div>
                             </button>
@@ -2520,7 +2520,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                                <button 
                                  key={route}
                                  onClick={() => updateNodeData(node.id, { lowConfidenceRoute: route })}
-                                 className={`py-3 px-2 rounded-2xl text-[9px] font-black uppercase tracking-widest border-2 transition-all ${node.data.lowConfidenceRoute === route ? 'border-purple-500 bg-purple-50/50 text-purple-700' : 'border-slate-50 bg-slate-100 text-slate-400 hover:border-slate-200'}`}
+                                 className={`py-3 px-2 rounded-[4px] text-[9px] font-black uppercase tracking-widest border-2 transition-all ${node.data.lowConfidenceRoute === route ? 'border-purple-500 bg-purple-50/50 text-purple-700' : 'border-slate-50 bg-slate-100 text-slate-400 hover:border-slate-200'}`}
                                >
                                  {route}
                                </button>
@@ -2573,7 +2573,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                               <button 
                                 key={mode.id}
                                 onClick={() => updateNodeData(node.id, { extensionFilterMode: mode.id })}
-                                className={`px-2 py-1 rounded-md text-[8px] font-black uppercase transition-all ${isSelected ? `bg-white shadow-sm ${mode.color}` : 'text-slate-400 hover:text-slate-500'}`}
+                                className={`px-2 py-1 rounded-[4px] text-[8px] font-black uppercase transition-all ${isSelected ? `bg-white shadow-sm ${mode.color}` : 'text-slate-400 hover:text-slate-500'}`}
                               >
                                 {mode.label}
                               </button>
@@ -2670,7 +2670,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                                   // Clean up any edge matching this nodeId and sourcePortId/typeId
                                   setEdges(prev => prev.filter(edge => !(edge.source === node.id && edge.sourcePortId === typeId)));
                                 }}
-                                className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-colors shrink-0 opacity-0 group-hover/row:opacity-100"
+                                className="w-8 h-8 rounded-[4px] bg-slate-50 flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-colors shrink-0 opacity-0 group-hover/row:opacity-100"
                               >
                                 <Trash2 size={14} />
                               </button>
@@ -2782,7 +2782,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                          </div>
                       </div>
                     ))}
-                    <button className="w-full py-3 border-2 border-dashed border-slate-200 rounded-2xl text-[10px] font-black uppercase text-slate-400 hover:border-blue-400 hover:text-blue-600 transition-all">
+                    <button className="w-full py-3 border-2 border-dashed border-slate-200 rounded-[4px] text-[10px] font-black uppercase text-slate-400 hover:border-blue-400 hover:text-blue-600 transition-all">
                       + Add Condition
                     </button>
                   </div>
@@ -2902,7 +2902,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                                  const current = node.data.namingFormat || '';
                                  updateNodeData(node.id, { namingFormat: current + tag });
                                }}
-                               className="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded-md text-[9px] font-bold text-slate-500 transition-all font-mono"
+                               className="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded-[4px] text-[9px] font-bold text-slate-500 transition-all font-mono"
                              >
                                {tag}
                              </button>
@@ -2974,7 +2974,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                             }}
                           />
                           <button 
-                            className="p-2 bg-purple-100 text-purple-600 rounded-md hover:bg-purple-200 transition-colors"
+                            className="p-2 bg-purple-100 text-purple-600 rounded-[4px] hover:bg-purple-200 transition-colors"
                             onClick={() => {
                                let input = document.getElementById(`match_key_input_${node.id}`) as HTMLInputElement;
                                if (input && input.value.trim()) {
@@ -3040,7 +3040,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                            onClick={() => {
                              updateNodeData(node.id, { requiredDocTypes: [...(node.data.requiredDocTypes || []), { name: '', isRequired: true }] })
                            }}
-                           className="flex items-center gap-2 justify-center py-2 bg-emerald-50 text-emerald-600 rounded-md border border-emerald-100 font-bold text-[10px] uppercase hover:bg-emerald-100 transition-colors mt-1"
+                           className="flex items-center gap-2 justify-center py-2 bg-emerald-50 text-emerald-600 rounded-[4px] border border-emerald-100 font-bold text-[10px] uppercase hover:bg-emerald-100 transition-colors mt-1"
                         >
                           <Plus size={14}/> {language === 'TH' ? 'เพิ่มประเภทไฟล์' : 'Add Doc Type'}
                         </button>
@@ -3157,7 +3157,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                                  const next = isSelected ? current.filter((d: string) => d !== dest.id) : [...current, dest.id];
                                  updateNodeData(node.id, { destinations: next });
                                }}
-                               className={`flex items-center gap-3 p-3 rounded-2xl border-2 transition-all ${isSelected ? 'border-emerald-500 bg-emerald-50' : 'border-slate-50 bg-slate-100 hover:border-slate-200'}`}
+                               className={`flex items-center gap-3 p-3 rounded-[4px] border-2 transition-all ${isSelected ? 'border-emerald-500 bg-emerald-50' : 'border-slate-50 bg-slate-100 hover:border-slate-200'}`}
                              >
                                <div className={`${isSelected ? 'text-emerald-600' : 'text-slate-400'}`}>
                                  {dest.icon}
@@ -3276,7 +3276,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                              <button 
                                key={fmt}
                                onClick={() => updateNodeData(node.id, { exportPackage: fmt })}
-                               className={`py-3 px-2 rounded-2xl text-[9px] font-black uppercase border-2 transition-all ${node.data.exportPackage === fmt ? 'border-purple-500 bg-purple-50/50 text-purple-700' : 'border-slate-50 bg-slate-100 text-slate-400 hover:border-slate-200'}`}
+                               className={`py-3 px-2 rounded-[4px] text-[9px] font-black uppercase border-2 transition-all ${node.data.exportPackage === fmt ? 'border-purple-500 bg-purple-50/50 text-purple-700' : 'border-slate-50 bg-slate-100 text-slate-400 hover:border-slate-200'}`}
                              >
                                {fmt}
                              </button>
@@ -3479,7 +3479,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                             const currentVal = node.data?.allowReview !== false; // default = true
                             updateNodeData(node.id, { allowReview: !currentVal });
                           }}
-                          className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                          className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-[4px] border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
                             (node.data?.allowReview !== false) ? 'bg-[#16EA9E]' : 'bg-slate-200'
                           }`}
                           style={{ borderRadius: '9999px' }}
@@ -3904,7 +3904,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                               const newVal = node.data.allowReview === false ? true : false;
                               updateNodeData(node.id, { allowReview: newVal });
                             }}
-                            className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                            className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-[4px] border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                               node.data.allowReview !== false ? 'bg-[#1f5df9]' : 'bg-slate-200'
                             }`}
                           >
@@ -3947,7 +3947,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
               <div className="p-6 border-t border-slate-100 flex gap-3 bg-white">
                 <button 
                   onClick={() => setDrawerNodeId(null)}
-                  className="flex-1 py-3.5 bg-slate-50 text-slate-600 rounded-2xl font-black text-[10px] uppercase hover:bg-slate-100 transition-all border border-slate-200 tracking-widest"
+                  className="flex-1 py-3.5 bg-slate-50 text-slate-600 rounded-[4px] font-black text-[10px] uppercase hover:bg-slate-100 transition-all border border-slate-200 tracking-widest"
                 >
                   {language === 'TH' ? 'ยกเลิก' : 'Cancel'}
                 </button>
@@ -3961,7 +3961,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                     setDrawerNodeId(null);
                   }}
                   disabled={isNodeIncomplete(node)}
-                  className={`flex-[2] py-3.5 rounded-2xl font-black text-[10px] uppercase transition-all tracking-widest ${
+                  className={`flex-[2] py-3.5 rounded-[4px] font-black text-[10px] uppercase transition-all tracking-widest ${
                     isNodeIncomplete(node)
                       ? 'bg-slate-200 text-slate-400 cursor-not-allowed border border-slate-300 shadow-none'
                       : 'bg-blue-600 text-white hover:bg-blue-700 shadow-[0_10px_25px_-5px_rgba(37,99,235,0.4)] active:scale-[0.98]'
@@ -3998,7 +3998,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                 <div className="flex items-center gap-6">
                   <button 
                     onClick={() => setShowHistoryDrawer(false)}
-                    className="p-2 hover:bg-slate-100 rounded-2xl text-slate-400 hover:text-slate-600 transition-all"
+                    className="p-2 hover:bg-slate-100 rounded-[4px] text-slate-400 hover:text-slate-600 transition-all"
                   >
                     <X size={20} />
                   </button>
@@ -4200,7 +4200,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                 <div className="flex justify-end gap-3">
                   <button 
                     onClick={() => setConfirmToggleDialog(false)}
-                    className="px-6 py-3 rounded-2xl text-slate-600 font-bold hover:bg-slate-100 transition-colors text-sm"
+                    className="px-6 py-3 rounded-[4px] text-slate-600 font-bold hover:bg-slate-100 transition-colors text-sm"
                   >
                     {language === 'TH' ? 'ยกเลิก' : 'Cancel'}
                   </button>
@@ -4209,7 +4209,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                       setStatus('ACTIVE');
                       setConfirmToggleDialog(false);
                     }}
-                    className="px-6 py-3 rounded-2xl bg-amber-500 text-white font-bold hover:bg-amber-600 transition-colors shadow-sm text-sm"
+                    className="px-6 py-3 rounded-[4px] bg-amber-500 text-white font-bold hover:bg-amber-600 transition-colors shadow-sm text-sm"
                   >
                     {language === 'TH' ? 'ยืนยันการเปิดใช้งาน' : 'Confirm Enable'}
                   </button>
@@ -4247,13 +4247,13 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                 <div className="flex gap-3">
                   <button 
                     onClick={() => setDeleteConfirmation(null)}
-                    className="flex-1 py-4 bg-slate-50 text-slate-600 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-100 transition-all border border-slate-200"
+                    className="flex-1 py-4 bg-slate-50 text-slate-600 rounded-[4px] font-black text-xs uppercase tracking-widest hover:bg-slate-100 transition-all border border-slate-200"
                   >
                     {t.btnCancel}
                   </button>
                   <button 
                     onClick={() => handleDeleteNode(deleteConfirmation.nodeId, true)}
-                    className="flex-1 py-4 bg-rose-500 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-rose-600 transition-all shadow-lg shadow-rose-200"
+                    className="flex-1 py-4 bg-rose-500 text-white rounded-[4px] font-black text-xs uppercase tracking-widest hover:bg-rose-600 transition-all shadow-lg shadow-rose-200"
                   >
                     {language === 'TH' ? 'ลบทันที' : 'Confirm Delete'}
                   </button>

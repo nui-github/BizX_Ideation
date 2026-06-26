@@ -64,7 +64,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentUserRole, onTog
                    <div className={`mt-1 flex flex-col gap-1 ${collapsed ? 'items-center' : 'pl-4'}`}>
                       <button 
                         onClick={() => { setActiveMenu('upload'); onNavigate('UPLOAD'); }}
-                        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors font-medium text-sm w-full
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-[4px] transition-colors font-medium text-sm w-full
                             ${activeMenu === 'upload' ? 'bg-[#1f5df9] text-white shadow-md' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}
                             ${collapsed ? 'justify-center' : ''}`}
                         title={collapsed ? t.uploadDoc : undefined}
@@ -75,7 +75,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentUserRole, onTog
                       
                       <button 
                         onClick={() => { setActiveMenu('tracking'); onNavigate('TRACKING'); }}
-                        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors font-medium text-sm w-full
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-[4px] transition-colors font-medium text-sm w-full
                             ${activeMenu === 'tracking' ? 'bg-[#1f5df9] text-white shadow-md' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'} 
                             ${collapsed ? 'justify-center' : ''}`}
                         title={collapsed ? t.docTracking : undefined}
@@ -103,7 +103,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentUserRole, onTog
             <div className="px-3 mb-2">
                  <button 
                     onClick={() => { setActiveMenu('workflow'); onNavigate('WORKFLOW_LIST'); }}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors font-medium text-sm w-full
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-[4px] transition-colors font-medium text-sm w-full
                         ${activeMenu === 'workflow' ? 'bg-[#1f5df9] text-white shadow-md' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'} 
                         ${collapsed ? 'justify-center' : ''}`}
                     title={collapsed ? t.datasetBuilder : undefined}
@@ -136,7 +136,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentUserRole, onTog
                     <div className={`mt-1 flex flex-col gap-1 ${collapsed ? 'items-center' : 'pl-4'}`}>
                        <button 
                          onClick={() => { setActiveMenu('comparison_jobs'); onNavigate('DATA_COMPARISON_JOBS'); }}
-                         className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors font-medium text-sm w-full
+                         className={`flex items-center gap-3 px-3 py-2.5 rounded-[4px] transition-colors font-medium text-sm w-full
                              ${activeMenu === 'comparison_jobs' ? 'bg-[#1f5df9] text-white shadow-md' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}
                              ${collapsed ? 'justify-center' : ''}`}
                          title={collapsed ? t.jobList : undefined}
@@ -147,7 +147,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentUserRole, onTog
 
                        <button 
                          onClick={() => { setActiveMenu('comparison_workflow'); onNavigate('DATA_COMPARISON_WORKFLOW'); }}
-                         className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors font-medium text-sm w-full
+                         className={`flex items-center gap-3 px-3 py-2.5 rounded-[4px] transition-colors font-medium text-sm w-full
                              ${activeMenu === 'comparison_workflow' ? 'bg-[#1f5df9] text-white shadow-md' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}
                              ${collapsed ? 'justify-center' : ''}`}
                          title={collapsed ? t.manageWorkflow : undefined}
@@ -158,7 +158,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentUserRole, onTog
 
                        <button 
                          onClick={() => { setActiveMenu('comparison_rule'); onNavigate('DATA_COMPARISON_RULE'); }}
-                         className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors font-medium text-sm w-full
+                         className={`flex items-center gap-3 px-3 py-2.5 rounded-[4px] transition-colors font-medium text-sm w-full
                              ${activeMenu === 'comparison_rule' ? 'bg-[#1f5df9] text-white shadow-md' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}
                              ${collapsed ? 'justify-center' : ''}`}
                          title={collapsed ? t.manageRule : undefined}
@@ -184,22 +184,22 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentUserRole, onTog
                   <div className="flex gap-1 text-xs">
                       <button 
                         onClick={() => onLanguageChange('EN')}
-                        className={`px-1.5 py-0.5 rounded ${language === 'EN' ? 'bg-white shadow-sm text-sky-600 font-bold' : 'text-slate-400 hover:text-slate-600'}`}
+                        className={`px-1.5 py-0.5 rounded-[4px] ${language === 'EN' ? 'bg-white shadow-sm text-sky-600 font-bold' : 'text-slate-400 hover:text-slate-600'}`}
                       >EN</button>
                       <button 
                         onClick={() => onLanguageChange('TH')}
-                        className={`px-1.5 py-0.5 rounded ${language === 'TH' ? 'bg-white shadow-sm text-sky-600 font-bold' : 'text-slate-400 hover:text-slate-600'}`}
+                        className={`px-1.5 py-0.5 rounded-[4px] ${language === 'TH' ? 'bg-white shadow-sm text-sky-600 font-bold' : 'text-slate-400 hover:text-slate-600'}`}
                       >TH</button>
                   </div>
                </div>
                
-               <button className="flex items-center justify-center gap-2 text-red-500 hover:bg-red-50 py-2 rounded-lg text-sm font-medium transition-colors">
+               <button className="flex items-center justify-center gap-2 text-red-500 hover:bg-red-50 py-2 rounded-[4px] text-sm font-medium transition-colors">
                  <LogOut size={16} />
                  <span>{t.signOut}</span>
                </button>
              </div>
            ) : (
-             <button className="flex justify-center w-full text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors">
+             <button className="flex justify-center w-full text-red-500 hover:bg-red-50 p-2 rounded-[4px] transition-colors">
                <LogOut size={20} />
              </button>
            )}
@@ -213,7 +213,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentUserRole, onTog
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setCollapsed(!collapsed)}
-              className="p-2 hover:bg-slate-100 rounded-lg text-slate-600 transition-colors"
+              className="p-2 hover:bg-slate-100 rounded-[4px] text-slate-600 transition-colors"
             >
               <Menu size={20} />
             </button>
@@ -269,7 +269,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentUserRole, onTog
             <button 
               onClick={() => setProfileOpen(!profileOpen)}
               onBlur={() => setTimeout(() => setProfileOpen(false), 200)}
-              className="flex items-center gap-3 hover:bg-slate-50 p-2 rounded-lg transition-colors border border-transparent hover:border-slate-100"
+              className="flex items-center gap-3 hover:bg-slate-50 p-2 rounded-[4px] transition-colors border border-transparent hover:border-slate-100"
             >
               <div className="hidden sm:flex flex-col items-end">
                  <span className="text-sm font-bold text-[#010136] leading-tight">Kunawut W.</span>
