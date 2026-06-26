@@ -299,9 +299,22 @@ const mockWorkflows: Workflow[] = [
         type: 'output',
         position: { x: 200, y: 0 },
         data: { label: 'Export Data' }
+      },
+      {
+        id: 'node-send-to-1',
+        type: 'send_to',
+        position: { x: 400, y: 0 },
+        data: {
+          nodeName: 'ส่งต่องาน ไปยัง Maritime Freight Checking',
+          nextWorkflowId: 'wf-4',
+          nextWorkflowName: 'Maritime Freight Checking'
+        }
       }
     ],
-    edges: [{ id: 'e1', source: 'node-create-job-1', target: 'node-output-1' }]
+    edges: [
+      { id: 'e1', source: 'node-create-job-1', target: 'node-output-1' },
+      { id: 'e1-send', source: 'node-output-1', target: 'node-send-to-1' }
+    ]
   },
   {
     id: 'wf-3',
@@ -319,9 +332,21 @@ const mockWorkflows: Workflow[] = [
           jobName: 'Australia Meat Import Control',
           docTypes: ['Invoice', 'Health Cert', 'Import Permit']
         }
+      },
+      {
+        id: 'node-send-to-3',
+        type: 'send_to',
+        position: { x: 400, y: 0 },
+        data: {
+          nodeName: 'ส่งต่องาน ไปยัง Customs Declaration Matching',
+          nextWorkflowId: 'wf-5',
+          nextWorkflowName: 'Customs Declaration Matching'
+        }
       }
     ],
-    edges: []
+    edges: [
+      { id: 'e3-send', source: 'node-create-job-3', target: 'node-send-to-3' }
+    ]
   },
   {
     id: 'wf-4',
@@ -345,9 +370,22 @@ const mockWorkflows: Workflow[] = [
         type: 'output',
         position: { x: 200, y: 0 },
         data: { label: 'Export Data' }
+      },
+      {
+        id: 'node-send-to-4',
+        type: 'send_to',
+        position: { x: 400, y: 0 },
+        data: {
+          nodeName: 'ส่งต่องาน ไปยัง Electronics Import Rules',
+          nextWorkflowId: 'wf-6',
+          nextWorkflowName: 'Electronics Import Rules'
+        }
       }
     ],
-    edges: [{ id: 'e4', source: 'node-create-job-4', target: 'node-output-4' }]
+    edges: [
+      { id: 'e4', source: 'node-create-job-4', target: 'node-output-4' },
+      { id: 'e4-send', source: 'node-output-4', target: 'node-send-to-4' }
+    ]
   },
   {
     id: 'wf-5',
@@ -391,9 +429,22 @@ const mockWorkflows: Workflow[] = [
         type: 'output',
         position: { x: 200, y: 0 },
         data: { label: 'Export Data' }
+      },
+      {
+        id: 'node-send-to-6',
+        type: 'send_to',
+        position: { x: 400, y: 0 },
+        data: {
+          nodeName: 'ส่งต่องาน ไปยัง ASEAN Trade Agreement',
+          nextWorkflowId: 'wf-7',
+          nextWorkflowName: 'ASEAN Trade Agreement'
+        }
       }
     ],
-    edges: [{ id: 'e6', source: 'node-create-job-6', target: 'node-output-6' }]
+    edges: [
+      { id: 'e6', source: 'node-create-job-6', target: 'node-output-6' },
+      { id: 'e6-send', source: 'node-output-6', target: 'node-send-to-6' }
+    ]
   },
   {
     id: 'wf-7',
@@ -2629,7 +2680,7 @@ const mockWorkflows: Workflow[] = [
 
     const shipmentStats = [
       { 
-        label: language === 'TH' ? 'Shipment ทั้งหมด' : 'Total Shipments', 
+        label: language === 'TH' ? 'Shipment' : 'Total Shipments', 
         count: totalShipments, 
         icon: <FileText size={18} />, 
         color: 'bg-slate-50 text-slate-400',
@@ -2884,30 +2935,23 @@ const mockWorkflows: Workflow[] = [
     return (
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
         {/* Back Button and Shipment Context Banner */}
-        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 font-sans">
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={() => setSelectedShipment(null)}
-              className="p-2.5 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition-all text-slate-600 shadow-sm flex items-center justify-center cursor-pointer font-bold font-sans"
-            >
-              <ArrowLeft size={18} />
-            </button>
-            <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">{language === 'TH' ? 'มุมมอง Shipment' : 'SHIPMENT VIEW'}</p>
-              <h3 className="text-lg font-black text-[#010136] tracking-tight">{selectedShipment}</h3>
-            </div>
-          </div>
+        <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-6 font-sans">
           <div className="flex items-center gap-3">
-            <span className="text-xs font-bold text-slate-500">
-              {language === 'TH' ? `พบทั้งหมด ${filteredJobs.length} งานย่อย` : `Found ${filteredJobs.length} child jobs`}
-            </span>
             <button 
               onClick={() => setSelectedShipment(null)}
-              className="px-4 py-2 bg-[#0463EF] hover:bg-blue-600 text-white font-black text-xs uppercase tracking-widest rounded-lg transition-all cursor-pointer shadow-sm"
+              className="p-2 hover:bg-slate-50 rounded-lg transition-all text-slate-600 flex items-center justify-center cursor-pointer"
             >
-              {language === 'TH' ? 'กลับไปหน้ารายการ Shipment' : 'BACK TO SHIPMENTS'}
+              <ArrowLeft size={20} />
             </button>
+            <h3 className="text-xl md:text-2xl font-black text-[#010136] tracking-tight">{selectedShipment}</h3>
           </div>
+          <button 
+            onClick={() => setShowCreateJobModal(true)}
+            className="px-4 py-2 bg-[#0463EF] text-white rounded-lg flex items-center gap-2 text-xs font-black uppercase tracking-widest hover:bg-blue-600 transition-all shadow-sm cursor-pointer"
+          >
+            <Plus size={16} />
+            {language === 'TH' ? 'สร้างรายการย่อย' : 'CREATE CHILD JOB'}
+          </button>
         </div>
 
         {/* Child Jobs Table */}
@@ -5146,9 +5190,10 @@ const mockWorkflows: Workflow[] = [
         <CreateJobModal
           visible={showCreateJobModal}
           onClose={() => setShowCreateJobModal(false)}
-          onCreate={(newJob) => setJobs(prev => [newJob, ...prev])}
+          onCreate={(newJobs) => setJobs(prev => Array.isArray(newJobs) ? [...newJobs, ...prev] : [newJobs, ...prev])}
           workflows={mockWorkflows}
           language={language}
+          prefilledReference={selectedShipment || undefined}
         />
       )}
 
@@ -5233,82 +5278,88 @@ const mockWorkflows: Workflow[] = [
 
       {step === 0 && (
         <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm space-y-3 animate-in fade-in duration-500" id="job-board-wrapper">
-          <div className="flex justify-between items-center pb-3 border-b border-slate-100">
-            <div>
-              <h2 className="text-xl md:text-2xl font-black text-slate-800 tracking-tight mb-1 flex items-center gap-3 animate-in slide-in-from-left duration-300">
-                {t.jobList}
-              </h2>
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <p className="text-slate-500 font-bold text-xs md:text-sm">{t.jobListDesc}</p>
-                <button
-                  onClick={() => setShowStatusGuide(true)}
-                  className="inline-flex items-center justify-center p-1 rounded-full text-blue-500 hover:bg-blue-50 hover:text-blue-600 transition-all cursor-pointer group"
-                  title="STATUS GUIDE"
-                  id="status-guide-icon-btn"
+          {selectedShipment ? (
+            renderShipmentJobList()
+          ) : (
+            <>
+              <div className="flex justify-between items-center pb-3 border-b border-slate-100">
+                <div>
+                  <h2 className="text-xl md:text-2xl font-black text-slate-800 tracking-tight mb-1 flex items-center gap-3 animate-in slide-in-from-left duration-300">
+                    {t.jobList}
+                  </h2>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <p className="text-slate-500 font-bold text-xs md:text-sm">{t.jobListDesc}</p>
+                    <button
+                      onClick={() => setShowStatusGuide(true)}
+                      className="inline-flex items-center justify-center p-1 rounded-full text-blue-500 hover:bg-blue-50 hover:text-blue-600 transition-all cursor-pointer group"
+                      title="STATUS GUIDE"
+                      id="status-guide-icon-btn"
+                    >
+                      <HelpCircle size={16} className="group-hover:scale-110 transition-transform" />
+                    </button>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setShowCreateJobModal(true)}
+                  className="px-4 py-2 bg-[#0463EF] text-white rounded-lg flex items-center gap-2 text-xs font-black uppercase tracking-widest hover:bg-blue-600 transition-all shadow-sm cursor-pointer"
+                  id="create-new-job-btn"
                 >
-                  <HelpCircle size={16} className="group-hover:scale-110 transition-transform" />
+                  <Plus size={16} />
+                  สร้างรายการใหม่
                 </button>
               </div>
-            </div>
-            <button 
-              onClick={() => setShowCreateJobModal(true)}
-              className="px-4 py-2 bg-[#0463EF] text-white rounded-lg flex items-center gap-2 text-xs font-black uppercase tracking-widest hover:bg-blue-600 transition-all shadow-sm cursor-pointer"
-              id="create-new-job-btn"
-            >
-              <Plus size={16} />
-              สร้างรายการใหม่
-            </button>
-          </div>
-          
-          <Tabs 
-            activeKey={activeBoardTab} 
-            onChange={setActiveBoardTab}
-            className="custom-job-tabs mb-6"
-            items={[
-              {
-                key: 'jobs',
-                label: (
-                  <div className="flex items-center gap-2 px-1 py-2 group">
-                    <List size={18} className="text-slate-400 group-hover:text-blue-500 transition-colors" />
-                    <span className="font-black uppercase tracking-[0.05em] text-[13px] text-slate-500 font-sans group-hover:text-slate-800 transition-colors">
-                      {t.tabJobList}
-                    </span>
-                  </div>
-                ),
-                children: selectedShipment ? renderShipmentJobList() : renderShipmentGrid()
-              },
-              {
-                key: 'pending',
-                label: (
-                  <div className="flex items-center gap-2 px-1 py-2 group">
-                    <Inbox size={18} className="text-slate-400 group-hover:text-blue-500 transition-colors" />
-                    <span className="font-black uppercase tracking-[0.05em] text-[13px] text-slate-500 font-sans group-hover:text-slate-800 transition-colors">
-                      {t.tabPendingInbox}
-                    </span>
-                    <Badge 
-                      count={pendingInboxItems.filter(item => !readPendingIds.has(item.id)).length} 
-                      size="small" 
-                      className="ml-1"
-                      styles={{ count: { fontSize: '10px', fontWeight: 900, backgroundColor: '#DC2626', color: '#ffffff', minWidth: '18px', height: '18px', lineHeight: '18px', border: 'none', boxShadow: 'none', opacity: 1 } }}
-                    />
-                  </div>
-                ),
-                children: renderPendingInbox()
-              },
-              {
-                key: 'logs',
-                label: (
-                  <div className="flex items-center gap-2 px-1 py-2 group">
-                    <Clock size={18} className="text-slate-400 group-hover:text-blue-500 transition-colors" />
-                    <span className="font-black uppercase tracking-[0.05em] text-[13px] text-slate-500 font-sans group-hover:text-slate-800 transition-colors">
-                      {t.tabActivityLogs}
-                    </span>
-                  </div>
-                ),
-                children: renderActivityLogs()
-              }
-            ]}
-          />
+              
+              <Tabs 
+                activeKey={activeBoardTab} 
+                onChange={setActiveBoardTab}
+                className="custom-job-tabs mb-6"
+                items={[
+                  {
+                    key: 'jobs',
+                    label: (
+                      <div className="flex items-center gap-2 px-1 py-2 group">
+                        <List size={18} className="text-slate-400 group-hover:text-blue-500 transition-colors" />
+                        <span className="font-black uppercase tracking-[0.05em] text-[13px] text-slate-500 font-sans group-hover:text-slate-800 transition-colors">
+                          {t.tabJobList}
+                        </span>
+                      </div>
+                    ),
+                    children: renderShipmentGrid()
+                  },
+                  {
+                    key: 'pending',
+                    label: (
+                      <div className="flex items-center gap-2 px-1 py-2 group">
+                        <Inbox size={18} className="text-slate-400 group-hover:text-blue-500 transition-colors" />
+                        <span className="font-black uppercase tracking-[0.05em] text-[13px] text-slate-500 font-sans group-hover:text-slate-800 transition-colors">
+                          {t.tabPendingInbox}
+                        </span>
+                        <Badge 
+                          count={pendingInboxItems.filter(item => !readPendingIds.has(item.id)).length} 
+                          size="small" 
+                          className="ml-1"
+                          styles={{ count: { fontSize: '10px', fontWeight: 900, backgroundColor: '#DC2626', color: '#ffffff', minWidth: '18px', height: '18px', lineHeight: '18px', border: 'none', boxShadow: 'none', opacity: 1 } }}
+                        />
+                      </div>
+                    ),
+                    children: renderPendingInbox()
+                  },
+                  {
+                    key: 'logs',
+                    label: (
+                      <div className="flex items-center gap-2 px-1 py-2 group">
+                        <Clock size={18} className="text-slate-400 group-hover:text-blue-500 transition-colors" />
+                        <span className="font-black uppercase tracking-[0.05em] text-[13px] text-slate-500 font-sans group-hover:text-slate-800 transition-colors">
+                          {t.tabActivityLogs}
+                        </span>
+                      </div>
+                    ),
+                    children: renderActivityLogs()
+                  }
+                ]}
+              />
+            </>
+          )}
           
           <style>{`
             .custom-job-tabs .ant-tabs-nav { margin: 0 0 10px 0 !important; }

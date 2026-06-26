@@ -3219,6 +3219,49 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                       </div>
                     </div>
 
+                    {/* Section: Next Workflow Routing */}
+                    <div className="space-y-4 pt-4 border-t border-slate-100">
+                      <div className="flex items-center gap-2 mb-2">
+                        <GitBranch size={16} className="text-amber-500" />
+                        <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest">
+                          {language === 'TH' ? 'เวิร์กโฟลว์ถัดไป (ส่งต่องาน)' : 'Next Workflow Routing'}
+                        </h3>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest px-1">
+                          {language === 'TH' ? 'เลือกเวิร์กโฟลว์ถัดไป' : 'Select Destination Workflow'}
+                        </label>
+                        <select
+                          value={node.data.nextWorkflowId || ''}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            const wfNames: Record<string, string> = {
+                              'wf-1': 'Invoice Processing',
+                              'wf-3': 'Australia Meat Import Control',
+                              'wf-4': 'Maritime Freight Checking',
+                              'wf-5': 'Customs Declaration Matching',
+                              'wf-6': 'Electronics Import Rules',
+                              'wf-7': 'ASEAN Trade Agreement',
+                              'wf-2': 'Empty Workflow'
+                            };
+                            updateNodeData(node.id, { 
+                              nextWorkflowId: val,
+                              nextWorkflowName: wfNames[val] || ''
+                            });
+                          }}
+                          className="w-full bg-white p-3 text-[11px] font-bold text-slate-700 border border-slate-200 rounded-[4px] focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all"
+                        >
+                          <option value="">-- {language === 'TH' ? 'ไม่ได้เลือก' : 'None'} --</option>
+                          <option value="wf-1">Invoice Processing</option>
+                          <option value="wf-3">Australia Meat Import Control</option>
+                          <option value="wf-4">Maritime Freight Checking</option>
+                          <option value="wf-5">Customs Declaration Matching</option>
+                          <option value="wf-6">Electronics Import Rules</option>
+                          <option value="wf-7">ASEAN Trade Agreement</option>
+                        </select>
+                      </div>
+                    </div>
+
                     {/* Section 3: Export Details */}
                     <div className="space-y-4 pt-4 border-t border-slate-100">
                       <div className="flex items-center gap-2 mb-2">

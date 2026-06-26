@@ -1,28 +1,89 @@
-import React, { useState } from 'react';
-import { Modal, Select, message } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Modal, message } from 'antd';
+import { 
+  AlertCircle, Plus, Trash2, ArrowRight, CheckCircle, 
+  User, Layers, HelpCircle, Briefcase, FileText,
+  GripVertical
+} from 'lucide-react';
 import { ComparisonJob, JobStatus, Workflow, ComparisonDocStatus } from '../types';
 
 interface CreateJobModalProps {
   visible: boolean;
   onClose: () => void;
-  onCreate: (job: ComparisonJob) => void;
+  onCreate: (job: ComparisonJob | ComparisonJob[]) => void;
   workflows: Workflow[];
   language?: string;
+  prefilledReference?: string;
 }
 
-export const CreateJobModal: React.FC<CreateJobModalProps> = ({ visible, onClose, onCreate, workflows, language }) => {
-  const [selectedWorkflowId, setSelectedWorkflowId] = useState<string | null>(null);
-  const [selectedAssignee, setSelectedAssignee] = useState<string | null>('unassigned');
-  const [suffixValue, setSuffixValue] = useState<string>('');
+interface ChildJobConfig {
+  id: string;
+  workflowId: string | null;
+  suffixValue: string;
+  assignee: string | null;
+}
 
+export const CreateJobModal: React.FC<CreateJobModalProps> = ({ 
+  visible, onClose, onCreate, workflows, language, prefilledReference 
+}) => {
   const isTh = language === 'TH';
-  const modalTitle = isTh ? 'สร้างรายการใหม่' : 'Create New Job';
-  const labelWorkflow = isTh ? 'เลือก Workflow' : 'Select Workflow';
-  const placeholderWorkflow = isTh ? 'เลือก Workflow' : 'Select Workflow';
-  const labelAssignee = isTh ? 'Assignee (เลือกได้)' : 'Assignee (Optional)';
-  const placeholderAssignee = isTh ? 'เลือก Assignee หรือทิ้งไว้' : 'Select Assignee or leave unassigned';
-  const okTextValue = isTh ? 'สร้าง Job' : 'Create Job';
-  const cancelTextValue = isTh ? 'ยกเลิก' : 'Cancel';
+
+  // State for single job mode (used when prefilledReference is present)
+  const [singleWorkflowId, setSingleWorkflowId] = useState<string | null>(null);
+  const [singleAssignee, setSingleAssignee] = useState<string | null>('unassigned');
+  const [singleSuffixValue, setSingleSuffixValue] = useState<string>('');
+
+  // State for multiple child jobs mode (used when prefilledReference is NOT present)
+  const [shipmentName, setShipmentName] = useState<string>('');
+  const [childJobs, setChildJobs] = useState<ChildJobConfig[]>([
+    { id: 'initial-1', workflowId: null, suffixValue: '', assignee: 'unassigned' }
+  ]);
+
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === index) return;
+    
+    setChildJobs(prev => {
+      const copy = [...prev];
+      const draggedItem = copy[draggedIndex];
+      copy.splice(draggedIndex, 1);
+      copy.splice(index, 0, draggedItem);
+      return copy;
+    });
+    setDraggedIndex(index);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+  };
+
+  // Generate default Shipment Name and reset states when modal opens
+  useEffect(() => {
+    if (visible) {
+      if (prefilledReference) {
+        setSingleWorkflowId(null);
+        setSingleAssignee('unassigned');
+        setSingleSuffixValue('');
+      } else {
+        const randomNum = Math.floor(10000 + Math.random() * 90000);
+        setShipmentName(`CN-TH-2026-${randomNum}`);
+        setChildJobs([
+          { id: `cj-${Date.now()}`, workflowId: null, suffixValue: '', assignee: 'unassigned' }
+        ]);
+      }
+    }
+  }, [visible, prefilledReference]);
+
+  const modalTitle = prefilledReference 
+    ? (isTh ? 'สร้างรายการย่อย (Child Job)' : 'Create Child Job')
+    : (isTh ? 'สร้างรายการใหม่ (Shipment)' : 'Create New Shipment');
 
   const getPrefix = (format: string) => {
     if (!format) return 'JOB-';
@@ -33,149 +94,540 @@ export const CreateJobModal: React.FC<CreateJobModalProps> = ({ visible, onClose
     return format;
   };
 
-  const selectedWorkflow = workflows.find(w => w.id === selectedWorkflowId);
-  const createJobNode = selectedWorkflow?.nodes.find(node => node.type === 'create_job');
-  const hasJobCreationNode = !!createJobNode;
-  const namingFormat = createJobNode?.data?.namingFormat || '';
-  const extractedPrefix = namingFormat ? getPrefix(namingFormat) : 'JOB-';
-
-  const handleWorkflowChange = (val: string) => {
-    setSelectedWorkflowId(val);
-    const wf = workflows.find(w => w.id === val);
-    const node = wf?.nodes.find(n => n.type === 'create_job');
-    if (node) {
-      // pre-fill a 4-digit random number to offer an immediate valid input
-      setSuffixValue(String(Math.floor(1000 + Math.random() * 9000)));
-    } else {
-      setSuffixValue('');
+  // Helper to check workflow relations in multiple child jobs
+  const checkWorkflowRelations = (): { isValid: boolean; errorIndex: number | null; errorMsg: string | null } => {
+    if (prefilledReference) {
+      return { isValid: true, errorIndex: null, errorMsg: null };
     }
+
+    for (let i = 0; i < childJobs.length - 1; i++) {
+      const current = childJobs[i];
+      const next = childJobs[i + 1];
+
+      if (!current.workflowId || !next.workflowId) {
+        continue; // Skip check if either is not selected yet
+      }
+
+      const currentWf = workflows.find(w => w.id === current.workflowId);
+      const nextWf = workflows.find(w => w.id === next.workflowId);
+
+      if (!currentWf || !nextWf) continue;
+
+      // Check if currentWf contains a 'send_to' node pointing to nextWf.id
+      const sendToNode = currentWf.nodes.find(node => node.type === 'send_to');
+      const targetWfId = sendToNode?.data?.nextWorkflowId;
+
+      if (!sendToNode || targetWfId !== nextWf.id) {
+        const msg = isTh 
+          ? `เวิร์กโฟลว์ "${currentWf.name}" ไม่มีความสัมพันธ์ส่งต่องานไปยัง "${nextWf.name}"`
+          : `Workflow "${currentWf.name}" does not have a forward node routing to "${nextWf.name}"`;
+        return { isValid: false, errorIndex: i, errorMsg: msg };
+      }
+    }
+
+    return { isValid: true, errorIndex: null, errorMsg: null };
+  };
+
+  const validationResult = checkWorkflowRelations();
+
+  const handleAddChildJobRow = () => {
+    const newId = `cj-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    setChildJobs(prev => [
+      ...prev,
+      { id: newId, workflowId: null, suffixValue: '', assignee: 'unassigned' }
+    ]);
+  };
+
+  const handleRemoveChildJobRow = (id: string) => {
+    if (childJobs.length <= 1) return;
+    setChildJobs(prev => prev.filter(j => j.id !== id));
+  };
+
+
+
+  const handleChildJobChange = (id: string, field: keyof ChildJobConfig, value: any) => {
+    setChildJobs(prev => prev.map(job => {
+      if (job.id === id) {
+        const updated = { ...job, [field]: value };
+        // Pre-fill suffix code if workflow selected and suffix is empty
+        if (field === 'workflowId' && value) {
+          const wf = workflows.find(w => w.id === value);
+          const hasCreateJobNode = wf?.nodes.some(n => n.type === 'create_job');
+          if (hasCreateJobNode && !job.suffixValue) {
+            updated.suffixValue = String(Math.floor(1000 + Math.random() * 9000));
+          }
+        }
+        return updated;
+      }
+      return job;
+    }));
   };
 
   const handleCreate = () => {
-    if (!selectedWorkflowId) {
-      message.error(isTh ? 'กรุณาเลือก Workflow' : 'Please select a workflow');
-      return;
+    if (prefilledReference) {
+      // Single Child Job Mode
+      if (!singleWorkflowId) {
+        message.error(isTh ? 'กรุณาเลือก Workflow' : 'Please select a workflow');
+        return;
+      }
+
+      const workflow = workflows.find(w => w.id === singleWorkflowId);
+      if (!workflow) return;
+
+      const createJobNode = workflow.nodes.find(node => node.type === 'create_job');
+      if (!createJobNode || !createJobNode.data || !createJobNode.data.docTypes || createJobNode.data.docTypes.length === 0) {
+        message.error(isTh 
+           ? `ไม่สามารถสร้าง Job ได้: Workflow "${workflow.name}" ไม่มี Node "Job creation" ที่มีการกำหนด DocType`
+           : `Cannot create job: Workflow "${workflow.name}" has no "Job creation" node with DocTypes specified.`
+        );
+        return;
+      }
+
+      const namingFormat = createJobNode.data.namingFormat || '';
+      const extractedPrefix = namingFormat ? getPrefix(namingFormat) : 'JOB-';
+      const finalSuffix = singleSuffixValue.trim() || String(Math.floor(1000 + Math.random() * 9000));
+
+      const docTypes: string[] = createJobNode.data.docTypes;
+      const jobName: string = createJobNode.data.jobName || workflow.name;
+      const assigneeValue = singleAssignee === 'unassigned' ? undefined : singleAssignee;
+
+      const newJob: ComparisonJob = {
+        id: `job-${Date.now()}`,
+        reference: prefilledReference,
+        createdAt: new Date().toISOString(),
+        expiryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        status: JobStatus.NEW,
+        docs: docTypes.reduce((acc, type) => {
+          acc[type] = ComparisonDocStatus.MISSING;
+          return acc;
+        }, {} as Record<string, any>),
+        assignee: assigneeValue || undefined,
+        workflowName: `${jobName} [${extractedPrefix}${finalSuffix}]`,
+        progress: 0,
+        totalDocs: docTypes.length,
+        foundDocs: 0
+      };
+
+      onCreate(newJob);
+      message.success(isTh ? 'สร้างรายการย่อยสำเร็จ' : 'Child job created successfully');
+      onClose();
+    } else {
+      // Multiple Child Jobs Mode (Create New Shipment)
+      if (!shipmentName.trim()) {
+        message.error(isTh ? 'กรุณาระบุชื่อรายการ Shipment' : 'Please specify Shipment Name');
+        return;
+      }
+
+      if (childJobs.some(j => !j.workflowId)) {
+        message.error(isTh ? 'กรุณาเลือกเวิร์กโฟลว์ให้ครบทุกรายการย่อย' : 'Please select a workflow for all child jobs');
+        return;
+      }
+
+      // Check workflow relations sequence
+      const relationCheck = checkWorkflowRelations();
+      if (!relationCheck.isValid) {
+        message.error(isTh 
+          ? `ไม่สามารถสร้างรายการได้เนื่องจากความสัมพันธ์ของเวิร์กโฟลว์ไม่สัมพันธ์กัน: ${relationCheck.errorMsg}` 
+          : `Cannot create shipment due to workflow incompatibility: ${relationCheck.errorMsg}`
+        );
+        return;
+      }
+
+      // Create jobs for each configuration
+      const createdJobsList: ComparisonJob[] = [];
+      const nowMs = Date.now();
+
+      for (let i = 0; i < childJobs.length; i++) {
+        const config = childJobs[i];
+        const workflow = workflows.find(w => w.id === config.workflowId)!;
+        const createJobNode = workflow.nodes.find(node => node.type === 'create_job')!;
+
+        // Validate docTypes specified
+        if (!createJobNode || !createJobNode.data || !createJobNode.data.docTypes || createJobNode.data.docTypes.length === 0) {
+          message.error(isTh 
+             ? `ไม่สามารถสร้างรายการได้: เวิร์กโฟลว์ "${workflow.name}" ไม่มี Node "Job creation" หรือไม่มี DocType`
+             : `Cannot create: Workflow "${workflow.name}" lacks a configured "Job creation" node with DocTypes.`
+          );
+          return;
+        }
+
+        const namingFormat = createJobNode.data.namingFormat || '';
+        const extractedPrefix = namingFormat ? getPrefix(namingFormat) : 'JOB-';
+        const finalSuffix = config.suffixValue.trim() || String(Math.floor(1000 + Math.random() * 9000));
+
+        const docTypes: string[] = createJobNode.data.docTypes;
+        const jobName: string = createJobNode.data.jobName || workflow.name;
+        const assigneeValue = config.assignee === 'unassigned' ? undefined : config.assignee;
+
+        createdJobsList.push({
+          id: `job-${nowMs}-${i}`,
+          reference: shipmentName.trim(),
+          createdAt: new Date().toISOString(),
+          expiryDate: new Date(Date.now() + (7 + i) * 24 * 60 * 60 * 1000).toISOString(),
+          // First job in the sequence is processing/ready, others are waiting
+          status: i === 0 ? JobStatus.NEW : JobStatus.PROCESSING,
+          docs: docTypes.reduce((acc, type) => {
+            acc[type] = ComparisonDocStatus.MISSING;
+            return acc;
+          }, {} as Record<string, any>),
+          assignee: assigneeValue || undefined,
+          workflowName: `${jobName} [${extractedPrefix}${finalSuffix}]`,
+          progress: 0,
+          totalDocs: docTypes.length,
+          foundDocs: 0
+        });
+      }
+
+      onCreate(createdJobsList);
+      message.success(isTh ? 'สร้างรายการ Shipment ใหม่สำเร็จแล้ว' : 'New Shipment created successfully with child jobs');
+      onClose();
     }
-
-    const workflow = workflows.find(w => w.id === selectedWorkflowId);
-    if (!workflow) return;
-
-    // "ดึงข้อมูลจาก node: Job creation มาสร้าง ขื่อ job, จำนวน doctype, doctype อะไรบ้าง"
-    const createJobNode = workflow.nodes.find(node => node.type === 'create_job');
-    
-    // "ถ้าใน workflow นั้น ไม่มีการกำหนด node. ที่มีมี doctype อยู่ ให้ขึ้น error ไม่สามารถสร้างได้เพราะอะไร"
-    if (!createJobNode || !createJobNode.data || !createJobNode.data.docTypes || createJobNode.data.docTypes.length === 0) {
-      message.error(isTh 
-        ? `ไม่สามารถสร้าง Job ได้: Workflow "${workflow.name}" ไม่มี Node "Job creation" ที่มีการกำหนด DocType`
-        : `Cannot create job: Workflow "${workflow.name}" has no "Job creation" node with DocTypes specified.`
-      );
-      return;
-    }
-
-    if (hasJobCreationNode && !suffixValue.trim()) {
-      message.error(isTh ? 'กรุณาระบุรหัสต่อท้ายรูปแบบของ job' : 'Please specify a suffix for the job format');
-      return;
-    }
-
-    const docTypes: string[] = createJobNode.data.docTypes;
-    const jobName: string = createJobNode.data.jobName || workflow.name;
-
-    const assigneeValue = selectedAssignee === 'unassigned' ? undefined : selectedAssignee;
-
-    const referenceValue = hasJobCreationNode 
-      ? `${extractedPrefix}${suffixValue.trim()}`
-      : `JOB-${Math.floor(Math.random() * 10000)}`;
-
-    // Create new job
-    const newJob: ComparisonJob = {
-      id: `job-${Date.now()}`,
-      reference: referenceValue,
-      createdAt: new Date().toISOString(),
-      expiryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-      status: JobStatus.NEW,
-      docs: docTypes.reduce((acc, type) => {
-        acc[type] = ComparisonDocStatus.MISSING;
-        return acc;
-      }, {} as Record<string, any>),
-      assignee: assigneeValue || undefined,
-      workflowName: jobName,
-      progress: 0,
-      totalDocs: docTypes.length,
-      foundDocs: 0
-    };
-
-    onCreate(newJob);
-    onClose();
-    setSelectedWorkflowId(null);
-    setSelectedAssignee('unassigned');
-    setSuffixValue('');
-    message.success(isTh ? 'สร้าง Job สำเร็จ' : 'Job created successfully');
   };
 
   return (
     <Modal
-      title={<div className="font-sans text-lg font-bold">{modalTitle}</div>}
+      title={
+        <div className="font-sans text-[16px] font-black tracking-tight text-[#010136] flex items-center gap-2.5 pb-2 border-b border-slate-100">
+          <Briefcase size={20} className="text-[#0463EF]" />
+          <span>{modalTitle}</span>
+        </div>
+      }
       open={visible}
       onCancel={onClose}
       onOk={handleCreate}
-      okText={okTextValue}
-      cancelText={cancelTextValue}
+      okText={prefilledReference ? (isTh ? 'สร้างรายการย่อย' : 'Create Job') : (isTh ? 'สร้าง Shipment และรายการย่อย' : 'Create Shipment')}
+      cancelText={isTh ? 'ยกเลิก' : 'Cancel'}
+      width={prefilledReference ? 500 : 800}
+      centered
       className="font-sans"
-      okButtonProps={{ className: 'bg-[#0463EF] font-sans hover:bg-blue-600' }}
-      cancelButtonProps={{ className: 'font-sans' }}
+      okButtonProps={{ 
+        className: 'bg-[#0463EF] text-white hover:bg-blue-600 rounded-[4px] font-sans font-bold h-10 px-5 text-xs uppercase tracking-widest transition-all cursor-pointer border-none shadow-sm'
+      }}
+      cancelButtonProps={{ 
+        className: 'font-sans font-bold h-10 px-5 text-xs text-slate-500 rounded-[4px] border border-slate-200 hover:border-slate-300 hover:text-slate-700 transition-all cursor-pointer'
+      }}
     >
-      <div className="space-y-4 py-4 font-sans">
-        <div>
-          <label className="block text-sm font-bold text-slate-700 mb-2">{labelWorkflow}</label>
-          <Select 
-            className="w-full font-sans"
-            placeholder={placeholderWorkflow}
-            value={selectedWorkflowId}
-            onChange={handleWorkflowChange}
-            options={workflows.map(w => ({ label: w.name, value: w.id }))}
-          />
-        </div>
-
-        {hasJobCreationNode && (
-          <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-            <label className="block text-sm font-bold text-slate-700 mb-1">
-              {isTh ? 'รูปแบบของ job' : 'Job Format'} <span className="text-red-500">*</span>
-            </label>
-            <div className="flex rounded-lg border border-slate-300 overflow-hidden focus-within:ring-2 focus-within:ring-[#0463EF]/20 focus-within:border-[#0463EF] transition-all">
-              <span className="inline-flex items-center px-3 bg-slate-50 border-r border-[#e2e8f0] text-slate-500 text-sm font-mono font-bold select-none">
-                {extractedPrefix}
-              </span>
-              <input
-                type="text"
-                value={suffixValue}
-                onChange={(e) => setSuffixValue(e.target.value)}
-                className="flex-1 min-w-0 block w-full px-3 py-2 text-sm font-semibold font-mono text-slate-800 bg-white placeholder-slate-400 focus:outline-none"
-                placeholder={isTh ? 'ระบุรหัสของ job...' : 'Enter suffix...'}
-                required
-              />
+      <div className="font-sans py-4">
+        {prefilledReference ? (
+          /* Single Child Job Creation Mode */
+          <div className="space-y-5">
+            <div>
+              <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">
+                {isTh ? 'เลขที่ Shipment' : 'SHIPMENT REFERENCE'}
+              </label>
+              <div className="bg-slate-50 border border-slate-100 text-[#010136] font-black font-mono text-sm rounded-[4px] px-3 py-2.5">
+                {prefilledReference}
+              </div>
             </div>
-            <p className="text-[11px] text-slate-400 mt-1 font-semibold">
-              {isTh ? 'เลขที่จะถูกบันทึกเป็น: ' : 'Saved as: '}
-              <span className="font-mono text-[#010136] font-extrabold">{extractedPrefix}{suffixValue || '...'}</span>
-            </p>
+
+            <div>
+              <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">
+                {isTh ? 'เลือกเวิร์กโฟลว์' : 'SELECT WORKFLOW'} <span className="text-red-500">*</span>
+              </label>
+              <select
+                value={singleWorkflowId || ''}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setSingleWorkflowId(val);
+                  const wf = workflows.find(w => w.id === val);
+                  const node = wf?.nodes.find(n => n.type === 'create_job');
+                  if (node) {
+                    setSingleSuffixValue(String(Math.floor(1000 + Math.random() * 9000)));
+                  } else {
+                    setSingleSuffixValue('');
+                  }
+                }}
+                className="w-full bg-white border border-slate-200 rounded-[4px] py-2.5 px-3 text-sm font-bold text-[#010136] outline-none focus:ring-2 focus:ring-[#0463EF]/10 focus:border-[#0463EF] transition-all"
+              >
+                <option value="">{isTh ? '-- เลือกเวิร์กโฟลว์ --' : '-- Select Workflow --'}</option>
+                {workflows.map(w => (
+                  <option key={w.id} value={w.id}>{w.name}</option>
+                ))}
+              </select>
+            </div>
+
+            {singleWorkflowId && workflows.find(w => w.id === singleWorkflowId)?.nodes.some(n => n.type === 'create_job') && (
+              <div className="animate-in fade-in slide-in-from-top-2 duration-300 bg-slate-50 p-4 rounded-[8px] border border-slate-100">
+                <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">
+                  {isTh ? 'รูปแบบของ Job (รหัสต่อท้าย)' : 'JOB FORMAT SUFFIX'} <span className="text-red-500">*</span>
+                </label>
+                <div className="flex rounded-[4px] border border-slate-200 overflow-hidden bg-white focus-within:ring-2 focus-within:ring-[#0463EF]/10 focus-within:border-[#0463EF] transition-all">
+                  <span className="inline-flex items-center px-3 bg-slate-50 border-r border-slate-100 text-slate-400 text-xs font-mono font-bold select-none">
+                    {getPrefix(workflows.find(w => w.id === singleWorkflowId)?.nodes.find(n => n.type === 'create_job')?.data?.namingFormat || '')}
+                  </span>
+                  <input
+                    type="text"
+                    value={singleSuffixValue}
+                    onChange={(e) => setSingleSuffixValue(e.target.value)}
+                    className="flex-1 min-w-0 block w-full px-3 py-2 text-sm font-bold font-mono text-[#010136] focus:outline-none placeholder-slate-300"
+                    placeholder={isTh ? 'เช่น 9041...' : 'e.g. 9041...'}
+                  />
+                </div>
+              </div>
+            )}
+
+            <div>
+              <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">
+                {isTh ? 'ผู้รับผิดชอบ (Assignee)' : 'ASSIGNEE'}
+              </label>
+              <select
+                value={singleAssignee || 'unassigned'}
+                onChange={(e) => setSingleAssignee(e.target.value)}
+                className="w-full bg-white border border-slate-200 rounded-[4px] py-2.5 px-3 text-sm font-bold text-[#010136] outline-none focus:ring-2 focus:ring-[#0463EF]/10 focus:border-[#0463EF] transition-all"
+              >
+                <option value="unassigned">{isTh ? 'ไม่ได้มอบหมาย (Unassigned)' : 'Unassigned'}</option>
+                <option value="Kunawut W.">Kunawut W.</option>
+                <option value="Somchai T.">Somchai T.</option>
+                <option value="System">System</option>
+              </select>
+            </div>
+          </div>
+        ) : (
+          /* Multi-Job Shipment Creation Mode */
+          <div className="space-y-6">
+            {/* Shipment Name Section */}
+            <div className="bg-slate-50 p-4 rounded-[8px] border border-slate-100">
+              <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">
+                {isTh ? 'ชื่อรายการ Shipment' : 'SHIPMENT REFERENCE NAME'} <span className="text-red-500">*</span>
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={shipmentName}
+                  onChange={(e) => setShipmentName(e.target.value)}
+                  className="flex-1 bg-white border border-slate-200 rounded-[4px] px-3.5 py-2.5 text-sm font-black text-[#010136] font-mono outline-none focus:ring-2 focus:ring-[#0463EF]/10 focus:border-[#0463EF] transition-all"
+                  placeholder={isTh ? 'ป้อนชื่อหรือเลขที่ Shipment...' : 'Enter shipment reference name...'}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShipmentName(`CN-TH-2026-${Math.floor(10000 + Math.random() * 90000)}`)}
+                  className="px-3 py-2 bg-white hover:bg-slate-100 border border-slate-200 text-slate-500 rounded-[4px] text-xs font-bold font-sans transition-all cursor-pointer"
+                >
+                  {isTh ? 'สุ่มรหัส' : 'Random'}
+                </button>
+              </div>
+              <p className="text-[10px] text-slate-400 font-bold mt-1.5">
+                {isTh ? 'ระบุเลขที่ควบคุมสำหรับกลุ่มเวิร์กโฟลว์ย่อย เช่น CN-TH-2026-80942' : 'Set control reference name for grouping sub-workflows.'}
+              </p>
+            </div>
+
+            {/* Child Jobs Sequence Visualization (Visual Flowchart) */}
+            <div className="border border-slate-100 rounded-[8px] p-4 bg-slate-50/30">
+              <div className="flex items-center gap-1.5 mb-3">
+                <Layers size={14} className="text-[#0463EF]" />
+                <span className="text-[10px] font-black text-[#010136] uppercase tracking-widest">
+                  {isTh ? 'โครงสร้างการส่งต่องาน (Workflow Chaining Visualizer)' : 'Workflow Chaining Sequence'}
+                </span>
+              </div>
+              
+              <div className="flex flex-wrap items-center gap-3 py-2">
+                {childJobs.map((job, idx) => {
+                  const wfName = job.workflowId 
+                    ? (workflows.find(w => w.id === job.workflowId)?.name || 'Unknown') 
+                    : (isTh ? 'เลือกเวิร์กโฟลว์...' : 'Select Workflow...');
+                  
+                  const isLast = idx === childJobs.length - 1;
+                  
+                  // Check compatibility with the next workflow
+                  let isNextCompatible = true;
+                  if (!isLast && job.workflowId && childJobs[idx + 1].workflowId) {
+                    const currentWf = workflows.find(w => w.id === job.workflowId);
+                    const nextWf = workflows.find(w => w.id === childJobs[idx + 1].workflowId);
+                    const sendToNode = currentWf?.nodes.find(n => n.type === 'send_to');
+                    isNextCompatible = !!sendToNode && sendToNode.data?.nextWorkflowId === nextWf?.id;
+                  }
+
+                  return (
+                    <React.Fragment key={job.id}>
+                      <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-[4px] px-3 py-2 shadow-sm font-sans">
+                        <div className="w-5 h-5 rounded-full bg-slate-100 text-slate-500 font-bold text-[10px] flex items-center justify-center font-mono">
+                          {idx + 1}
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Job {idx + 1}</span>
+                          <span className="text-xs font-extrabold text-[#010136] max-w-[160px] truncate">{wfName}</span>
+                          {job.workflowId && (
+                            <span className="text-[9px] font-bold text-[#0463EF] mt-0.5 flex items-center gap-1">
+                              <User size={10} className="text-[#0463EF]/70 shrink-0" />
+                              <span className="truncate max-w-[140px]">
+                                {job.assignee && job.assignee !== 'unassigned' ? job.assignee : (isTh ? 'ยังไม่กำหนด' : 'Unassigned')}
+                              </span>
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      
+                      {!isLast && (
+                        <div className="flex flex-col items-center">
+                          <ArrowRight 
+                            size={16} 
+                            className={isNextCompatible ? 'text-[#16EA9E]' : 'text-rose-500 animate-pulse'} 
+                          />
+                          {!isNextCompatible && (
+                            <span className="text-[8px] font-black text-rose-500 uppercase tracking-tight px-1 bg-rose-50 border border-rose-100 rounded-[2px] mt-0.5">
+                              {isTh ? 'ไม่สัมพันธ์' : 'Broken'}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </div>
+
+              {/* Inline Alert / Warning Banner */}
+              {!validationResult.isValid && (
+                <div className="mt-4 flex items-start gap-2.5 p-3.5 bg-rose-50 border border-rose-100 rounded-[4px] animate-in fade-in slide-in-from-top-1 duration-200">
+                  <AlertCircle className="text-rose-500 shrink-0" size={16} />
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-black text-rose-800 uppercase tracking-wider mb-0.5">
+                      {isTh ? 'ตรวจพบความไม่สัมพันธ์กันของเวิร์กโฟลว์' : 'Incompatible Workflow Routing'}
+                    </span>
+                    <span className="text-xs text-rose-700 font-bold leading-relaxed">
+                      {validationResult.errorMsg}
+                    </span>
+                    <span className="text-[10px] text-rose-600 mt-1 font-semibold">
+                      {isTh 
+                        ? 'คำแนะนำ: ตรวจสอบให้มั่นใจว่าเวิร์กโฟลว์ก่อนหน้ามีโหนด "ส่งต่องาน (Send to other app)" ที่ถูกกำหนดให้ส่งไปยังเวิร์กโฟลว์ถัดไป'
+                        : 'Tip: Make sure the previous workflow contains a "Send to other app" node configured to route to the next workflow.'}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Child Jobs Rows Setup */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex flex-col">
+                  <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">
+                    {isTh ? 'การตั้งค่ารายการย่อย' : 'CHILD JOBS CONFIGURATION'}
+                  </span>
+                  <span className="text-[10px] text-amber-600 font-bold mt-0.5">
+                    {isTh ? '★ สามารถลาก (Drag & Drop) เพื่อจัดลำดับรายการย่อยได้' : '★ Drag & drop rows to reorder child jobs'}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleAddChildJobRow}
+                  className="px-3.5 py-1.5 bg-white hover:bg-slate-50 text-[#0463EF] border border-[#0463EF] rounded-[4px] text-xs font-black uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer shadow-sm"
+                >
+                  <Plus size={14} strokeWidth={2.5} />
+                  <span>{isTh ? 'เพิ่มรายการย่อย' : 'Add Child Job'}</span>
+                </button>
+              </div>
+
+              <div className="space-y-3.5 max-h-[300px] overflow-y-auto pr-1">
+                {childJobs.map((job, idx) => {
+                  const wf = workflows.find(w => w.id === job.workflowId);
+                  const hasCreateNode = wf?.nodes.some(n => n.type === 'create_job');
+                  const currentPrefix = hasCreateNode 
+                    ? getPrefix(wf?.nodes.find(n => n.type === 'create_job')?.data?.namingFormat || '') 
+                    : 'JOB-';
+
+                  return (
+                    <div 
+                      key={job.id} 
+                      draggable={childJobs.length > 1}
+                      onDragStart={(e) => handleDragStart(e, idx)}
+                      onDragOver={(e) => handleDragOver(e, idx)}
+                      onDragEnd={handleDragEnd}
+                      className={`p-4 bg-white border rounded-[8px] relative transition-all duration-150 shadow-sm flex items-center gap-3.5 ${
+                        draggedIndex === idx 
+                          ? 'border-[#0463EF] bg-blue-50/20 opacity-40 scale-[0.98]' 
+                          : 'border-slate-200 hover:border-[#0463EF]/40'
+                      }`}
+                    >
+                      {/* Drag Handle on the far left */}
+                      {childJobs.length > 1 && (
+                        <div 
+                          className="cursor-grab active:cursor-grabbing text-slate-400 hover:text-[#0463EF] transition-colors p-1 rounded hover:bg-slate-100 flex items-center justify-center shrink-0 self-center"
+                          title={isTh ? 'ลากเพื่อสลับลำดับ' : 'Drag to reorder'}
+                        >
+                          <GripVertical size={18} />
+                        </div>
+                      )}
+
+                      <div className="flex-1 grid grid-cols-1 md:grid-cols-11 gap-4 items-end">
+                        {/* Sequence indicator and dropdown */}
+                        <div className="md:col-span-4">
+                          <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                            {isTh ? `รายการย่อยที่ ${idx + 1}: เวิร์กโฟลว์` : `Job ${idx + 1}: Workflow`} <span className="text-red-500">*</span>
+                          </label>
+                          <select
+                            value={job.workflowId || ''}
+                            onChange={(e) => handleChildJobChange(job.id, 'workflowId', e.target.value || null)}
+                            className="w-full h-[38px] bg-white border border-slate-200 rounded-[4px] px-2.5 text-xs font-black text-[#010136] outline-none focus:ring-2 focus:ring-[#0463EF]/10 focus:border-[#0463EF] transition-all py-0"
+                          >
+                            <option value="">{isTh ? '-- เลือกเวิร์กโฟลว์ --' : '-- Select Workflow --'}</option>
+                            {workflows.map(w => (
+                              <option key={w.id} value={w.id}>{w.name}</option>
+                            ))}
+                          </select>
+                        </div>
+
+                        {/* Suffix format field */}
+                        <div className="md:col-span-3">
+                          <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                            {isTh ? 'รูปแบบของ Job (รหัสต่อท้าย)' : 'Job Suffix Format'} <span className="text-red-500">*</span>
+                          </label>
+                          <div className="flex h-[38px] rounded-[4px] border border-slate-200 overflow-hidden bg-white focus-within:ring-2 focus-within:ring-[#0463EF]/10 focus-within:border-[#0463EF] transition-all">
+                            <span className="inline-flex items-center px-2 bg-slate-50 border-r border-slate-100 text-slate-400 text-[10px] font-mono font-black select-none h-full">
+                              {currentPrefix}
+                            </span>
+                            <input
+                              type="text"
+                              value={job.suffixValue}
+                              onChange={(e) => handleChildJobChange(job.id, 'suffixValue', e.target.value)}
+                              className="flex-1 min-w-0 block w-full px-2 text-xs font-bold font-mono text-[#010136] focus:outline-none placeholder-slate-300 h-full py-0 border-none"
+                              placeholder={isTh ? 'เลขต่อท้าย เช่น 4091...' : 'suffix...'}
+                              disabled={!job.workflowId}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Assignee dropdown */}
+                        <div className="md:col-span-3">
+                          <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                            {isTh ? 'Assignee (ผู้รับผิดชอบ)' : 'Assignee'}
+                          </label>
+                          <select
+                            value={job.assignee || 'unassigned'}
+                            onChange={(e) => handleChildJobChange(job.id, 'assignee', e.target.value)}
+                            className="w-full h-[38px] bg-white border border-slate-200 rounded-[4px] px-2.5 text-xs font-black text-[#010136] outline-none focus:ring-2 focus:ring-[#0463EF]/10 focus:border-[#0463EF] transition-all py-0"
+                            disabled={!job.workflowId}
+                          >
+                            <option value="unassigned">{isTh ? 'ยังไม่กำหนด' : 'Unassigned'}</option>
+                            <option value="Kunawut W.">Kunawut W.</option>
+                            <option value="Somchai T.">Somchai T.</option>
+                            <option value="System">System</option>
+                          </select>
+                        </div>
+
+                        {/* Delete row button */}
+                        <div className="md:col-span-1 flex justify-center md:justify-end pb-0.5">
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveChildJobRow(job.id)}
+                            disabled={childJobs.length <= 1}
+                            className={`h-[38px] w-[38px] rounded-[4px] border border-none transition-all cursor-pointer flex items-center justify-center ${
+                              childJobs.length <= 1 
+                                ? 'bg-slate-50 text-slate-300 cursor-not-allowed' 
+                                : 'bg-rose-50 text-rose-500 hover:bg-rose-100 hover:text-rose-600'
+                            }`}
+                            title={isTh ? 'ลบ' : 'Delete'}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         )}
-
-        <div>
-          <label className="block text-sm font-bold text-slate-700 mb-2">{labelAssignee}</label>
-          <Select 
-            className="w-full font-sans"
-            placeholder={placeholderAssignee}
-            value={selectedAssignee}
-            allowClear
-            onChange={setSelectedAssignee}
-            options={[
-              { label: isTh ? 'ไม่ได้มอบหมาย' : 'Unassigned', value: 'unassigned' },
-              { label: 'Kunawut W.', value: 'Kunawut W.' },
-              { label: 'System', value: 'System' }
-            ]}
-          />
-        </div>
       </div>
     </Modal>
   );
