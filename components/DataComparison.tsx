@@ -1181,15 +1181,16 @@ const mockWorkflows: Workflow[] = [
 
   // Move jobs state to the top
   const [jobs, setJobs] = useState<ComparisonJob[]>([
+    // --- Shipment 1: CN-TH-2026-00451 (3 jobs) ---
     {
-      id: 'job-001',
+      id: 'job-001a',
       reference: 'CN-TH-2026-00451',
       expiryDate: '25 APR 2026 14:20:05',
       createdAt: '20 APR 2026',
       workflowName: 'Import Logistics Ruleset A',
       assignee: 'Kunawut W.',
       isLocked: true,
-      status: JobStatus.READY,
+      status: JobStatus.DONE,
       totalFieldsCount: 363,
       accuracyScore: 100.0,
       docs: {
@@ -1207,91 +1208,65 @@ const mockWorkflows: Workflow[] = [
       mismatchedCount: 0
     },
     {
-      id: 'job-002',
+      id: 'job-001b',
+      reference: 'CN-TH-2026-00451',
+      expiryDate: '26 APR 2026 12:00:00',
+      createdAt: '20 APR 2026',
+      workflowName: 'Maritime Freight Checking',
+      assignee: 'Kunawut W.',
+      isLocked: true,
+      status: JobStatus.READY,
+      totalFieldsCount: 150,
+      accuracyScore: 98.0,
+      docs: {
+        'Bill of Lading': ComparisonDocStatus.LOCKED,
+        'Sea Waybill': ComparisonDocStatus.LOCKED,
+        'Delivery Order': ComparisonDocStatus.LOCKED
+      },
+      progress: 100,
+      totalDocs: 3,
+      foundDocs: 3,
+      matchedCount: 3,
+      mismatchedCount: 0
+    },
+    {
+      id: 'job-001c',
+      reference: 'CN-TH-2026-00451',
+      expiryDate: '27 APR 2026 17:30:00',
+      createdAt: '20 APR 2026',
+      workflowName: 'Customs Declaration Matching',
+      assignee: 'Somchai T.',
+      status: JobStatus.NEW,
+      totalFieldsCount: 80,
+      accuracyScore: 0.0,
+      docs: {
+        'Customs Declaration': ComparisonDocStatus.RECEIVED,
+        'Tax Invoice': ComparisonDocStatus.MISSING
+      },
+      progress: 50,
+      totalDocs: 2,
+      foundDocs: 1,
+      matchedCount: 0,
+      mismatchedCount: 0
+    },
+
+    // --- Shipment 2: VN-TH-2026-00912 (3 jobs) ---
+    {
+      id: 'job-002a',
       reference: 'VN-TH-2026-00912',
       expiryDate: '26 APR 2026 09:15:22',
       createdAt: '21 APR 2026',
       workflowName: 'Vietnam Road Freight Rules',
       assignee: 'Somchai T.',
-      status: JobStatus.PROCESSING,
-      totalFieldsCount: 45,
-      accuracyScore: 0.0,
-      docs: {
-        'Invoice': ComparisonDocStatus.MATCHED,
-        'Packing List': ComparisonDocStatus.MATCHED,
-        'B / L': ComparisonDocStatus.MATCHED,
-        'Road Waybill': ComparisonDocStatus.RECEIVED
-      },
-      progress: 50,
-      totalDocs: 4,
-      foundDocs: 3,
-      matchedCount: 2,
-      mismatchedCount: 0
-    },
-    {
-      id: 'job-003',
-      reference: 'JP-TH-2026-00223',
-      expiryDate: '27 APR 2026 11:45:00',
-      createdAt: '22 APR 2026',
-      workflowName: 'Japan Air Freight High-Value',
-      assignee: 'Kunawut W.',
-      status: JobStatus.REVIEW,
-      totalFieldsCount: 363,
-      accuracyScore: 30.0,
-      docs: {
-        'INVOICE': ComparisonDocStatus.MISMATCHED,
-        'PACKING LIST': ComparisonDocStatus.MISMATCHED,
-        'AIR WAYBILL': ComparisonDocStatus.MATCHED,
-        'CONTROL SHEET': ComparisonDocStatus.OCR_DONE,
-        'DRAFT FORM E': ComparisonDocStatus.RECEIVED,
-        'HBL': ComparisonDocStatus.RECEIVED,
-        'FREIGHT INVOICE': ComparisonDocStatus.MISSING,
-        'HS CODE': ComparisonDocStatus.MISSING,
-        'IMPORT ENTRY': ComparisonDocStatus.MISSING,
-        'INSURANCE': ComparisonDocStatus.MISSING
-      },
-      updatedDocs: ['PACKING LIST', 'INVOICE'],
-      progress: 60,
-      totalDocs: 10,
-      foundDocs: 6,
-      matchedCount: 1,
-      mismatchedCount: 2
-    },
-    {
-      id: 'job-004',
-      reference: 'KR-TH-2026-00567',
-      expiryDate: '30 APR 2026 16:30:22',
-      createdAt: '23 APR 2026',
-      workflowName: 'Korea Cosmetics Processing',
-      assignee: 'Nui P.',
-      status: JobStatus.PENDING,
-      docs: {
-        'Invoice': ComparisonDocStatus.MATCHED,
-        'Packing List': ComparisonDocStatus.MATCHED,
-        'CO': ComparisonDocStatus.MATCHED,
-        'B / L': ComparisonDocStatus.RECEIVED,
-        'Insurance': ComparisonDocStatus.RECEIVED
-      },
-      progress: 60,
-      totalDocs: 5,
-      foundDocs: 3,
-      matchedCount: 1,
-      mismatchedCount: 0
-    },
-    {
-      id: 'job-005',
-      reference: 'TH-DE-2026-00889',
-      expiryDate: '01 MAY 2026 10:00:15',
-      createdAt: '24 APR 2026',
-      workflowName: 'Export Electronics Rules',
-      assignee: 'Alice M.',
-      status: JobStatus.READY,
+      status: JobStatus.DONE,
       isLocked: true,
+      totalFieldsCount: 45,
+      accuracyScore: 100.0,
       docs: {
         'Invoice': ComparisonDocStatus.LOCKED,
         'Packing List': ComparisonDocStatus.LOCKED,
-        'HS Code Cert': ComparisonDocStatus.LOCKED,
-        'Form D': ComparisonDocStatus.LOCKED
+        'B / L': ComparisonDocStatus.LOCKED,
+        'Road Waybill': ComparisonDocStatus.LOCKED
       },
       progress: 100,
       totalDocs: 4,
@@ -1300,14 +1275,269 @@ const mockWorkflows: Workflow[] = [
       mismatchedCount: 0
     },
     {
-      id: 'job-006',
+      id: 'job-002b',
+      reference: 'VN-TH-2026-00912',
+      expiryDate: '27 APR 2026 10:00:00',
+      createdAt: '21 APR 2026',
+      workflowName: 'LEO Billing',
+      assignee: 'Somchai T.',
+      status: JobStatus.PROCESSING,
+      totalFieldsCount: 120,
+      accuracyScore: 75.0,
+      docs: {
+        'Billing Invoice': ComparisonDocStatus.MATCHED,
+        'Receipt': ComparisonDocStatus.RECEIVED
+      },
+      progress: 50,
+      totalDocs: 2,
+      foundDocs: 2,
+      matchedCount: 1,
+      mismatchedCount: 0
+    },
+    {
+      id: 'job-002c',
+      reference: 'VN-TH-2026-00912',
+      expiryDate: '28 APR 2026 14:00:00',
+      createdAt: '21 APR 2026',
+      workflowName: 'Finance Approval',
+      assignee: 'Alice M.',
+      status: JobStatus.PENDING,
+      totalFieldsCount: 30,
+      accuracyScore: 0.0,
+      docs: {
+        'Payment Voucher': ComparisonDocStatus.MISSING
+      },
+      progress: 0,
+      totalDocs: 1,
+      foundDocs: 0,
+      matchedCount: 0,
+      mismatchedCount: 0
+    },
+
+    // --- Shipment 3: JP-TH-2026-00223 (4 jobs) ---
+    {
+      id: 'job-003a',
+      reference: 'JP-TH-2026-00223',
+      expiryDate: '27 APR 2026 11:45:00',
+      createdAt: '22 APR 2026',
+      workflowName: 'Japan Air Freight High-Value',
+      assignee: 'Kunawut W.',
+      status: JobStatus.DONE,
+      isLocked: true,
+      totalFieldsCount: 363,
+      accuracyScore: 100.0,
+      docs: {
+        'INVOICE': ComparisonDocStatus.LOCKED,
+        'PACKING LIST': ComparisonDocStatus.LOCKED,
+        'AIR WAYBILL': ComparisonDocStatus.LOCKED
+      },
+      progress: 100,
+      totalDocs: 3,
+      foundDocs: 3,
+      matchedCount: 3,
+      mismatchedCount: 0
+    },
+    {
+      id: 'job-003b',
+      reference: 'JP-TH-2026-00223',
+      expiryDate: '28 APR 2026 09:30:00',
+      createdAt: '22 APR 2026',
+      workflowName: 'HS Code Verification',
+      assignee: 'Kunawut W.',
+      status: JobStatus.REVIEW,
+      totalFieldsCount: 220,
+      accuracyScore: 85.0,
+      docs: {
+        'CONTROL SHEET': ComparisonDocStatus.OCR_DONE,
+        'DRAFT FORM E': ComparisonDocStatus.RECEIVED,
+        'HS CODE LIST': ComparisonDocStatus.MISMATCHED
+      },
+      updatedDocs: ['HS CODE LIST'],
+      progress: 66,
+      totalDocs: 3,
+      foundDocs: 3,
+      matchedCount: 1,
+      mismatchedCount: 1
+    },
+    {
+      id: 'job-003c',
+      reference: 'JP-TH-2026-00223',
+      expiryDate: '29 APR 2026 15:00:00',
+      createdAt: '22 APR 2026',
+      workflowName: 'Customs Declaration Matching',
+      assignee: 'Somchai T.',
+      status: JobStatus.PENDING,
+      totalFieldsCount: 150,
+      accuracyScore: 0.0,
+      docs: {
+        'Import Entry': ComparisonDocStatus.MISSING,
+        'Duty Receipt': ComparisonDocStatus.MISSING
+      },
+      progress: 0,
+      totalDocs: 2,
+      foundDocs: 0,
+      matchedCount: 0,
+      mismatchedCount: 0
+    },
+    {
+      id: 'job-003d',
+      reference: 'JP-TH-2026-00223',
+      expiryDate: '30 APR 2026 11:00:00',
+      createdAt: '22 APR 2026',
+      workflowName: 'Legal Review',
+      assignee: 'Alice M.',
+      status: JobStatus.PENDING,
+      totalFieldsCount: 50,
+      accuracyScore: 0.0,
+      docs: {
+        'Compliance Cert': ComparisonDocStatus.MISSING
+      },
+      progress: 0,
+      totalDocs: 1,
+      foundDocs: 0,
+      matchedCount: 0,
+      mismatchedCount: 0
+    },
+
+    // --- Shipment 4: KR-TH-2026-00567 (3 jobs) ---
+    {
+      id: 'job-004a',
+      reference: 'KR-TH-2026-00567',
+      expiryDate: '30 APR 2026 16:30:22',
+      createdAt: '23 APR 2026',
+      workflowName: 'Korea Cosmetics Processing',
+      assignee: 'Nui P.',
+      status: JobStatus.DONE,
+      isLocked: true,
+      totalFieldsCount: 110,
+      accuracyScore: 100.0,
+      docs: {
+        'Invoice': ComparisonDocStatus.LOCKED,
+        'Packing List': ComparisonDocStatus.LOCKED,
+        'CO': ComparisonDocStatus.LOCKED
+      },
+      progress: 100,
+      totalDocs: 3,
+      foundDocs: 3,
+      matchedCount: 3,
+      mismatchedCount: 0
+    },
+    {
+      id: 'job-004b',
+      reference: 'KR-TH-2026-00567',
+      expiryDate: '01 MAY 2026 12:00:00',
+      createdAt: '23 APR 2026',
+      workflowName: 'Compliance Check',
+      assignee: 'Somchai T.',
+      status: JobStatus.PENDING,
+      totalFieldsCount: 95,
+      accuracyScore: 0.0,
+      docs: {
+        'B / L': ComparisonDocStatus.RECEIVED,
+        'Insurance': ComparisonDocStatus.RECEIVED
+      },
+      progress: 50,
+      totalDocs: 2,
+      foundDocs: 2,
+      matchedCount: 0,
+      mismatchedCount: 0
+    },
+    {
+      id: 'job-004c',
+      reference: 'KR-TH-2026-00567',
+      expiryDate: '02 MAY 2026 10:00:00',
+      createdAt: '23 APR 2026',
+      workflowName: 'Finance Approval',
+      assignee: 'Alice M.',
+      status: JobStatus.PENDING,
+      totalFieldsCount: 40,
+      accuracyScore: 0.0,
+      docs: {
+        'Invoice Draft': ComparisonDocStatus.MISSING
+      },
+      progress: 0,
+      totalDocs: 1,
+      foundDocs: 0,
+      matchedCount: 0,
+      mismatchedCount: 0
+    },
+
+    // --- Shipment 5: TH-DE-2026-00889 (3 jobs) ---
+    {
+      id: 'job-005a',
+      reference: 'TH-DE-2026-00889',
+      expiryDate: '01 MAY 2026 10:00:15',
+      createdAt: '24 APR 2026',
+      workflowName: 'Export Electronics Rules',
+      assignee: 'Alice M.',
+      status: JobStatus.DONE,
+      isLocked: true,
+      totalFieldsCount: 180,
+      accuracyScore: 100.0,
+      docs: {
+        'Invoice': ComparisonDocStatus.LOCKED,
+        'Packing List': ComparisonDocStatus.LOCKED
+      },
+      progress: 100,
+      totalDocs: 2,
+      foundDocs: 2,
+      matchedCount: 2,
+      mismatchedCount: 0
+    },
+    {
+      id: 'job-005b',
+      reference: 'TH-DE-2026-00889',
+      expiryDate: '02 MAY 2026 11:00:00',
+      createdAt: '24 APR 2026',
+      workflowName: 'EU Tariff Compliance',
+      assignee: 'Alice M.',
+      status: JobStatus.DONE,
+      isLocked: true,
+      totalFieldsCount: 130,
+      accuracyScore: 100.0,
+      docs: {
+        'HS Code Cert': ComparisonDocStatus.LOCKED,
+        'Form D': ComparisonDocStatus.LOCKED
+      },
+      progress: 100,
+      totalDocs: 2,
+      foundDocs: 2,
+      matchedCount: 2,
+      mismatchedCount: 0
+    },
+    {
+      id: 'job-005c',
+      reference: 'TH-DE-2026-00889',
+      expiryDate: '03 MAY 2026 14:00:00',
+      createdAt: '24 APR 2026',
+      workflowName: 'Purchase Order Matching',
+      assignee: 'Kunawut W.',
+      status: JobStatus.READY,
+      totalFieldsCount: 90,
+      accuracyScore: 100.0,
+      docs: {
+        'Purchase Order': ComparisonDocStatus.LOCKED,
+        'Delivery Note': ComparisonDocStatus.LOCKED
+      },
+      progress: 100,
+      totalDocs: 2,
+      foundDocs: 2,
+      matchedCount: 2,
+      mismatchedCount: 0
+    },
+
+    // --- Shipment 6: SG-TH-2026-00334 (3 jobs) ---
+    {
+      id: 'job-006a',
       reference: 'SG-TH-2026-00334',
       expiryDate: '02 MAY 2026 13:40:44',
       createdAt: '24 APR 2026',
       workflowName: 'ASEAN Trade Agreement',
       assignee: 'Nui P.',
-      status: JobStatus.READY,
+      status: JobStatus.DONE,
       isLocked: true,
+      totalFieldsCount: 150,
+      accuracyScore: 100.0,
       docs: {
         'Invoice': ComparisonDocStatus.LOCKED,
         'Form D': ComparisonDocStatus.LOCKED
@@ -1319,27 +1549,114 @@ const mockWorkflows: Workflow[] = [
       mismatchedCount: 0
     },
     {
-      id: 'job-007',
+      id: 'job-006b',
+      reference: 'SG-TH-2026-00334',
+      expiryDate: '03 MAY 2026 09:00:00',
+      createdAt: '24 APR 2026',
+      workflowName: 'Singapore Port Release',
+      assignee: 'Nui P.',
+      status: JobStatus.DONE,
+      isLocked: true,
+      totalFieldsCount: 110,
+      accuracyScore: 100.0,
+      docs: {
+        'Port Release Permit': ComparisonDocStatus.LOCKED,
+        'Gate Pass': ComparisonDocStatus.LOCKED
+      },
+      progress: 100,
+      totalDocs: 2,
+      foundDocs: 2,
+      matchedCount: 2,
+      mismatchedCount: 0
+    },
+    {
+      id: 'job-006c',
+      reference: 'SG-TH-2026-00334',
+      expiryDate: '04 MAY 2026 11:30:00',
+      createdAt: '24 APR 2026',
+      workflowName: 'LEO Billing',
+      assignee: 'Kunawut W.',
+      status: JobStatus.READY,
+      totalFieldsCount: 75,
+      accuracyScore: 99.0,
+      docs: {
+        'Billing Statement': ComparisonDocStatus.LOCKED,
+        'Tax Invoice': ComparisonDocStatus.LOCKED
+      },
+      progress: 100,
+      totalDocs: 2,
+      foundDocs: 2,
+      matchedCount: 2,
+      mismatchedCount: 0
+    },
+
+    // --- Shipment 7: CN-TH-2026-00998 (3 jobs) ---
+    {
+      id: 'job-007a',
       reference: 'CN-TH-2026-00998',
       expiryDate: '05 MAY 2026 11:20:00',
       createdAt: '25 APR 2026',
       workflowName: 'Electronics Import Rules',
       assignee: 'Somchai T.',
-      status: JobStatus.READY,
+      status: JobStatus.DONE,
       isLocked: true,
+      totalFieldsCount: 220,
+      accuracyScore: 100.0,
       docs: {
         'Invoice': ComparisonDocStatus.LOCKED,
-        'Packing List': ComparisonDocStatus.LOCKED,
-        'FTA Cert': ComparisonDocStatus.LOCKED
+        'Packing List': ComparisonDocStatus.LOCKED
       },
       progress: 100,
-      totalDocs: 3,
-      foundDocs: 3,
-      matchedCount: 3,
+      totalDocs: 2,
+      foundDocs: 2,
+      matchedCount: 2,
       mismatchedCount: 0
     },
     {
-      id: 'job-008',
+      id: 'job-007b',
+      reference: 'CN-TH-2026-00998',
+      expiryDate: '06 MAY 2026 10:00:00',
+      createdAt: '25 APR 2026',
+      workflowName: 'Chinese Origin Form E Match',
+      assignee: 'Somchai T.',
+      status: JobStatus.DONE,
+      isLocked: true,
+      totalFieldsCount: 140,
+      accuracyScore: 100.0,
+      docs: {
+        'Certificate of Origin': ComparisonDocStatus.LOCKED,
+        'Form E': ComparisonDocStatus.LOCKED
+      },
+      progress: 100,
+      totalDocs: 2,
+      foundDocs: 2,
+      matchedCount: 2,
+      mismatchedCount: 0
+    },
+    {
+      id: 'job-007c',
+      reference: 'CN-TH-2026-00998',
+      expiryDate: '07 MAY 2026 16:00:00',
+      createdAt: '25 APR 2026',
+      workflowName: 'Customs Declaration Matching',
+      assignee: 'Somchai T.',
+      status: JobStatus.READY,
+      totalFieldsCount: 95,
+      accuracyScore: 100.0,
+      docs: {
+        'Import Declaration': ComparisonDocStatus.LOCKED,
+        'Duty Assessment': ComparisonDocStatus.LOCKED
+      },
+      progress: 100,
+      totalDocs: 2,
+      foundDocs: 2,
+      matchedCount: 2,
+      mismatchedCount: 0
+    },
+
+    // --- Shipment 8: MY-TH-2026-00678 (3 jobs) ---
+    {
+      id: 'job-008a',
       reference: 'MY-TH-2026-00678',
       expiryDate: '07 MAY 2026 08:20:11',
       createdAt: '25 APR 2026',
@@ -1347,6 +1664,8 @@ const mockWorkflows: Workflow[] = [
       assignee: 'Kunawut W.',
       status: JobStatus.DONE,
       isLocked: true,
+      totalFieldsCount: 130,
+      accuracyScore: 100.0,
       docs: {
         'Invoice': ComparisonDocStatus.LOCKED,
         'B/L': ComparisonDocStatus.LOCKED
@@ -1358,48 +1677,179 @@ const mockWorkflows: Workflow[] = [
       mismatchedCount: 0
     },
     {
-      id: 'job-009',
+      id: 'job-008b',
+      reference: 'MY-TH-2026-00678',
+      expiryDate: '08 MAY 2026 09:00:00',
+      createdAt: '25 APR 2026',
+      workflowName: 'Road Waybill Matching',
+      assignee: 'Kunawut W.',
+      status: JobStatus.DONE,
+      isLocked: true,
+      totalFieldsCount: 105,
+      accuracyScore: 100.0,
+      docs: {
+        'Road Waybill': ComparisonDocStatus.LOCKED,
+        'Border Crossing Permit': ComparisonDocStatus.LOCKED
+      },
+      progress: 100,
+      totalDocs: 2,
+      foundDocs: 2,
+      matchedCount: 2,
+      mismatchedCount: 0
+    },
+    {
+      id: 'job-008c',
+      reference: 'MY-TH-2026-00678',
+      expiryDate: '09 MAY 2026 13:00:00',
+      createdAt: '25 APR 2026',
+      workflowName: 'LEO Billing',
+      assignee: 'Kunawut W.',
+      status: JobStatus.DONE,
+      isLocked: true,
+      totalFieldsCount: 60,
+      accuracyScore: 100.0,
+      docs: {
+        'Billing Invoice': ComparisonDocStatus.LOCKED,
+        'Receipt Summary': ComparisonDocStatus.LOCKED
+      },
+      progress: 100,
+      totalDocs: 2,
+      foundDocs: 2,
+      matchedCount: 2,
+      mismatchedCount: 0
+    },
+
+    // --- Shipment 9: UK-TH-2026-00124 (3 jobs) ---
+    {
+      id: 'job-009a',
       reference: 'UK-TH-2026-00124',
       expiryDate: '10 MAY 2026 14:00:00',
       createdAt: '26 APR 2026',
       workflowName: 'UK High Value Air Cargo',
       assignee: 'Somchai T.',
       status: JobStatus.NEW,
+      totalFieldsCount: 160,
+      accuracyScore: 0.0,
       docs: {
         'Invoice': ComparisonDocStatus.RECEIVED,
         'Air Waybill': ComparisonDocStatus.RECEIVED
       },
       progress: 40,
-      totalDocs: 5,
+      totalDocs: 2,
       foundDocs: 2,
       matchedCount: 0,
       mismatchedCount: 0
     },
     {
-      id: 'job-010',
+      id: 'job-009b',
+      reference: 'UK-TH-2026-00124',
+      expiryDate: '11 MAY 2026 11:00:00',
+      createdAt: '26 APR 2026',
+      workflowName: 'Air Waybill Checking',
+      assignee: 'Somchai T.',
+      status: JobStatus.PENDING,
+      totalFieldsCount: 110,
+      accuracyScore: 0.0,
+      docs: {
+        'Carrier Declaration': ComparisonDocStatus.MISSING
+      },
+      progress: 0,
+      totalDocs: 1,
+      foundDocs: 0,
+      matchedCount: 0,
+      mismatchedCount: 0
+    },
+    {
+      id: 'job-009c',
+      reference: 'UK-TH-2026-00124',
+      expiryDate: '12 MAY 2026 15:30:00',
+      createdAt: '26 APR 2026',
+      workflowName: 'Legal Review',
+      assignee: 'Alice M.',
+      status: JobStatus.PENDING,
+      totalFieldsCount: 45,
+      accuracyScore: 0.0,
+      docs: {
+        'Legal Permit': ComparisonDocStatus.MISSING
+      },
+      progress: 0,
+      totalDocs: 1,
+      foundDocs: 0,
+      matchedCount: 0,
+      mismatchedCount: 0
+    },
+
+    // --- Shipment 10: US-TH-2026-00445 (3 jobs) ---
+    {
+      id: 'job-010a',
       reference: 'US-TH-2026-00445',
       expiryDate: '12 MAY 2026 09:45:30',
       createdAt: '27 APR 2026',
       workflowName: 'USA Tech Import Standards',
+      assignee: 'Somchai T.',
       status: JobStatus.REVIEW,
+      totalFieldsCount: 240,
+      accuracyScore: 78.5,
       docs: {
         'Commercial Invoice': ComparisonDocStatus.MISMATCHED,
-        'Cert of Origin': ComparisonDocStatus.MATCHED,
-        'Customs Bond': ComparisonDocStatus.MATCHED
+        'Cert of Origin': ComparisonDocStatus.MATCHED
       },
-      progress: 100,
-      totalDocs: 3,
-      foundDocs: 3,
-      matchedCount: 2,
+      progress: 50,
+      totalDocs: 2,
+      foundDocs: 2,
+      matchedCount: 1,
       mismatchedCount: 1
     },
     {
-      id: 'job-011',
+      id: 'job-010b',
+      reference: 'US-TH-2026-00445',
+      expiryDate: '13 MAY 2026 10:00:00',
+      createdAt: '27 APR 2026',
+      workflowName: 'Customs Bond Verification',
+      assignee: 'Somchai T.',
+      status: JobStatus.PENDING,
+      totalFieldsCount: 120,
+      accuracyScore: 0.0,
+      docs: {
+        'Customs Bond': ComparisonDocStatus.RECEIVED
+      },
+      progress: 50,
+      totalDocs: 1,
+      foundDocs: 1,
+      matchedCount: 0,
+      mismatchedCount: 0
+    },
+    {
+      id: 'job-010c',
+      reference: 'US-TH-2026-00445',
+      expiryDate: '14 MAY 2026 14:00:00',
+      createdAt: '27 APR 2026',
+      workflowName: 'LEO Billing',
+      assignee: 'Kunawut W.',
+      status: JobStatus.PENDING,
+      totalFieldsCount: 80,
+      accuracyScore: 0.0,
+      docs: {
+        'Billing Sheet': ComparisonDocStatus.MISSING
+      },
+      progress: 0,
+      totalDocs: 1,
+      foundDocs: 0,
+      matchedCount: 0,
+      mismatchedCount: 0
+    },
+
+    // --- Shipment 11: AU-TH-2026-00223 (1 job) ---
+    {
+      id: 'job-011a',
       reference: 'AU-TH-2026-00223',
       expiryDate: '15 MAY 2026 11:30:00',
       createdAt: '28 APR 2026',
       workflowName: 'Australia Meat Import Control',
+      assignee: 'Somchai T.',
       status: JobStatus.NEW,
+      totalFieldsCount: 190,
+      accuracyScore: 0.0,
       docs: {
         'Invoice': ComparisonDocStatus.RECEIVED,
         'Health Cert': ComparisonDocStatus.MISSING,
@@ -1411,13 +1861,18 @@ const mockWorkflows: Workflow[] = [
       matchedCount: 0,
       mismatchedCount: 0
     },
+
+    // --- Shipment 12: EU-TH-2026-00778 (2 jobs) ---
     {
-      id: 'job-012',
+      id: 'job-012a',
       reference: 'EU-TH-2026-00778',
       expiryDate: '18 MAY 2026 16:15:00',
       createdAt: '29 APR 2026',
       workflowName: 'EU Fashion & Apparel Rules',
+      assignee: 'Somchai T.',
       status: JobStatus.NEW,
+      totalFieldsCount: 310,
+      accuracyScore: 0.0,
       docs: {
         'INVOICE': ComparisonDocStatus.RECEIVED,
         'PACKING LIST': ComparisonDocStatus.RECEIVED,
@@ -1430,126 +1885,22 @@ const mockWorkflows: Workflow[] = [
       mismatchedCount: 0
     },
     {
-      id: 'job-013',
-      reference: 'IN-TH-2026-00456',
-      expiryDate: '20 MAY 2026 10:20:00',
-      createdAt: '30 APR 2026',
-      workflowName: 'India Chemicals Processing',
-      status: JobStatus.NEW,
-      docs: {
-        'Invoice': ComparisonDocStatus.OCR_DONE,
-        'Packing List': ComparisonDocStatus.OCR_DONE,
-        'MSDS': ComparisonDocStatus.RECEIVED,
-        'E-SIGNATURE-REPORT': ComparisonDocStatus.RECEIVED,
-        'TAXINVOICE_RECEIPT': ComparisonDocStatus.RECEIVED
-      },
-      progress: 60,
-      totalDocs: 5,
-      foundDocs: 5,
-      matchedCount: 0,
-      mismatchedCount: 0
-    },
-    {
-      id: 'job-015',
-      reference: 'IN-TH-2026-00999',
-      expiryDate: '25 MAY 2026 14:20:05',
-      createdAt: '25 MAY 2026',
-      workflowName: 'Invoice Processing',
-      assignee: 'Kunawut W.',
-      status: JobStatus.DONE,
-      isLocked: true,
-      docs: {
-        'Invoice': ComparisonDocStatus.LOCKED,
-        'Purchase Order': ComparisonDocStatus.LOCKED,
-        'Delivery Note': ComparisonDocStatus.LOCKED
-      },
-      progress: 100,
-      totalDocs: 3,
-      foundDocs: 3,
-      matchedCount: 3,
-      mismatchedCount: 0
-    },
-    {
-      id: 'job-016',
-      reference: 'CN-TH-2026-00998',
-      expiryDate: '05 MAY 2026 11:20:00',
-      createdAt: '25 APR 2026',
-      workflowName: 'Chinese Origin Form E Match',
+      id: 'job-012b',
+      reference: 'EU-TH-2026-00778',
+      expiryDate: '19 MAY 2026 10:00:00',
+      createdAt: '29 APR 2026',
+      workflowName: 'Customs Declaration Matching',
       assignee: 'Somchai T.',
-      status: JobStatus.DONE,
-      isLocked: true,
+      status: JobStatus.PENDING,
+      totalFieldsCount: 120,
+      accuracyScore: 0.0,
       docs: {
-        'Invoice': ComparisonDocStatus.LOCKED,
-        'Packing List': ComparisonDocStatus.LOCKED,
-        'Certificate': ComparisonDocStatus.LOCKED
+        'Customs Dec': ComparisonDocStatus.MISSING
       },
-      progress: 100,
-      totalDocs: 3,
-      foundDocs: 3,
-      matchedCount: 3,
-      mismatchedCount: 0
-    },
-    {
-      id: 'job-017',
-      reference: 'SG-TH-2026-00334',
-      expiryDate: '02 MAY 2026 13:40:44',
-      createdAt: '24 APR 2026',
-      workflowName: 'Singapore Port Release',
-      assignee: 'Nui P.',
-      status: JobStatus.DONE,
-      isLocked: true,
-      docs: {
-        'Invoice': ComparisonDocStatus.LOCKED,
-        'Packing List': ComparisonDocStatus.LOCKED
-      },
-      progress: 100,
-      totalDocs: 2,
-      foundDocs: 2,
-      matchedCount: 2,
-      mismatchedCount: 0
-    },
-    {
-      id: 'job-018',
-      reference: 'TH-DE-2026-00889',
-      expiryDate: '01 MAY 2026 10:00:15',
-      createdAt: '24 APR 2026',
-      workflowName: 'EU Tariff Compliance',
-      assignee: 'Alice M.',
-      status: JobStatus.DONE,
-      isLocked: true,
-      docs: {
-        'Invoice': ComparisonDocStatus.LOCKED,
-        'Packing List': ComparisonDocStatus.LOCKED,
-        'Certificate': ComparisonDocStatus.LOCKED,
-        'COO': ComparisonDocStatus.LOCKED
-      },
-      progress: 100,
-      totalDocs: 4,
-      foundDocs: 4,
-      matchedCount: 4,
-      mismatchedCount: 0
-    },
-    {
-      id: 'job-019',
-      reference: 'CN-TH-2026-00451',
-      expiryDate: '25 APR 2026 14:20:05',
-      createdAt: '20 APR 2026',
-      workflowName: 'Purchase Order Matching',
-      assignee: 'Kunawut W.',
-      status: JobStatus.DONE,
-      isLocked: true,
-      docs: {
-        'Invoice': ComparisonDocStatus.LOCKED,
-        'Packing List': ComparisonDocStatus.LOCKED,
-        'Certificate': ComparisonDocStatus.LOCKED,
-        'COO': ComparisonDocStatus.LOCKED,
-        'PL': ComparisonDocStatus.LOCKED,
-        'CI': ComparisonDocStatus.LOCKED
-      },
-      progress: 100,
-      totalDocs: 6,
-      foundDocs: 6,
-      matchedCount: 6,
+      progress: 0,
+      totalDocs: 1,
+      foundDocs: 0,
+      matchedCount: 0,
       mismatchedCount: 0
     }
   ]);
@@ -2338,12 +2689,6 @@ const mockWorkflows: Workflow[] = [
                 </div>
                 <div className="flex gap-3 shrink-0">
                   <button 
-                    className="h-10 px-6 font-black text-[11px] uppercase tracking-widest border border-rose-500 text-rose-500 bg-white rounded-[4px] hover:bg-[#ff4d4f] hover:text-white hover:border-[#ff4d4f] hover:scale-[1.05] hover:shadow-[0_4px_15px_rgba(255,77,79,0.35)] active:scale-[0.96] transition-all duration-300 font-sans cursor-pointer flex items-center justify-center"
-                    onClick={() => handleRejectPending(activeItem.id)}
-                  >
-                    {language === 'TH' ? 'ปฏิเสธ' : 'REJECT'}
-                  </button>
-                  <button 
                     className="h-10 px-8 font-black text-[11px] uppercase tracking-widest bg-[#0ab16b] border-none text-white rounded-[4px] hover:bg-[#14d886] hover:text-white hover:scale-[1.05] hover:shadow-[0_4px_15px_rgba(20,216,134,0.45)] active:scale-[0.96] transition-all duration-300 font-sans cursor-pointer flex items-center justify-center"
                     onClick={() => handleApprovePending(activeItem.id)}
                   >
@@ -2878,7 +3223,12 @@ const mockWorkflows: Workflow[] = [
         job.reference.toLowerCase().includes(searchTerm.toLowerCase()) ||
         job.workflowName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         job.assignee?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      )
+      .sort((a, b) => {
+        const indexA = shipmentJobs.findIndex(j => j.id === a.id);
+        const indexB = shipmentJobs.findIndex(j => j.id === b.id);
+        return indexA - indexB;
+      });
 
     const getDocIcon = (status: ComparisonDocStatus) => {
       switch (status) {
@@ -2908,7 +3258,15 @@ const mockWorkflows: Workflow[] = [
       }
     };
 
-    const getStatusBadge = (status: JobStatus) => {
+    const getStatusBadge = (status: JobStatus, isBlocked: boolean = false) => {
+      if (isBlocked) {
+        return (
+          <span className="bg-rose-50 text-rose-700 border border-rose-200 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans">
+            <Lock size={10} className="text-rose-500" />
+            {language === 'TH' ? 'ยังเริ่มไม่ได้' : 'CANNOT START'}
+          </span>
+        );
+      }
       switch (status) {
         case JobStatus.READY:
           return <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans"><div className="w-1 h-1 rounded-full bg-emerald-500"></div>{language === 'TH' ? 'เสร็จสมบูรณ์' : 'READY'}</span>;
@@ -2960,6 +3318,7 @@ const mockWorkflows: Workflow[] = [
             <table className="w-full text-left border-collapse table-auto font-sans">
               <thead>
                 <tr className="bg-slate-50/50 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                  <th className="px-8 py-4 w-[110px]">{language === 'TH' ? 'ลำดับขั้นตอน' : 'STEP'}</th>
                   <th className="px-8 py-4">{t.jobNo}</th>
                   <th className="px-8 py-4">{language === 'TH' ? 'ประเภทงาน / เวิร์กโฟลว์' : 'JOB TYPE / WORKFLOW'}</th>
                   <th className="px-8 py-4">{language === 'TH' ? 'ผู้รับผิดชอบ' : 'ASSIGNEE'}</th>
@@ -2972,20 +3331,52 @@ const mockWorkflows: Workflow[] = [
               <tbody className="divide-y divide-slate-50">
                 {filteredJobs.map((job) => {
                   const isProcessing = job.status === JobStatus.PROCESSING;
+                  const seqIndex = shipmentJobs.findIndex(j => j.id === job.id);
+                  const isWorkflowCompleted = (j: ComparisonJob) => j.status === JobStatus.DONE || j.status === JobStatus.READY;
+                  const isBlocked = seqIndex > 0 && shipmentJobs.slice(0, seqIndex).some(prevJob => !isWorkflowCompleted(prevJob));
+                  
                   return (
                     <tr 
                       key={job.id} 
                       onClick={() => {
+                        if (isBlocked) {
+                          message.warning(
+                            language === 'TH' 
+                              ? 'ไม่สามารถเริ่มงานนี้ได้ เนื่องจากขั้นตอนก่อนหน้ายังไม่เสร็จสมบูรณ์' 
+                              : 'Cannot start this job because the previous step is not completed.'
+                          );
+                          return;
+                        }
                         if (!isProcessing) {
                           setSelectedJob(job);
                           setStep(1);
                         }
                       }} 
-                      className={`transition-all group ${isProcessing ? 'cursor-not-allowed opacity-80' : 'hover:bg-blue-50/20 cursor-pointer'}`}
+                      className={`transition-all group ${
+                        isBlocked 
+                          ? 'cursor-not-allowed bg-slate-50/50 hover:bg-slate-50/50 opacity-60' 
+                          : isProcessing 
+                            ? 'cursor-not-allowed opacity-80' 
+                            : 'hover:bg-blue-50/20 cursor-pointer'
+                      }`}
                     >
+                      <td className="px-8 py-5">
+                        <div className="flex items-center gap-2">
+                          <span className={`w-7 h-7 rounded-full font-black text-xs flex items-center justify-center border shadow-sm ${
+                            isBlocked
+                              ? 'bg-slate-50 text-slate-400 border-slate-200'
+                              : isWorkflowCompleted(job)
+                                ? 'bg-emerald-50 text-emerald-600 border-emerald-200'
+                                : 'bg-blue-50 text-[#1f5df9] border-blue-200'
+                          }`}>
+                            {seqIndex + 1}
+                          </span>
+                        </div>
+                      </td>
                       <td className="px-8 py-5">
                         <div className="flex items-center gap-4">
                           <div className={`w-2.5 h-2.5 rounded-full shadow-sm ${
+                            isBlocked ? 'bg-slate-300' :
                             job.status === JobStatus.READY ? 'bg-emerald-500 shadow-emerald-200' : 
                             job.status === JobStatus.DONE ? 'bg-teal-500 shadow-teal-200' : 
                             job.status === JobStatus.PENDING ? 'bg-[#1f5df9] shadow-blue-200' : 
@@ -2994,7 +3385,7 @@ const mockWorkflows: Workflow[] = [
                             'bg-slate-300'
                           }`}></div>
                           <div>
-                            <p className="font-black text-[#010136] text-[13px] tracking-tight mb-0.5">{job.id.toUpperCase()}</p>
+                            <p className={`font-black text-[13px] tracking-tight mb-0.5 ${isBlocked ? 'text-slate-400' : 'text-[#010136]'}`}>{job.id.toUpperCase()}</p>
                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                               {language === 'TH' ? 'สร้างเมื่อ: ' : 'CREATED: '} <span className="text-slate-500">{job.createdAt ? formatDisplayDate(job.createdAt) : 'N/A'}</span>
                             </p>
@@ -3002,31 +3393,39 @@ const mockWorkflows: Workflow[] = [
                         </div>
                       </td>
                       <td className="px-8 py-5">
-                        <p className="text-[13px] font-bold text-slate-600 font-sans">{job.workflowName || 'N/A'}</p>
+                        <p className={`text-[13px] font-bold font-sans ${isBlocked ? 'text-slate-400' : 'text-slate-600'}`}>{job.workflowName || 'N/A'}</p>
                       </td>
                       <td className="px-8 py-5">
-                        <span className="text-[13px] font-bold text-slate-500 font-sans">{job.assignee || (language === 'TH' ? 'ยังไม่ได้มอบหมาย' : 'Unassigned')}</span>
+                        <span className={`text-[13px] font-bold font-sans ${isBlocked ? 'text-slate-300' : 'text-slate-500'}`}>{job.assignee || (language === 'TH' ? 'ยังไม่ได้มอบหมาย' : 'Unassigned')}</span>
                       </td>
                       <td className="px-8 py-5">
-                        <p className="text-[13px] font-bold text-slate-600 font-sans">{job.expiryDate ? formatDisplayDateWithTime(job.expiryDate) : 'N/A'}</p>
+                        <p className={`text-[13px] font-bold font-sans ${isBlocked ? 'text-slate-400' : 'text-slate-600'}`}>{job.expiryDate ? formatDisplayDateWithTime(job.expiryDate) : 'N/A'}</p>
                       </td>
                       <td className="px-8 py-5 text-center">
-                        <p className="text-[13px] font-black text-slate-800 tabular-nums">{job.foundDocs ?? Object.values(job.docs).filter(s => s !== ComparisonDocStatus.MISSING).length} / {job.totalDocs}</p>
+                        <p className={`text-[13px] font-black tabular-nums ${isBlocked ? 'text-slate-400' : 'text-slate-800'}`}>{job.foundDocs ?? Object.values(job.docs).filter(s => s !== ComparisonDocStatus.MISSING).length} / {job.totalDocs}</p>
                       </td>
                       <td className="px-8 py-5">
-                        {getStatusBadge(job.status)}
+                        {getStatusBadge(job.status, isBlocked)}
                       </td>
                       <td className="px-8 py-5 text-right w-[160px]">
                         <div className="flex items-center justify-end gap-2">
-                          <Tooltip content={t.ttViewCompare}>
+                          <Tooltip content={isBlocked ? (language === 'TH' ? 'ขั้นตอนก่อนหน้ายังไม่เสร็จสิ้น' : 'Previous step not completed') : t.ttViewCompare}>
                             <button 
-                              disabled={isProcessing}
+                              disabled={isProcessing || isBlocked}
                               onClick={(e) => {
                                 e.stopPropagation();
+                                if (isBlocked) {
+                                  message.warning(
+                                    language === 'TH' 
+                                      ? 'ไม่สามารถเริ่มงานนี้ได้ เนื่องจากขั้นตอนก่อนหน้ายังไม่เสร็จสมบูรณ์' 
+                                      : 'Cannot start this job because the previous step is not completed.'
+                                  );
+                                  return;
+                                }
                                 setSelectedJob(job);
                                 setStep(1);
                               }}
-                              className={`p-2.5 rounded-[4px] transition-all ${isProcessing ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:text-[#1f5df9] hover:bg-blue-50'}`}
+                              className={`p-2.5 rounded-[4px] transition-all ${(isProcessing || isBlocked) ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:text-[#1f5df9] hover:bg-blue-50'}`}
                             >
                               <Eye size={20} />
                             </button>
@@ -3034,7 +3433,7 @@ const mockWorkflows: Workflow[] = [
 
                           <Tooltip content={t.ttExportNotify}>
                             <button 
-                              disabled={job.status !== JobStatus.READY || isProcessing}
+                              disabled={job.status !== JobStatus.READY || isProcessing || isBlocked}
                               onClick={(e) => {
                                 e.stopPropagation();
                                 const workflow = mockWorkflows.find(wf => wf.name === job.workflowName);
@@ -3048,7 +3447,7 @@ const mockWorkflows: Workflow[] = [
                                   setSelectedExportPlatform('FTA');
                                 }
                               }}
-                              className={`p-2.5 transition-all rounded-[4px] ${job.status === JobStatus.READY && !isProcessing ? 'text-[#1f5df9] hover:bg-blue-50 cursor-pointer' : 'text-slate-200 cursor-not-allowed'}`}
+                              className={`p-2.5 transition-all rounded-[4px] ${(job.status === JobStatus.READY && !isProcessing && !isBlocked) ? 'text-[#1f5df9] hover:bg-blue-50 cursor-pointer' : 'text-slate-200 cursor-not-allowed'}`}
                             >
                               <Send size={20} />
                             </button>

@@ -390,22 +390,13 @@ export const CreateJobModal: React.FC<CreateJobModalProps> = ({
               <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">
                 {isTh ? 'ชื่อรายการ Shipment' : 'SHIPMENT REFERENCE NAME'} <span className="text-red-500">*</span>
               </label>
-              <div className="flex gap-2">
                 <input
                   type="text"
                   value={shipmentName}
                   onChange={(e) => setShipmentName(e.target.value)}
-                  className="flex-1 bg-white border border-slate-200 rounded-[4px] px-3.5 py-2.5 text-sm font-black text-[#010136] font-mono outline-none focus:ring-2 focus:ring-[#1f5df9]/10 focus:border-[#1f5df9] transition-all"
+                  className="w-full bg-white border border-slate-200 rounded-[4px] px-3.5 py-2.5 text-sm font-black text-[#010136] font-mono outline-none focus:ring-2 focus:ring-[#1f5df9]/10 focus:border-[#1f5df9] transition-all"
                   placeholder={isTh ? 'ป้อนชื่อหรือเลขที่ Shipment...' : 'Enter shipment reference name...'}
                 />
-                <button
-                  type="button"
-                  onClick={() => setShipmentName(`CN-TH-2026-${Math.floor(10000 + Math.random() * 90000)}`)}
-                  className="px-3 py-2 bg-white hover:bg-slate-100 border border-slate-200 text-slate-500 rounded-[4px] text-xs font-bold font-sans transition-all cursor-pointer"
-                >
-                  {isTh ? 'สุ่มรหัส' : 'Random'}
-                </button>
-              </div>
               <p className="text-[10px] text-slate-400 font-bold mt-1.5">
                 {isTh ? 'ระบุเลขที่ควบคุมสำหรับกลุ่มเวิร์กโฟลว์ย่อย เช่น CN-TH-2026-80942' : 'Set control reference name for grouping sub-workflows.'}
               </p>
