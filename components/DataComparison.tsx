@@ -3930,6 +3930,22 @@ const mockWorkflows: Workflow[] = [
     return set;
   }, [allComparisonResults]);
 
+  const getLastJobWorkflowId = (shipmentRef: string) => {
+    const shipmentJobs = jobs.filter(j => j.reference === shipmentRef);
+    if (shipmentJobs.length === 0) return undefined;
+    
+    const lastJob = shipmentJobs[shipmentJobs.length - 1];
+    if (!lastJob.workflowName) return undefined;
+    
+    const matchedWorkflow = mockWorkflows.find(w => {
+      const createJobNode = w.nodes.find(n => n.type === 'create_job');
+      const jobName = createJobNode?.data?.jobName || w.name;
+      return lastJob.workflowName!.startsWith(jobName);
+    });
+    
+    return matchedWorkflow?.id;
+  };
+
   return (
     <div className="flex flex-col h-full bg-slate-50/30">
       {renderStatusGuide()}
@@ -5593,6 +5609,7 @@ const mockWorkflows: Workflow[] = [
           workflows={mockWorkflows}
           language={language}
           prefilledReference={selectedShipment || undefined}
+          previousWorkflowId={selectedShipment ? getLastJobWorkflowId(selectedShipment) : undefined}
         />
       )}
 

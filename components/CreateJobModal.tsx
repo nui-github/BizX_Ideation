@@ -14,6 +14,7 @@ interface CreateJobModalProps {
   workflows: Workflow[];
   language?: string;
   prefilledReference?: string;
+  previousWorkflowId?: string;
 }
 
 interface ChildJobConfig {
@@ -24,7 +25,7 @@ interface ChildJobConfig {
 }
 
 export const CreateJobModal: React.FC<CreateJobModalProps> = ({ 
-  visible, onClose, onCreate, workflows, language, prefilledReference 
+  visible, onClose, onCreate, workflows, language, prefilledReference, previousWorkflowId
 }) => {
   const isTh = language === 'TH';
 
@@ -97,6 +98,21 @@ export const CreateJobModal: React.FC<CreateJobModalProps> = ({
   // Helper to check workflow relations in multiple child jobs
   const checkWorkflowRelations = (): { isValid: boolean; errorIndex: number | null; errorMsg: string | null } => {
     if (prefilledReference) {
+      if (!previousWorkflowId || !singleWorkflowId) {
+        return { isValid: true, errorIndex: null, errorMsg: null };
+      }
+      const prevWf = workflows.find(w => w.id === previousWorkflowId);
+      const newWf = workflows.find(w => w.id === singleWorkflowId);
+      
+      if (!prevWf || !newWf) return { isValid: true, errorIndex: null, errorMsg: null };
+      
+      const sendToNode = prevWf.nodes.find(node => node.type === 'send_to');
+      if (!sendToNode || sendToNode.data?.nextWorkflowId !== newWf.id) {
+        const msg = isTh 
+          ? `เวิร์กโฟลว์ก่อนหน้า "${prevWf.name}" ไม่มีความสัมพันธ์ส่งต่องานไปยัง "${newWf.name}"`
+          : `Previous workflow "${prevWf.name}" does not have a forward node routing to "${newWf.name}"`;
+        return { isValid: false, errorIndex: 0, errorMsg: msg };
+      }
       return { isValid: true, errorIndex: null, errorMsg: null };
     }
 
@@ -129,6 +145,20 @@ export const CreateJobModal: React.FC<CreateJobModalProps> = ({
   };
 
   const validationResult = checkWorkflowRelations();
+
+  useEffect(() => {
+    if (!validationResult.isValid && validationResult.errorMsg) {
+      message.error({
+        content: validationResult.errorMsg,
+        key: 'workflow-routing-error',
+        duration: 4,
+      });
+    }
+  }, [validationResult.isValid, validationResult.errorMsg]);
+
+  const isFormInvalid = prefilledReference 
+    ? (!singleWorkflowId || !validationResult.isValid)
+    : (!validationResult.isValid || !shipmentName.trim() || childJobs.some(j => !j.workflowId));
 
   const handleAddChildJobRow = () => {
     const newId = `cj-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
@@ -301,7 +331,12 @@ export const CreateJobModal: React.FC<CreateJobModalProps> = ({
       centered
       className="font-sans"
       okButtonProps={{ 
-        className: 'bg-[#1f5df9] text-white hover:bg-blue-600 rounded-[4px] font-sans font-bold h-10 px-5 text-xs uppercase tracking-widest transition-all cursor-pointer border-none shadow-sm'
+        disabled: isFormInvalid,
+        className: `rounded-[4px] font-sans font-bold h-10 px-5 text-xs uppercase tracking-widest transition-all border-none shadow-sm ${
+          isFormInvalid
+            ? 'bg-slate-200 text-slate-400 cursor-not-allowed hover:bg-slate-200 hover:text-slate-400'
+            : 'bg-[#1f5df9] text-white hover:bg-blue-600 cursor-pointer'
+        }`
       }}
       cancelButtonProps={{ 
         className: 'font-sans font-bold h-10 px-5 text-xs text-slate-500 rounded-[4px] border border-slate-200 hover:border-slate-300 hover:text-slate-700 transition-all cursor-pointer'
@@ -345,6 +380,26 @@ export const CreateJobModal: React.FC<CreateJobModalProps> = ({
                 ))}
               </select>
             </div>
+
+            {/* Inline Alert / Warning Banner for Single Job */}
+            {!validationResult.isValid && prefilledReference && (
+              <div className="mt-4 flex items-start gap-2.5 p-3.5 bg-rose-50 border border-rose-100 rounded-[4px] animate-in fade-in slide-in-from-top-1 duration-200">
+                <AlertCircle className="text-rose-500 shrink-0" size={16} />
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-black text-rose-800 uppercase tracking-wider mb-0.5">
+                    {isTh ? 'ตรวจพบความไม่สัมพันธ์กันของเวิร์กโฟลว์' : 'Incompatible Workflow Routing'}
+                  </span>
+                  <span className="text-xs text-rose-700 font-bold leading-relaxed">
+                    {validationResult.errorMsg}
+                  </span>
+                  <span className="text-[10px] text-rose-600 mt-1 font-semibold">
+                    {isTh 
+                      ? 'คำแนะนำ: ตรวจสอบให้มั่นใจว่าเวิร์กโฟลว์ก่อนหน้ามีโหนด "ส่งต่องาน (Send to other app)" ที่ถูกกำหนดให้ส่งไปยังเวิร์กโฟลว์นี้'
+                      : 'Tip: Make sure the previous workflow contains a "Send to other app" node configured to route to this workflow.'}
+                  </span>
+                </div>
+              </div>
+            )}
 
             {singleWorkflowId && workflows.find(w => w.id === singleWorkflowId)?.nodes.some(n => n.type === 'create_job') && (
               <div className="animate-in fade-in slide-in-from-top-2 duration-300 bg-slate-50 p-4 rounded-[8px] border border-slate-100">
