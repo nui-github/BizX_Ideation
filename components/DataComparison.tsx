@@ -487,20 +487,8 @@ const mockWorkflows: Workflow[] = [
 ];
 
   const handleConfirmExport = (jobToExport: ComparisonJob) => {
-    // Check if the workflow has an output node
-    const selectedWorkflowName = selectedExportWorkflow || jobToExport.workflowName;
-    const workflow = mockWorkflows.find(wf => wf.name === selectedWorkflowName);
-    const hasExportNode = workflow?.nodes.some(node => node.type === 'output');
-
-    if (exportOption === 'workflow' && !hasExportNode) {
-       setShowWorkflowWarning(true);
-       return;
-    }
-
     // 1. Log export action
-    const exportDetails = exportOption === 'workflow'
-      ? `Exported using workflow: ${selectedExportWorkflow || jobToExport.workflowName || 'Default'}`
-      : `Custom Export to Platform: ${selectedExportPlatform}`;
+    const exportDetails = `Exported using workflow: ${jobToExport.workflowName || 'Default'}`;
 
     setActivityLogs(prev => [
       {
@@ -525,17 +513,35 @@ const mockWorkflows: Workflow[] = [
       )
     );
 
+    // Find next sub-job under the same shipment reference
+    const shipmentJobs = jobs.filter(j => j.reference === jobToExport.reference);
+    const seqIndex = shipmentJobs.findIndex(j => j.id === jobToExport.id);
+    const nextJob = seqIndex !== -1 && seqIndex < shipmentJobs.length - 1 ? shipmentJobs[seqIndex + 1] : null;
+
     // 3. If the exported job is currently selected (in details view), update selected job
     if (selectedJob && selectedJob.id === jobToExport.id) {
-      setSelectedJob(prev => prev ? { ...prev, status: JobStatus.DONE } : null);
+      if (nextJob) {
+        setSelectedJob(nextJob);
+      } else {
+        setSelectedJob(prev => prev ? { ...prev, status: JobStatus.DONE } : null);
+      }
     }
 
     // 4. Reset modal state and show success message
     message.success(
       language === 'TH' 
-        ? `ส่งออกข้อมูลรายการ "${jobToExport.reference}" ไปยัง "${exportOption === 'workflow' ? (selectedExportWorkflow || jobToExport.workflowName || 'Default') : selectedExportPlatform}" เรียบร้อยแล้ว!` 
-        : `Exported "${jobToExport.reference}" to "${exportOption === 'workflow' ? (selectedExportWorkflow || jobToExport.workflowName || 'Default') : selectedExportPlatform}" successfully!`
+        ? `ส่งออกข้อมูลรายการ "${jobToExport.reference}" เรียบร้อยแล้ว!` 
+        : `Exported "${jobToExport.reference}" successfully!`
     );
+
+    if (nextJob) {
+      message.info(
+        language === 'TH'
+          ? `เปลี่ยนไปยังงานถัดไป: "${nextJob.workflowName}"`
+          : `Switched to next job: "${nextJob.workflowName}"`
+      );
+    }
+
     setExportJob(null);
   };
 
@@ -1898,9 +1904,10 @@ const mockWorkflows: Workflow[] = [
     }
   }, [jobs, selectedJob]);
 
-  // Reset hidden locked docs when switching jobs
+  // Reset hidden locked docs and pdf preview when switching jobs
   useEffect(() => {
     setHiddenLockedDocs([]);
+    setPdfPreviewUrl(null);
   }, [selectedJob?.id]);
 
   const areAllFilesLocked = React.useMemo(() => {
@@ -3300,9 +3307,9 @@ const mockWorkflows: Workflow[] = [
             <table className="w-full text-left border-collapse table-auto font-sans">
               <thead>
                 <tr className="bg-slate-50/50 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
-                  <th className="px-8 py-4 w-[110px]">{language === 'TH' ? 'ลำดับขั้นตอน' : 'STEP'}</th>
+                  <th className="px-8 py-4 w-[110px]">{language === 'TH' ? 'ลำดับงาน' : 'STEP'}</th>
                   <th className="px-8 py-4">{t.jobNo}</th>
-                  <th className="px-8 py-4">{language === 'TH' ? 'ประเภทงาน / เวิร์กโฟลว์' : 'JOB TYPE / WORKFLOW'}</th>
+                  <th className="px-8 py-4">{language === 'TH' ? 'เวิร์กโฟลว์' : 'WORKFLOW'}</th>
                   <th className="px-8 py-4">{language === 'TH' ? 'ผู้รับผิดชอบล่าสุด' : 'CURRENT ASSIGNEE'}</th>
                   <th className="px-8 py-4">{language === 'TH' ? 'อัปเดตล่าสุด' : 'LAST UPDATE'}</th>
                   <th className="px-8 py-4 text-center">{language === 'TH' ? 'จำนวนไฟล์' : 'FILES'}</th>
@@ -3314,7 +3321,7 @@ const mockWorkflows: Workflow[] = [
                 {filteredJobs.map((job) => {
                   const isProcessing = job.status === JobStatus.PROCESSING;
                   const seqIndex = shipmentJobs.findIndex(j => j.id === job.id);
-                  const isWorkflowCompleted = (j: ComparisonJob) => j.status === JobStatus.DONE || j.status === JobStatus.READY;
+                  const isWorkflowCompleted = (j: ComparisonJob) => j.status === JobStatus.DONE;
                   const isBlocked = seqIndex > 0 && shipmentJobs.slice(0, seqIndex).some(prevJob => !isWorkflowCompleted(prevJob));
                   
                   return (
@@ -3343,8 +3350,28 @@ const mockWorkflows: Workflow[] = [
                       }`}
                     >
                       <td className="px-8 py-5">
-                        <div className="flex items-center gap-2">
-                          <span className={`w-7 h-7 rounded-full font-black text-xs flex items-center justify-center border shadow-sm ${
+                        <div className="relative flex items-center justify-start h-7 w-7">
+                          {/* Connecting line - top half */}
+                          {seqIndex > 0 && (
+                            <div 
+                              className={`absolute left-1/2 -translate-x-1/2 w-0.5 ${
+                                isBlocked ? 'bg-slate-100' : 'bg-emerald-200/85'
+                              }`} 
+                              style={{ top: -24, bottom: '50%', zIndex: 0 }} 
+                            />
+                          )}
+                          {/* Connecting line - bottom half */}
+                          {seqIndex < filteredJobs.length - 1 && (
+                            <div 
+                              className={`absolute left-1/2 -translate-x-1/2 w-0.5 ${
+                                isWorkflowCompleted(job)
+                                  ? 'bg-emerald-200/85'
+                                  : 'bg-slate-100'
+                              }`} 
+                              style={{ top: '50%', bottom: -24, zIndex: 0 }} 
+                            />
+                          )}
+                          <span className={`relative z-10 w-7 h-7 rounded-full font-black text-xs flex items-center justify-center border shadow-sm ${
                             isBlocked
                               ? 'bg-slate-50 text-slate-400 border-slate-200'
                               : isWorkflowCompleted(job)
@@ -3357,15 +3384,6 @@ const mockWorkflows: Workflow[] = [
                       </td>
                       <td className="px-8 py-5">
                         <div className="flex items-center gap-4">
-                          <div className={`w-2.5 h-2.5 rounded-full shadow-sm ${
-                            isBlocked ? 'bg-slate-300' :
-                            job.status === JobStatus.READY ? 'bg-emerald-500 shadow-emerald-200' : 
-                            job.status === JobStatus.DONE ? 'bg-teal-500 shadow-teal-200' : 
-                            job.status === JobStatus.PENDING ? 'bg-[#1f5df9] shadow-blue-200' : 
-                            job.status === JobStatus.REVIEW ? 'bg-amber-500 shadow-amber-200' : 
-                            job.status === JobStatus.PROCESSING ? 'bg-blue-600 animate-pulse' : 
-                            'bg-slate-300'
-                          }`}></div>
                           <div>
                             <p className={`font-black text-[13px] tracking-tight mb-0.5 ${isBlocked ? 'text-slate-400' : 'text-[#010136]'}`}>{job.id.toUpperCase()}</p>
                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
@@ -3418,16 +3436,10 @@ const mockWorkflows: Workflow[] = [
                               disabled={job.status !== JobStatus.READY || isProcessing || isBlocked}
                               onClick={(e) => {
                                 e.stopPropagation();
-                                const workflow = mockWorkflows.find(wf => wf.name === job.workflowName);
-                                const hasExportNode = workflow?.nodes.some(node => node.type === 'output');
-                                if (!hasExportNode) {
-                                  setShowWorkflowWarning(true);
-                                } else {
-                                  setExportJob(job);
-                                  setExportOption('workflow');
-                                  setSelectedExportWorkflow(job.workflowName || '');
-                                  setSelectedExportPlatform('FTA');
-                                }
+                                setExportJob(job);
+                                setExportOption('workflow');
+                                setSelectedExportWorkflow(job.workflowName || '');
+                                setSelectedExportPlatform('FTA');
                               }}
                               className={`p-2.5 transition-all rounded-[4px] ${(job.status === JobStatus.READY && !isProcessing && !isBlocked) ? 'text-[#1f5df9] hover:bg-blue-50 cursor-pointer' : 'text-slate-200 cursor-not-allowed'}`}
                             >
@@ -3747,17 +3759,12 @@ const mockWorkflows: Workflow[] = [
                         <Tooltip content={t.ttExportNotify}>
                           <button 
                             disabled={job.status !== JobStatus.READY || isProcessing}
-                            onClick={() => {
-                              const workflow = mockWorkflows.find(wf => wf.name === job.workflowName);
-                              const hasExportNode = workflow?.nodes.some(node => node.type === 'output');
-                              if (!hasExportNode) {
-                                setShowWorkflowWarning(true);
-                              } else {
-                                setExportJob(job);
-                                setExportOption('workflow');
-                                setSelectedExportWorkflow(job.workflowName || '');
-                                setSelectedExportPlatform('FTA');
-                              }
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setExportJob(job);
+                              setExportOption('workflow');
+                              setSelectedExportWorkflow(job.workflowName || '');
+                              setSelectedExportPlatform('FTA');
                             }}
                             className={`p-2.5 transition-all rounded-[4px] ${job.status === JobStatus.READY && !isProcessing ? 'text-[#1f5df9] hover:bg-blue-50 cursor-pointer' : 'text-slate-200 cursor-not-allowed'}`}
                           >
@@ -3832,7 +3839,7 @@ const mockWorkflows: Workflow[] = [
 
     // Show all visible docs as columns to avoid losing info when sidebar is collapsed, excluding hidden locked docs
     return Object.keys(selectedJob.docs).filter(docName => 
-      (selectedJob.status === JobStatus.NEW || selectedJob.docs[docName] !== ComparisonDocStatus.MISSING) &&
+      (selectedJob.status === JobStatus.NEW || selectedJob.status === JobStatus.PENDING || selectedJob.docs[docName] !== ComparisonDocStatus.MISSING) &&
       !hiddenLockedDocs.includes(docName)
     );
   }, [selectedJob, hiddenLockedDocs]);
@@ -5432,115 +5439,96 @@ const mockWorkflows: Workflow[] = [
       )}
 
       {/* Export Job Modal Dialog */}
-      {exportJob && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300 font-sans">
-          <div className="bg-white p-8 rounded-2xl max-w-lg w-full shadow-2xl border border-slate-100 flex flex-col gap-6 animate-in zoom-in-95 duration-300 relative overflow-hidden">
-            
-            {/* Header section with export tag & title */}
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#1f5df9] flex items-center justify-center border border-blue-100">
-                  <Send size={24} strokeWidth={2.5} />
-                </div>
-                <div>
-                  <h3 className="text-lg font-black text-[#010136] tracking-tight mb-0.5">
-                    {language === 'TH' ? 'ส่งออกข้อมูลรายการ' : 'Export Job Data'}
-                  </h3>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">
-                      {language === 'TH' ? 'อ้างอิง:' : 'REFERENCE:'}
-                    </span>
-                    <span className="text-[11px] font-bold text-slate-700 font-mono bg-slate-50 px-1.5 py-0.5 rounded border border-slate-200/50">
-                      {exportJob.reference}
-                    </span>
+      {exportJob && (() => {
+        const shipmentJobs = jobs.filter(j => j.reference === exportJob.reference);
+        const seqIndex = shipmentJobs.findIndex(j => j.id === exportJob.id);
+        const nextJob = seqIndex !== -1 && seqIndex < shipmentJobs.length - 1 ? shipmentJobs[seqIndex + 1] : null;
+
+        return (
+          <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300 font-sans">
+            <div className="bg-white p-8 rounded-2xl max-w-lg w-full shadow-2xl border border-slate-100 flex flex-col gap-6 animate-in zoom-in-95 duration-300 relative overflow-hidden">
+              
+              {/* Header section with export tag & title */}
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#1f5df9] flex items-center justify-center border border-blue-100">
+                    <Send size={24} strokeWidth={2.5} />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-black text-[#010136] tracking-tight mb-0.5">
+                      {language === 'TH' ? 'ส่งออกข้อมูลรายการ' : 'Export Job Data'}
+                    </h3>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">
+                        {language === 'TH' ? 'อ้างอิง:' : 'REFERENCE:'}
+                      </span>
+                      <span className="text-[11px] font-bold text-slate-700 font-mono bg-slate-50 px-1.5 py-0.5 rounded border border-slate-200/50">
+                        {exportJob.reference}
+                      </span>
+                    </div>
                   </div>
                 </div>
+                <button 
+                  onClick={() => setExportJob(null)}
+                  className="p-1.5 rounded-[4px] text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer border-none bg-transparent"
+                  id="close-export-modal-btn"
+                >
+                  <X size={18} />
+                </button>
               </div>
-              <button 
-                onClick={() => setExportJob(null)}
-                className="p-1.5 rounded-[4px] text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer"
-                id="close-export-modal-btn"
-              >
-                <X size={18} />
-              </button>
-            </div>
 
-            {/* Main Selection Area */}
-            <div className="flex flex-col gap-4">
-              <label className="text-[11px] font-black text-[#010136] uppercase tracking-wider">
-                {language === 'TH' ? 'เลือกตัวเลือกในการส่งออก' : 'Choose Export Option'}
-              </label>
-
-                            {/* Export Workflow Section */}
-              <div className="p-4 rounded-xl border border-slate-200 bg-white">
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="text-sm font-bold text-slate-700">
-                    {language === 'TH' ? 'ส่งออกโดยใช้ Workflow (ตามระบบ)' : 'Export using Workflow (Default)'}
-                  </span>
-                  {exportJob.workflowName && (
-                    <span className="text-[9px] font-black text-[#1f5df9] bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100 uppercase tracking-wider">
-                      {language === 'TH' ? 'มีเวิร์กโฟลว์อยู่แล้ว' : 'Workflow Bound'}
+              {/* Main Selection Area */}
+              <div className="flex flex-col gap-4">
+                {/* Export Workflow Section */}
+                <div className="p-4 rounded-xl border border-slate-200 bg-white">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-sm font-bold text-slate-700">
+                      {language === 'TH' ? 'ส่งออกไปยังขั้นตอนถัดไป (ตามระบบ)' : 'Exporting to the Next Step (System)'}
                     </span>
-                  )}
-                </div>
-
-                {/* Workflow Dropdown picker */}
-                <div onClick={(e) => e.stopPropagation()}>
-                  <div className="relative">
-                    <select
-                      disabled={!!exportJob.workflowName}
-                      value={exportJob.workflowName || selectedExportWorkflow}
-                      onChange={(e) => setSelectedExportWorkflow(e.target.value)}
-                      className="w-full bg-white disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200/80 border border-slate-200/80 rounded-xl py-2.5 px-4 pr-10 focus:ring-4 focus:ring-blue-500/10 focus:border-[#1f5df9] text-xs font-black uppercase tracking-tight appearance-none cursor-pointer disabled:cursor-not-allowed outline-none shadow-sm font-sans transition-all"
-                    >
-                      <option value="">-- {language === 'TH' ? 'เลือกเวิร์กโฟลว์' : 'SELECT WORKFLOW'} --</option>
-                      {mockWorkflows.map(wf => (
-                        <option key={wf.id} value={wf.name}>{wf.name}</option>
-                      ))}
-                      {exportJob.workflowName && !mockWorkflows.find(wf => wf.name === exportJob.workflowName) && (
-                        <option value={exportJob.workflowName}>{exportJob.workflowName}</option>
-                      )}
-                    </select>
-                    <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400" />
                   </div>
-                  {exportJob.workflowName && (
-                    <div className="mt-2 flex items-center gap-1.5 text-[10px] font-bold text-slate-500">
+
+                  <div className="flex items-center gap-2.5 bg-blue-50/50 border border-blue-100 p-3.5 rounded-lg">
+                    <div className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse" />
+                    <span className="text-xs font-black text-[#1f5df9] uppercase tracking-tight">
+                      {nextJob ? nextJob.workflowName : (language === 'TH' ? 'ขั้นตอนสุดท้าย (เสร็จสมบูรณ์ทั้งหมด)' : 'FINAL STEP (ALL COMPLETED)')}
+                    </span>
+                  </div>
+
+                  {nextJob && (
+                    <div className="mt-3 flex items-center gap-1.5 text-[10px] font-bold text-slate-500">
                       <ShieldCheck size={13} className="text-emerald-500 shrink-0" />
                       <span>
                         {language === 'TH' 
-                          ? `เวิร์กโฟลว์ถูกบังคับเลือกเป็น "${exportJob.workflowName}"`
-                          : `Enforced by original workflow "${exportJob.workflowName}"`}
+                          ? `ระบบจะเปิดให้เริ่มทำงาน "${nextJob.workflowName}" ได้ทันทีเมื่อกดส่งออก`
+                          : `"${nextJob.workflowName}" will become active immediately upon export`}
                       </span>
                     </div>
                   )}
                 </div>
               </div>
 
-
-            </div>
-
-            {/* Double Button Actions */}
-            <div className="flex gap-4 w-full mt-2">
-              <Button 
-                size="large" 
-                className="flex-1 rounded-[4px] h-12 font-black uppercase tracking-widest text-[11px] border-slate-200 text-slate-600 hover:bg-slate-50 font-sans"
-                onClick={() => setExportJob(null)}
-              >
-                {language === 'TH' ? 'ยกเลิก' : 'CANCEL'}
-              </Button>
-              <Button 
-                type="primary" 
-                size="large" 
-                disabled={exportOption === 'workflow' && !exportJob.workflowName && !selectedExportWorkflow}
-                className="flex-1 rounded-[4px] h-12 font-black uppercase tracking-widest text-[11px] bg-[#1f5df9] hover:bg-[#0352c7] border-none shadow-lg shadow-blue-500/20 font-sans disabled:opacity-40 disabled:cursor-not-allowed"
-                onClick={() => handleConfirmExport(exportJob)}
-              >
-                {language === 'TH' ? 'ส่งออกข้อมูล' : 'EXPORT DATA'}
-              </Button>
+              {/* Double Button Actions */}
+              <div className="flex gap-4 w-full mt-2">
+                <Button 
+                  size="large" 
+                  className="flex-1 rounded-[4px] h-12 font-black uppercase tracking-widest text-[11px] border-slate-200 text-slate-600 hover:bg-slate-50 font-sans"
+                  onClick={() => setExportJob(null)}
+                >
+                  {language === 'TH' ? 'ยกเลิก' : 'CANCEL'}
+                </Button>
+                <Button 
+                  type="primary" 
+                  size="large" 
+                  className="flex-1 rounded-[4px] h-12 font-black uppercase tracking-widest text-[11px] bg-[#1f5df9] hover:bg-[#0352c7] border-none shadow-lg shadow-blue-500/20 font-sans cursor-pointer"
+                  onClick={() => handleConfirmExport(exportJob)}
+                >
+                  {language === 'TH' ? 'ส่งออกข้อมูล' : 'EXPORT DATA'}
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Claim Job confirmation modal */}
       {showClaimPrompt && selectedJob && (
@@ -5837,7 +5825,7 @@ const mockWorkflows: Workflow[] = [
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 bg-slate-50 border border-slate-200/80 p-1.5 rounded-2xl shadow-sm">
+              <div className="flex items-center gap-2 bg-slate-50 border border-slate-200/80 p-1.5 rounded-xl shadow-sm">
                   {/* Claim / Unclaim Action Controls */}
                   {selectedJob.status !== JobStatus.READY && selectedJob.status !== JobStatus.DONE && (
                     <>
