@@ -3128,7 +3128,7 @@ const mockWorkflows: Workflow[] = [
                   <th className="px-8 py-4">{language === 'TH' ? 'เลขที่ Shipment' : 'SHIPMENT NO.'}</th>
                   <th className="px-8 py-4">{language === 'TH' ? 'ความคืบหน้างานย่อย' : 'PROGRESS'}</th>
                   <th className="px-8 py-4">{language === 'TH' ? 'สถานะเวิร์กโฟลว์ปัจจุบัน' : 'CURRENT WORKFLOW'}</th>
-                  <th className="px-8 py-4">{language === 'TH' ? 'ปัจจุบันงานค้างอยู่ที่ใคร' : 'CURRENT ASSIGNEE'}</th>
+                  <th className="px-8 py-4">{language === 'TH' ? 'ผู้รับผิดชอบล่าสุด' : 'CURRENT ASSIGNEE'}</th>
                   <th className="px-8 py-4 text-right"></th>
                 </tr>
               </thead>
@@ -3321,7 +3321,7 @@ const mockWorkflows: Workflow[] = [
                   <th className="px-8 py-4 w-[110px]">{language === 'TH' ? 'ลำดับขั้นตอน' : 'STEP'}</th>
                   <th className="px-8 py-4">{t.jobNo}</th>
                   <th className="px-8 py-4">{language === 'TH' ? 'ประเภทงาน / เวิร์กโฟลว์' : 'JOB TYPE / WORKFLOW'}</th>
-                  <th className="px-8 py-4">{language === 'TH' ? 'ผู้รับผิดชอบ' : 'ASSIGNEE'}</th>
+                  <th className="px-8 py-4">{language === 'TH' ? 'ผู้รับผิดชอบล่าสุด' : 'CURRENT ASSIGNEE'}</th>
                   <th className="px-8 py-4">{language === 'TH' ? 'อัปเดตล่าสุด' : 'LAST UPDATE'}</th>
                   <th className="px-8 py-4 text-center">{language === 'TH' ? 'จำนวนไฟล์' : 'FILES'}</th>
                   <th className="px-8 py-4">{t.status}</th>
@@ -3680,7 +3680,7 @@ const mockWorkflows: Workflow[] = [
                 <tr className="bg-slate-50/50 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
                   <th className="px-8 py-4">{t.jobNo}</th>
                   <th className="px-8 py-4">{language === 'TH' ? 'ประเภทงาน' : 'JOB TYPE'}</th>
-                  <th className="px-8 py-4">{language === 'TH' ? 'ผู้รับผิดชอบ' : 'ASSIGNEE'}</th>
+                  <th className="px-8 py-4">{language === 'TH' ? 'ผู้รับผิดชอบล่าสุด' : 'CURRENT ASSIGNEE'}</th>
                   <th className="px-8 py-4">{language === 'TH' ? 'อัปเดตล่าสุด' : 'LAST UPDATE'}</th>
                   <th className="px-8 py-4 text-center">{language === 'TH' ? 'จำนวนไฟล์' : 'FILES'}</th>
                   <th className="px-8 py-4">{t.status}</th>
