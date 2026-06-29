@@ -924,6 +924,7 @@ const mockWorkflows: Workflow[] = [
   const [replaceIsDragging, setReplaceIsDragging] = useState(false);
   const [replaceAutoStartOCR, setReplaceAutoStartOCR] = useState(true);
   const [hiddenLockedDocs, setHiddenLockedDocs] = useState<string[]>([]);
+  const [showColumnSelector, setShowColumnSelector] = useState(false);
   const [showDeleteColumnConfirmModal, setShowDeleteColumnConfirmModal] = useState(false);
   const [deleteColumnTargetDocName, setDeleteColumnTargetDocName] = useState<string | null>(null);
 
@@ -1908,6 +1909,7 @@ const mockWorkflows: Workflow[] = [
   useEffect(() => {
     setHiddenLockedDocs([]);
     setPdfPreviewUrl(null);
+    setShowColumnSelector(false);
   }, [selectedJob?.id]);
 
   const areAllFilesLocked = React.useMemo(() => {
@@ -5761,7 +5763,7 @@ const mockWorkflows: Workflow[] = [
       {step === 1 && selectedJob && (
         <div className="animate-in fade-in slide-in-from-right-4 duration-500 flex flex-col h-full overflow-hidden bg-white border border-slate-200 rounded-2xl shadow-xl shadow-slate-200/50">
           {/* Compact Header Section */}
-          <div className="px-6 py-4 bg-white border-b border-slate-200 flex items-center justify-between z-30 shadow-sm">
+          <div className="px-6 py-4 bg-white border-b border-slate-200 flex items-center justify-between z-[60] shadow-sm">
             <div className="flex items-center gap-4">
               <button 
                   onClick={() => {
@@ -5872,6 +5874,90 @@ const mockWorkflows: Workflow[] = [
                       <ListFilter size={15} strokeWidth={2.5} className={showOnlyDiff ? 'text-rose-500' : 'text-slate-400'} />
                     </button>
                   </Tooltip>
+
+                  {/* Column Visibility Selector Option */}
+                  {selectedJob && Object.keys(selectedJob.docs).length >= 3 && (
+                    <div className="relative">
+                      <Tooltip content={language === 'TH' ? 'แสดง/ซ่อน คอลัมน์เอกสาร' : 'Show/Hide Document Columns'}>
+                        <button
+                          disabled={isUnassigned}
+                          onClick={() => setShowColumnSelector(!showColumnSelector)}
+                          className={`p-2.5 rounded-[4px] transition-all border flex items-center justify-center cursor-pointer shadow-sm disabled:opacity-30 disabled:cursor-not-allowed ${
+                            showColumnSelector
+                              ? 'bg-blue-50 text-[#1f5df9] border-blue-200 shadow-[0_2px_8px_rgba(31,93,249,0.15)]'
+                              : 'bg-white text-slate-500 border-slate-200/60 hover:bg-slate-50'
+                          }`}
+                        >
+                          <Eye size={15} strokeWidth={2.5} className={showColumnSelector ? 'text-[#1f5df9]' : 'text-slate-400'} />
+                        </button>
+                      </Tooltip>
+
+                      {showColumnSelector && (
+                        <>
+                          <div 
+                            className="fixed inset-0 z-[90] cursor-default" 
+                            onClick={() => setShowColumnSelector(false)} 
+                          />
+                          <div className="absolute right-0 mt-1.5 w-64 bg-white border border-slate-200 rounded-lg shadow-xl p-3 z-[100] select-none">
+                            <p className="text-[10px] font-black text-[#010136] uppercase tracking-widest mb-2 pb-1.5 border-b border-slate-100 flex items-center justify-between">
+                              <span>{language === 'TH' ? 'ตั้งค่าคอลัมน์' : 'COLUMN SETTINGS'}</span>
+                              <span className="text-slate-400 font-mono">
+                                {Object.keys(selectedJob.docs).length - hiddenLockedDocs.length}/{Object.keys(selectedJob.docs).length}
+                              </span>
+                            </p>
+                            <div className="flex flex-col gap-1.5 max-h-60 overflow-y-auto custom-scrollbar">
+                              {Object.keys(selectedJob.docs).map(docName => {
+                                const isHidden = hiddenLockedDocs.includes(docName);
+                                const isVisible = !isHidden;
+                                const totalDocs = Object.keys(selectedJob.docs).length;
+                                const visibleCount = totalDocs - hiddenLockedDocs.length;
+                                const canHide = isVisible && (visibleCount > 2);
+                                const disabled = isVisible && !canHide;
+
+                                return (
+                                  <label 
+                                    key={docName} 
+                                    className={`flex items-center justify-between gap-2 p-2 rounded-[4px] transition-all text-xs font-bold font-sans cursor-pointer ${
+                                      disabled ? 'opacity-40 cursor-not-allowed bg-slate-50' : 'hover:bg-slate-50'
+                                    }`}
+                                    onClick={(e) => {
+                                      if (disabled) {
+                                        e.preventDefault();
+                                      }
+                                    }}
+                                  >
+                                    <div className="flex items-center gap-2 truncate">
+                                      <input 
+                                        type="checkbox"
+                                        checked={isVisible}
+                                        disabled={disabled}
+                                        onChange={(e) => {
+                                          if (e.target.checked) {
+                                            setHiddenLockedDocs(prev => prev.filter(x => x !== docName));
+                                          } else {
+                                            if (canHide) {
+                                              setHiddenLockedDocs(prev => [...prev, docName]);
+                                            }
+                                          }
+                                        }}
+                                        className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 h-3.5 w-3.5 cursor-pointer disabled:cursor-not-allowed"
+                                      />
+                                      <span className="truncate uppercase text-slate-700" title={docName}>{docName}</span>
+                                    </div>
+                                    {disabled && (
+                                      <span className="text-[8px] font-black bg-slate-100 text-slate-400 px-1 py-0.5 rounded uppercase tracking-tighter scale-90 origin-right whitespace-nowrap">
+                                        {language === 'TH' ? 'ต้องเหลืออย่างน้อย 2' : 'Min 2 required'}
+                                      </span>
+                                    )}
+                                  </label>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  )}
 
                   {hiddenLockedDocs.length > 0 && (
                     <div className="flex items-center gap-2 bg-white px-2.5 py-1.5 rounded-xl border border-slate-200/80 shadow-sm">
