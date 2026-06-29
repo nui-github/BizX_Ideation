@@ -248,6 +248,8 @@ export const DataComparison: React.FC<DataComparisonProps> = ({ language, tracki
         isUnfinished,
         isMyPending
       };
+    }).sort((a, b) => {
+      return parseDateValue(b.createdAt) - parseDateValue(a.createdAt);
     });
   };
 
@@ -1187,7 +1189,7 @@ const mockWorkflows: Workflow[] = [
       reference: 'CN-TH-2026-00451',
       expiryDate: '25 APR 2026 14:20:05',
       createdAt: '20 APR 2026',
-      workflowName: 'Import Logistics Ruleset A',
+      workflowName: 'Invoice Processing',
       assignee: 'Kunawut W.',
       isLocked: true,
       status: JobStatus.DONE,
@@ -1532,7 +1534,7 @@ const mockWorkflows: Workflow[] = [
       reference: 'SG-TH-2026-00334',
       expiryDate: '02 MAY 2026 13:40:44',
       createdAt: '24 APR 2026',
-      workflowName: 'ASEAN Trade Agreement',
+      workflowName: 'Invoice Processing',
       assignee: 'Nui P.',
       status: JobStatus.DONE,
       isLocked: true,
@@ -1553,7 +1555,7 @@ const mockWorkflows: Workflow[] = [
       reference: 'SG-TH-2026-00334',
       expiryDate: '03 MAY 2026 09:00:00',
       createdAt: '24 APR 2026',
-      workflowName: 'Singapore Port Release',
+      workflowName: 'Maritime Freight Checking',
       assignee: 'Nui P.',
       status: JobStatus.DONE,
       isLocked: true,
@@ -1574,7 +1576,7 @@ const mockWorkflows: Workflow[] = [
       reference: 'SG-TH-2026-00334',
       expiryDate: '04 MAY 2026 11:30:00',
       createdAt: '24 APR 2026',
-      workflowName: 'LEO Billing',
+      workflowName: 'Electronics Import Rules',
       assignee: 'Kunawut W.',
       status: JobStatus.READY,
       totalFieldsCount: 75,
@@ -1590,13 +1592,13 @@ const mockWorkflows: Workflow[] = [
       mismatchedCount: 0
     },
 
-    // --- Shipment 7: CN-TH-2026-00998 (3 jobs) ---
+    // --- Shipment 7: CN-TH-2026-00998 (2 jobs) ---
     {
       id: 'job-007a',
       reference: 'CN-TH-2026-00998',
       expiryDate: '05 MAY 2026 11:20:00',
       createdAt: '25 APR 2026',
-      workflowName: 'Electronics Import Rules',
+      workflowName: 'Invoice Processing',
       assignee: 'Somchai T.',
       status: JobStatus.DONE,
       isLocked: true,
@@ -1617,7 +1619,7 @@ const mockWorkflows: Workflow[] = [
       reference: 'CN-TH-2026-00998',
       expiryDate: '06 MAY 2026 10:00:00',
       createdAt: '25 APR 2026',
-      workflowName: 'Chinese Origin Form E Match',
+      workflowName: 'Maritime Freight Checking',
       assignee: 'Somchai T.',
       status: JobStatus.DONE,
       isLocked: true,
@@ -1626,26 +1628,6 @@ const mockWorkflows: Workflow[] = [
       docs: {
         'Certificate of Origin': ComparisonDocStatus.LOCKED,
         'Form E': ComparisonDocStatus.LOCKED
-      },
-      progress: 100,
-      totalDocs: 2,
-      foundDocs: 2,
-      matchedCount: 2,
-      mismatchedCount: 0
-    },
-    {
-      id: 'job-007c',
-      reference: 'CN-TH-2026-00998',
-      expiryDate: '07 MAY 2026 16:00:00',
-      createdAt: '25 APR 2026',
-      workflowName: 'Customs Declaration Matching',
-      assignee: 'Somchai T.',
-      status: JobStatus.READY,
-      totalFieldsCount: 95,
-      accuracyScore: 100.0,
-      docs: {
-        'Import Declaration': ComparisonDocStatus.LOCKED,
-        'Duty Assessment': ComparisonDocStatus.LOCKED
       },
       progress: 100,
       totalDocs: 2,
@@ -3156,7 +3138,7 @@ const mockWorkflows: Workflow[] = [
                             <div>
                               <p className="font-black text-[#010136] text-[13px] tracking-tight mb-0.5">{shipment.reference}</p>
                               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                                {language === 'TH' ? 'วันที่เริ่ม: ' : 'STARTED: '} <span className="text-slate-500">{shipment.createdAt}</span>
+                                {language === 'TH' ? 'วันที่เริ่ม: ' : 'STARTED: '} <span className="text-slate-500">{formatDisplayDate(shipment.createdAt)}</span>
                               </p>
                             </div>
                           </div>
@@ -3187,7 +3169,7 @@ const mockWorkflows: Workflow[] = [
                           ) : (
                             <span className="text-[13px] font-black text-emerald-600 flex items-center gap-1.5 font-sans">
                               <ShieldCheck size={14} className="text-emerald-500" />
-                              {language === 'TH' ? 'เสร็จสมบูรณ์ทั้งหมด' : 'All Completed'}
+                              {language === 'TH' ? 'เสร็จสมบูรณ์' : 'All Completed'}
                             </span>
                           )}
                         </td>
@@ -5605,7 +5587,7 @@ const mockWorkflows: Workflow[] = [
         <CreateJobModal
           visible={showCreateJobModal}
           onClose={() => setShowCreateJobModal(false)}
-          onCreate={(newJobs) => setJobs(prev => Array.isArray(newJobs) ? [...newJobs, ...prev] : [newJobs, ...prev])}
+          onCreate={(newJobs) => setJobs(prev => Array.isArray(newJobs) ? [...prev, ...newJobs] : [...prev, newJobs])}
           workflows={mockWorkflows}
           language={language}
           prefilledReference={selectedShipment || undefined}
