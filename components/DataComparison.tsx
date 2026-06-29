@@ -3179,10 +3179,10 @@ const mockWorkflows: Workflow[] = [
                               e.stopPropagation();
                               setSelectedShipment(shipment.reference);
                             }}
-                            className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-[#1f5df9] font-black text-xs rounded-[4px] flex items-center gap-1 transition-all cursor-pointer"
+                            className="px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-600 border border-slate-300 hover:border-slate-400 hover:text-slate-800 font-black text-xs rounded-[4px] flex items-center gap-1 transition-all cursor-pointer shadow-sm"
                           >
                             <span>{language === 'TH' ? 'ดูงานย่อย' : 'VIEW JOBS'}</span>
-                            <ArrowRight size={14} />
+                            <ArrowRight size={14} className="text-slate-500 hover:text-slate-700" />
                           </button>
                         </td>
                       </tr>
@@ -3243,7 +3243,7 @@ const mockWorkflows: Workflow[] = [
     const getStatusBadge = (status: JobStatus, isBlocked: boolean = false) => {
       if (isBlocked) {
         return (
-          <span className="bg-rose-50 text-rose-700 border border-rose-200 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans">
+          <span className="bg-rose-50 text-rose-700 border border-rose-200 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans whitespace-nowrap">
             <Lock size={10} className="text-rose-500" />
             {language === 'TH' ? 'ยังเริ่มไม่ได้' : 'CANNOT START'}
           </span>
@@ -3251,22 +3251,22 @@ const mockWorkflows: Workflow[] = [
       }
       switch (status) {
         case JobStatus.READY:
-          return <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans"><div className="w-1 h-1 rounded-full bg-emerald-500"></div>{language === 'TH' ? 'เสร็จสมบูรณ์' : 'READY'}</span>;
+          return <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans whitespace-nowrap"><div className="w-1 h-1 rounded-full bg-emerald-500"></div>{language === 'TH' ? 'เสร็จสมบูรณ์' : 'READY'}</span>;
         case JobStatus.DONE:
-          return <span className="bg-teal-50 text-teal-700 border border-teal-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans"><div className="w-1.5 h-1.5 rounded-full bg-teal-500"></div>{language === 'TH' ? 'ส่งออกแล้ว' : 'EXPORTED'}</span>;
+          return <span className="bg-teal-50 text-teal-700 border border-teal-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans whitespace-nowrap"><div className="w-1.5 h-1.5 rounded-full bg-teal-500"></div>{language === 'TH' ? 'ส่งออกแล้ว' : 'EXPORTED'}</span>;
         case JobStatus.PENDING:
-          return <span className="bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans"><div className="w-1 h-1 rounded-full bg-blue-500"></div>{language === 'TH' ? 'รอดำเนินการ' : 'PENDING'}</span>;
+          return <span className="bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans whitespace-nowrap"><div className="w-1 h-1 rounded-full bg-blue-500"></div>{language === 'TH' ? 'รอดำเนินการ' : 'PENDING'}</span>;
         case JobStatus.NEW:
-          return <span className="bg-slate-50 text-slate-500 border border-slate-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans"><div className="w-1 h-1 rounded-full bg-slate-400"></div>{language === 'TH' ? 'รอไฟล์ครบ' : 'PENDING FILES'}</span>;
+          return <span className="bg-slate-50 text-slate-500 border border-slate-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans whitespace-nowrap"><div className="w-1 h-1 rounded-full bg-slate-400"></div>{language === 'TH' ? 'รอไฟล์ครบ' : 'PENDING FILES'}</span>;
         case JobStatus.PROCESSING:
           return (
-            <span className="bg-blue-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 w-fit font-sans">
+            <span className="bg-blue-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 w-fit font-sans whitespace-nowrap">
               <Loader2 size={10} className="animate-spin" />
               {language === 'TH' ? 'กำลังเปรียบเทียบข้อมูล' : 'COMPARING'}
             </span>
           );
         case JobStatus.REVIEW:
-          return <span className="bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans"><div className="w-1 h-1 rounded-full bg-amber-500 animate-pulse"></div>{language === 'TH' ? 'รอตรวจสอบ' : 'REVIEW'}</span>;
+          return <span className="bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans whitespace-nowrap"><div className="w-1 h-1 rounded-full bg-amber-500 animate-pulse"></div>{language === 'TH' ? 'รอตรวจสอบ' : 'REVIEW'}</span>;
         default:
           return null;
       }
@@ -3306,7 +3306,7 @@ const mockWorkflows: Workflow[] = [
                   <th className="px-8 py-4">{language === 'TH' ? 'ผู้รับผิดชอบล่าสุด' : 'CURRENT ASSIGNEE'}</th>
                   <th className="px-8 py-4">{language === 'TH' ? 'อัปเดตล่าสุด' : 'LAST UPDATE'}</th>
                   <th className="px-8 py-4 text-center">{language === 'TH' ? 'จำนวนไฟล์' : 'FILES'}</th>
-                  <th className="px-8 py-4">{t.status}</th>
+                  <th className="px-8 py-4 min-w-[170px]">{t.status}</th>
                   <th className="px-8 py-4 text-right"></th>
                 </tr>
               </thead>
@@ -3386,7 +3386,7 @@ const mockWorkflows: Workflow[] = [
                       <td className="px-8 py-5 text-center">
                         <p className={`text-[13px] font-black tabular-nums ${isBlocked ? 'text-slate-400' : 'text-slate-800'}`}>{job.foundDocs ?? Object.values(job.docs).filter(s => s !== ComparisonDocStatus.MISSING).length} / {job.totalDocs}</p>
                       </td>
-                      <td className="px-8 py-5">
+                      <td className="px-8 py-5 min-w-[170px]">
                         {getStatusBadge(job.status, isBlocked)}
                       </td>
                       <td className="px-8 py-5 text-right w-[160px]">
@@ -3486,22 +3486,22 @@ const mockWorkflows: Workflow[] = [
     const getStatusBadge = (status: JobStatus) => {
       switch (status) {
         case JobStatus.READY:
-          return <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans"><div className="w-1 h-1 rounded-full bg-emerald-500"></div>{language === 'TH' ? 'เสร็จสมบูรณ์' : 'READY'}</span>;
+          return <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans whitespace-nowrap"><div className="w-1 h-1 rounded-full bg-emerald-500"></div>{language === 'TH' ? 'เสร็จสมบูรณ์' : 'READY'}</span>;
         case JobStatus.DONE:
-          return <span className="bg-teal-50 text-teal-700 border border-teal-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans"><div className="w-1.5 h-1.5 rounded-full bg-teal-500"></div>{language === 'TH' ? 'ส่งออกแล้ว' : 'EXPORTED'}</span>;
+          return <span className="bg-teal-50 text-teal-700 border border-teal-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans whitespace-nowrap"><div className="w-1.5 h-1.5 rounded-full bg-teal-500"></div>{language === 'TH' ? 'ส่งออกแล้ว' : 'EXPORTED'}</span>;
         case JobStatus.PENDING:
-          return <span className="bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans"><div className="w-1 h-1 rounded-full bg-blue-500"></div>{language === 'TH' ? 'รอดำเนินการ' : 'PENDING'}</span>;
+          return <span className="bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans whitespace-nowrap"><div className="w-1 h-1 rounded-full bg-blue-500"></div>{language === 'TH' ? 'รอดำเนินการ' : 'PENDING'}</span>;
         case JobStatus.NEW:
-          return <span className="bg-slate-50 text-slate-500 border border-slate-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans"><div className="w-1 h-1 rounded-full bg-slate-400"></div>{language === 'TH' ? 'รอไฟล์ครบ' : 'PENDING FILES'}</span>;
+          return <span className="bg-slate-50 text-slate-500 border border-slate-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans whitespace-nowrap"><div className="w-1 h-1 rounded-full bg-slate-400"></div>{language === 'TH' ? 'รอไฟล์ครบ' : 'PENDING FILES'}</span>;
         case JobStatus.PROCESSING:
           return (
-            <span className="bg-blue-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 w-fit font-sans">
+            <span className="bg-blue-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 w-fit font-sans whitespace-nowrap">
               <Loader2 size={10} className="animate-spin" />
               {language === 'TH' ? 'กำลังเปรียบเทียบข้อมูล' : 'COMPARING'}
             </span>
           );
         case JobStatus.REVIEW:
-          return <span className="bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans"><div className="w-1 h-1 rounded-full bg-amber-500 animate-pulse"></div>{language === 'TH' ? 'รอตรวจสอบ' : 'REVIEW'}</span>;
+          return <span className="bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans whitespace-nowrap"><div className="w-1 h-1 rounded-full bg-amber-500 animate-pulse"></div>{language === 'TH' ? 'รอตรวจสอบ' : 'REVIEW'}</span>;
         default:
           return null;
       }
@@ -3665,7 +3665,7 @@ const mockWorkflows: Workflow[] = [
                   <th className="px-8 py-4">{language === 'TH' ? 'ผู้รับผิดชอบล่าสุด' : 'CURRENT ASSIGNEE'}</th>
                   <th className="px-8 py-4">{language === 'TH' ? 'อัปเดตล่าสุด' : 'LAST UPDATE'}</th>
                   <th className="px-8 py-4 text-center">{language === 'TH' ? 'จำนวนไฟล์' : 'FILES'}</th>
-                  <th className="px-8 py-4">{t.status}</th>
+                  <th className="px-8 py-4 min-w-[170px]">{t.status}</th>
                   <th className="px-8 py-4 text-right"></th>
                 </tr>
               </thead>
@@ -3725,7 +3725,7 @@ const mockWorkflows: Workflow[] = [
                     <td className="px-8 py-5 text-center">
                       <p className="text-[13px] font-black text-slate-800 tabular-nums">{job.foundDocs ?? Object.values(job.docs).filter(s => s !== ComparisonDocStatus.MISSING).length} / {job.totalDocs}</p>
                     </td>
-                    <td className="px-8 py-5">
+                    <td className="px-8 py-5 min-w-[170px]">
                       {getStatusBadge(job.status)}
                     </td>
                     <td className="px-8 py-5 text-right w-[160px]">
@@ -4467,31 +4467,11 @@ const mockWorkflows: Workflow[] = [
                       </span>
                     </div>
 
-                    {/* Middle: Page Switcher */}
-                    <div className="flex items-center gap-2 text-[#010136]">
-                      <button 
-                        disabled={pdfCurrentPage === 1}
-                        onClick={() => setPdfCurrentPage(prev => Math.max(1, prev - 1))}
-                        className={`w-7 h-7 flex items-center justify-center rounded-[4px] transition-all ${
-                          pdfCurrentPage === 1 ? 'text-slate-600 cursor-not-allowed' : 'bg-slate-700/60 hover:bg-slate-600 hover:text-white text-slate-300 cursor-pointer'
-                        }`}
-                        title={language === 'TH' ? 'หน้าก่อนหน้า' : 'Previous page'}
-                      >
-                        <ChevronLeft size={14} className="text-white" />
-                      </button>
-                      <span className="text-xs font-mono font-bold px-1 select-none text-slate-300">
-                        {pdfCurrentPage} <span className="text-slate-500 font-normal">/</span> 3
+                    {/* Middle: Page Indicator for Continuous View */}
+                    <div className="flex items-center gap-2 text-slate-300">
+                      <span className="text-xs font-sans font-black px-3 py-1 bg-slate-700/60 rounded-[4px] select-none tracking-wider font-mono">
+                        {language === 'TH' ? 'หน้า 1 - 3 (ต่อเนื่อง)' : 'PAGES 1 - 3 (CONTINUOUS)'}
                       </span>
-                      <button 
-                        disabled={pdfCurrentPage === 3}
-                        onClick={() => setPdfCurrentPage(prev => Math.min(3, prev + 1))}
-                        className={`w-7 h-7 flex items-center justify-center rounded-[4px] transition-all ${
-                          pdfCurrentPage === 3 ? 'text-slate-600 cursor-not-allowed' : 'bg-slate-700/60 hover:bg-slate-600 hover:text-white text-slate-300 cursor-pointer'
-                        }`}
-                        title={language === 'TH' ? 'หน้าถัดไป' : 'Next page'}
-                      >
-                        <ChevronRight size={14} className="text-white" />
-                      </button>
 
                       <div className="w-px h-5 bg-slate-700/80 mx-2"></div>
 
@@ -4553,7 +4533,7 @@ const mockWorkflows: Workflow[] = [
                   {/* Gray PDF Canvas and Layout View */}
                   <div className="flex-1 bg-[#525659] overflow-auto flex items-start justify-center p-8 min-h-0 relative">
                     <div 
-                      className="bg-white text-slate-800 shadow-2xl relative transition-all duration-300 origin-top"
+                      className="relative transition-all duration-300 origin-top flex flex-col gap-8 bg-transparent"
                       style={{ 
                         transform: `scale(${zoomLevel}) rotate(${rotationAngle}deg)`, 
                         marginTop: '0px'
@@ -4574,409 +4554,425 @@ const mockWorkflows: Workflow[] = [
 
                         if (docUpper.includes('LADING') || docUpper.includes('B / L') || docUpper.includes('B/L') || docUpper.includes('WAYBILL')) {
                           return (
-                            <div className="p-8 min-h-[900px] w-[680px] flex flex-col gap-6 relative bg-white font-sans text-slate-800" style={{ contentVisibility: 'auto' }}>
-                              {renderWatermark('ORIGINAL')}
-                              
-                              {/* Header */}
-                              <div className="flex justify-between items-start border-b border-slate-800 pb-3 z-10">
-                                <div className="flex items-center gap-2">
-                                  <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-extrabold text-[15px]">★</div>
-                                  <span className="text-[#00243d] font-black tracking-widest text-xl font-sans">MAERSK LINE</span>
-                                </div>
-                                <div className="text-right">
-                                  <h2 className="text-xs font-black text-slate-400 tracking-wider font-sans">BILL OF LADING FOR OCEAN TRANSPORT</h2>
-                                  <p className="font-mono text-xs font-bold text-slate-700">B/L No. 953074879</p>
-                                </div>
-                              </div>
-
-                              {/* Core Info Grid */}
-                              <div className="grid grid-cols-2 border border-slate-800 text-[10px] z-10 font-sans">
-                                <div className="border-r border-b border-slate-800 p-3 space-y-1">
-                                  <span className="font-black text-[9px] uppercase text-slate-400">Shipper</span>
-                                  <p className="font-bold text-slate-800">TME CORP CO., LTD.</p>
-                                  <p className="text-slate-500">40 DEVILS TOWER ROAD, P.O.BOX 176,</p>
-                                  <p className="text-slate-500">GIBRALTAR</p>
-                                </div>
-                                <div className="border-b border-slate-800 p-3 space-y-1">
-                                  <span className="font-black text-[9px] uppercase text-slate-400">Booking No. / References</span>
-                                  <p className="font-bold font-mono text-slate-800">953074879</p>
-                                  <span className="block font-black text-[9px] uppercase text-slate-400 mt-2">Export References</span>
-                                  <p className="font-bold font-mono text-slate-800">131660-3/5</p>
-                                </div>
-                                <div className="border-r border-slate-800 p-3 space-y-1">
-                                  <span className="font-black text-[9px] uppercase text-slate-400">Consignee</span>
-                                  <p className="font-bold text-slate-800">UNDP - TANZANIA</p>
-                                  <p className="text-slate-500">6TH FLOOR INTERNATIONAL HOUSE,</p>
-                                  <p className="text-slate-500">SHAABAN ROBERT ST. GARDEN AVENUE, DAR ES SALAAM</p>
-                                </div>
-                                <div className="p-3 space-y-1">
-                                  <span className="font-black text-[9px] uppercase text-slate-400">Notify Party</span>
-                                  <p className="font-bold text-slate-800">SAME AS CONSIGNEE</p>
-                                  <p className="text-slate-500">TEL: (+255) 22-211-2576</p>
-                                  <p className="text-slate-500">EMAIL: YONAH.SAMO@UNDP.ORG</p>
-                                </div>
-                              </div>
-
-                              {/* Transport details */}
-                              <div className="grid grid-cols-4 border border-t-0 border-slate-800 text-[9px] z-10">
-                                <div className="border-r p-2">
-                                  <span className="block font-black text-[8px] text-slate-400 uppercase">Pre-Carriage By</span>
-                                  <p className="font-bold text-slate-700">VESSEL MAERSK WISCONSIN</p>
-                                </div>
-                                <div className="border-r p-2">
-                                  <span className="block font-black text-[8px] text-slate-400 uppercase">Place of Receipt</span>
-                                  <p className="font-bold text-slate-700">ALGECIRAS</p>
-                                </div>
-                                <div className="border-r p-2">
-                                  <span className="block font-black text-[8px] text-slate-400 uppercase">Port of Loading</span>
-                                  <p className="font-bold text-slate-700">ALGECIRAS</p>
-                                </div>
-                                <div className="p-2">
-                                  <span className="block font-black text-[8px] text-slate-400 uppercase">Port of Discharge</span>
-                                  <p className="font-bold text-slate-700 font-sans">DAR ES SALAAM</p>
-                                </div>
-                              </div>
-
-                              {/* Table Particulars */}
-                              <div className="border border-t-0 border-slate-800 z-10 flex-1 flex flex-col font-sans">
-                                <div className="bg-slate-50 border-b border-slate-800 text-center font-black py-1.5 text-[9px] uppercase tracking-wider text-slate-600">
-                                  Particulars Furnished by Shipper
-                                </div>
-                                <div className="grid grid-cols-12 text-[10px] font-black uppercase text-slate-400 border-b border-slate-800 p-2">
-                                  <div className="col-span-8 font-sans">Description of Packages and Goods</div>
-                                  <div className="col-span-2 text-right">Gross Weight</div>
-                                  <div className="col-span-2 text-right font-sans">Measurement</div>
-                                </div>
-                                <div className="flex-1 p-4 space-y-4 font-mono text-[10px]">
-                                  {pdfCurrentPage === 1 ? (
-                                    <div className="grid grid-cols-12 text-[11px]">
-                                      <div className="col-span-8 space-y-1">
-                                        <p className="font-black text-slate-800">1 CONTAINER SAID TO CONTAIN 2 VEHICLES</p>
-                                        <p className="text-slate-500">VEHICLE REF AND TYPE 270743 TOYOTA LAND CRISER 200 STATION WAGON GX V8 TW</p>
-                                        <p className="text-slate-500">IN TD 8 SEATS AUTOMATIC (ALARM, CLIMATE CTRL, COOL BOX, R. RAIL)</p>
-                                        <p className="text-slate-500">CHASSIS NO. JTMHV09J-X04160007</p>
-                                        <p className="text-slate-500">YEAR OF MANUF. 2014</p>
-                                        <p className="text-slate-500 font-mono">ENGINE NO. 1VD-0273330</p>
-                                      </div>
-                                      <div className="col-span-2 text-right font-bold text-slate-700">5,336.140 KGS</div>
-                                      <div className="col-span-2 text-right font-bold text-slate-700 font-mono">38.600 CBM</div>
+                            <div className="flex flex-col gap-8">
+                              {[1, 2, 3].map((pageNum) => (
+                                <div key={pageNum} className="p-8 min-h-[900px] w-[680px] flex flex-col gap-6 relative bg-white font-sans text-slate-800 shadow-xl" style={{ contentVisibility: 'auto' }}>
+                                  {renderWatermark('ORIGINAL')}
+                                  
+                                  {/* Header */}
+                                  <div className="flex justify-between items-start border-b border-slate-800 pb-3 z-10">
+                                    <div className="flex items-center gap-2">
+                                      <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-extrabold text-[15px]">★</div>
+                                      <span className="text-[#00243d] font-black tracking-widest text-xl font-sans">MAERSK LINE</span>
                                     </div>
-                                  ) : pdfCurrentPage === 2 ? (
-                                    <div className="grid grid-cols-12 text-[11px]">
-                                      <div className="col-span-8 space-y-1">
-                                        <p className="font-black text-slate-800">SECOND ROW DETAILS - PARTS AND ACCESSORIES</p>
-                                        <p className="text-slate-500">SPARE TYRES, JACK KIT WITH LEVER, TOOL BAG, MANUAL BOOKLET</p>
-                                        <p className="text-slate-500">CONTAINER NO: MSKU 6537219, SHIPPER SEAL NO: 270743</p>
-                                        <p className="text-slate-500">HS COMPLIANT CARGO OF HIGHEST DEGREE VALIDATION</p>
-                                      </div>
-                                      <div className="col-span-2 text-right font-bold text-slate-700 font-mono">Included</div>
-                                      <div className="col-span-2 text-right font-bold text-slate-700">-</div>
+                                    <div className="text-right">
+                                      <h2 className="text-xs font-black text-slate-400 tracking-wider font-sans">BILL OF LADING FOR OCEAN TRANSPORT</h2>
+                                      <p className="font-mono text-xs font-bold text-slate-700">B/L No. 953074879</p>
                                     </div>
-                                  ) : (
-                                    <div className="space-y-4 font-sans text-slate-400 p-8 text-center text-xs">
-                                      <p className="font-bold border-b pb-2 uppercase tracking-widest text-[#010136]">Terms & Carrier Conditions</p>
-                                      <p className="leading-relaxed">This carriage is subject to the terms and rules of the Ocean Association Carriage Act. Carrier standard limitation of liabilities apply as ruled in international commerce regulations. The shipper warrants the accuracy of all packages description.</p>
+                                  </div>
+
+                                  {/* Core Info Grid */}
+                                  <div className="grid grid-cols-2 border border-slate-800 text-[10px] z-10 font-sans">
+                                    <div className="border-r border-b border-slate-800 p-3 space-y-1">
+                                      <span className="font-black text-[9px] uppercase text-slate-400">Shipper</span>
+                                      <p className="font-bold text-slate-800">TME CORP CO., LTD.</p>
+                                      <p className="text-slate-500">40 DEVILS TOWER ROAD, P.O.BOX 176,</p>
+                                      <p className="text-slate-500">GIBRALTAR</p>
                                     </div>
-                                  )}
+                                    <div className="border-b border-slate-800 p-3 space-y-1">
+                                      <span className="font-black text-[9px] uppercase text-slate-400">Booking No. / References</span>
+                                      <p className="font-bold font-mono text-slate-800">953074879</p>
+                                      <span className="block font-black text-[9px] uppercase text-slate-400 mt-2">Export References</span>
+                                      <p className="font-bold font-mono text-slate-800">131660-3/5</p>
+                                    </div>
+                                    <div className="border-r border-slate-800 p-3 space-y-1">
+                                      <span className="font-black text-[9px] uppercase text-slate-400">Consignee</span>
+                                      <p className="font-bold text-slate-800">UNDP - TANZANIA</p>
+                                      <p className="text-slate-500">6TH FLOOR INTERNATIONAL HOUSE,</p>
+                                      <p className="text-slate-500">SHAABAN ROBERT ST. GARDEN AVENUE, DAR ES SALAAM</p>
+                                    </div>
+                                    <div className="p-3 space-y-1">
+                                      <span className="font-black text-[9px] uppercase text-slate-400">Notify Party</span>
+                                      <p className="font-bold text-slate-800">SAME AS CONSIGNEE</p>
+                                      <p className="text-slate-500">TEL: (+255) 22-211-2576</p>
+                                      <p className="text-slate-500">EMAIL: YONAH.SAMO@UNDP.ORG</p>
+                                    </div>
+                                  </div>
+
+                                  {/* Transport details */}
+                                  <div className="grid grid-cols-4 border border-t-0 border-slate-800 text-[9px] z-10">
+                                    <div className="border-r p-2">
+                                      <span className="block font-black text-[8px] text-slate-400 uppercase">Pre-Carriage By</span>
+                                      <p className="font-bold text-slate-700">VESSEL MAERSK WISCONSIN</p>
+                                    </div>
+                                    <div className="border-r p-2">
+                                      <span className="block font-black text-[8px] text-slate-400 uppercase">Place of Receipt</span>
+                                      <p className="font-bold text-slate-700">ALGECIRAS</p>
+                                    </div>
+                                    <div className="border-r p-2">
+                                      <span className="block font-black text-[8px] text-slate-400 uppercase">Port of Loading</span>
+                                      <p className="font-bold text-slate-700">ALGECIRAS</p>
+                                    </div>
+                                    <div className="p-2">
+                                      <span className="block font-black text-[8px] text-slate-400 uppercase">Port of Discharge</span>
+                                      <p className="font-bold text-slate-700 font-sans">DAR ES SALAAM</p>
+                                    </div>
+                                  </div>
+
+                                  {/* Table Particulars */}
+                                  <div className="border border-t-0 border-slate-800 z-10 flex-1 flex flex-col font-sans">
+                                    <div className="bg-slate-50 border-b border-slate-800 text-center font-black py-1.5 text-[9px] uppercase tracking-wider text-slate-600">
+                                      Particulars Furnished by Shipper
+                                    </div>
+                                    <div className="grid grid-cols-12 text-[10px] font-black uppercase text-slate-400 border-b border-slate-800 p-2">
+                                      <div className="col-span-8 font-sans">Description of Packages and Goods</div>
+                                      <div className="col-span-2 text-right">Gross Weight</div>
+                                      <div className="col-span-2 text-right font-sans">Measurement</div>
+                                    </div>
+                                    <div className="flex-1 p-4 space-y-4 font-mono text-[10px]">
+                                      {pageNum === 1 ? (
+                                        <div className="grid grid-cols-12 text-[11px]">
+                                          <div className="col-span-8 space-y-1">
+                                            <p className="font-black text-slate-800">1 CONTAINER SAID TO CONTAIN 2 VEHICLES</p>
+                                            <p className="text-slate-500">VEHICLE REF AND TYPE 270743 TOYOTA LAND CRISER 200 STATION WAGON GX V8 TW</p>
+                                            <p className="text-slate-500">IN TD 8 SEATS AUTOMATIC (ALARM, CLIMATE CTRL, COOL BOX, R. RAIL)</p>
+                                            <p className="text-slate-500">CHASSIS NO. JTMHV09J-X04160007</p>
+                                            <p className="text-slate-500">YEAR OF MANUF. 2014</p>
+                                            <p className="text-slate-500 font-mono">ENGINE NO. 1VD-0273330</p>
+                                          </div>
+                                          <div className="col-span-2 text-right font-bold text-slate-700">5,336.140 KGS</div>
+                                          <div className="col-span-2 text-right font-bold text-slate-700 font-mono">38.600 CBM</div>
+                                        </div>
+                                      ) : pageNum === 2 ? (
+                                        <div className="grid grid-cols-12 text-[11px]">
+                                          <div className="col-span-8 space-y-1">
+                                            <p className="font-black text-slate-800">SECOND ROW DETAILS - PARTS AND ACCESSORIES</p>
+                                            <p className="text-slate-500">SPARE TYRES, JACK KIT WITH LEVER, TOOL BAG, MANUAL BOOKLET</p>
+                                            <p className="text-slate-500">CONTAINER NO: MSKU 6537219, SHIPPER SEAL NO: 270743</p>
+                                            <p className="text-slate-500">HS COMPLIANT CARGO OF HIGHEST DEGREE VALIDATION</p>
+                                          </div>
+                                          <div className="col-span-2 text-right font-bold text-slate-700 font-mono">Included</div>
+                                          <div className="col-span-2 text-right font-bold text-slate-700">-</div>
+                                        </div>
+                                      ) : (
+                                        <div className="space-y-4 font-sans text-slate-400 p-8 text-center text-xs">
+                                          <p className="font-bold border-b pb-2 uppercase tracking-widest text-[#010136]">Terms & Carrier Conditions</p>
+                                          <p className="leading-relaxed">This carriage is subject to the terms and rules of the Ocean Association Carriage Act. Carrier standard limitation of liabilities apply as ruled in international commerce regulations. The shipper warrants the accuracy of all packages description.</p>
+                                        </div>
+                                      )}
+                                    </div>
+                                    <div className="border-t border-slate-300 p-3 bg-slate-50 text-[8px] text-slate-400 leading-normal font-sans">
+                                      SHIPPED ON BOARD, DATE: 27 FEB 2015, SIGNED BY MASTER / AGENT FOR MAERSK LINE OCEAN SHIPPERS. ALL LIABILITIES SUBJECT TO CARRIER TERMS AND REGULATIONS AS SPECIFIED.
+                                    </div>
+                                  </div>
                                 </div>
-                                <div className="border-t border-slate-300 p-3 bg-slate-50 text-[8px] text-slate-400 leading-normal font-sans">
-                                  SHIPPED ON BOARD, DATE: 27 FEB 2015, SIGNED BY MASTER / AGENT FOR MAERSK LINE OCEAN SHIPPERS. ALL LIABILITIES SUBJECT TO CARRIER TERMS AND REGULATIONS AS SPECIFIED.
-                                </div>
-                              </div>
+                              ))}
                             </div>
                           );
                         }
 
                         if (docUpper.includes('INV') || docUpper.includes('INVOICE') || docUpper.includes('ชุดข้อมูล')) {
                           return (
-                            <div className="p-8 min-h-[900px] w-[680px] flex flex-col gap-6 relative bg-white font-sans text-slate-800" style={{ contentVisibility: 'auto' }}>
-                              {renderWatermark('INVOICE')}
+                            <div className="flex flex-col gap-8">
+                              {[1, 2, 3].map((pageNum) => (
+                                <div key={pageNum} className="p-8 min-h-[900px] w-[680px] flex flex-col gap-6 relative bg-white font-sans text-slate-800 shadow-xl" style={{ contentVisibility: 'auto' }}>
+                                  {renderWatermark('INVOICE')}
 
-                              {/* Invoice Header */}
-                              <div className="flex justify-between items-start border-b-2 border-slate-900 pb-5 z-10">
-                                <div>
-                                  <span className="text-xs font-black tracking-widest text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-sm uppercase">Commercial Invoice</span>
-                                  <h1 className="text-2xl font-black tracking-tighter text-slate-800 mt-2 font-sans">GLOBAL TRADING INC.</h1>
-                                  <p className="text-[11px] text-slate-400 mt-1 font-sans">123 Logistics St, Shanghai, China | exports@globaltrading.com</p>
-                                </div>
-                                <div className="text-right">
-                                  <h2 className="text-lg font-black text-slate-800 tracking-tighter"># INV-2026-045</h2>
-                                  <p className="text-[11px] text-slate-400 font-mono">DATE: 20 APR 2026</p>
-                                </div>
-                              </div>
+                                  {/* Invoice Header */}
+                                  <div className="flex justify-between items-start border-b-2 border-slate-900 pb-5 z-10">
+                                    <div>
+                                      <span className="text-xs font-black tracking-widest text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-sm uppercase">Commercial Invoice</span>
+                                      <h1 className="text-2xl font-black tracking-tighter text-slate-800 mt-2 font-sans">GLOBAL TRADING INC.</h1>
+                                      <p className="text-[11px] text-slate-400 mt-1 font-sans">123 Logistics St, Shanghai, China | exports@globaltrading.com</p>
+                                    </div>
+                                    <div className="text-right">
+                                      <h2 className="text-lg font-black text-slate-800 tracking-tighter"># INV-2026-045</h2>
+                                      <p className="text-[11px] text-slate-400 font-mono">DATE: 20 APR 2026</p>
+                                    </div>
+                                  </div>
 
-                              {/* Client Info Grid */}
-                              <div className="grid grid-cols-2 gap-8 text-[11px] z-10 font-sans">
-                                <div className="bg-slate-50 p-4 rounded-xl space-y-1 font-sans">
-                                  <span className="font-black text-[9px] uppercase tracking-wider text-slate-400">Exporter (Shipper)</span>
-                                  <p className="font-extrabold text-slate-800 text-xs">GLOBAL TRADING INC.</p>
-                                  <p className="text-slate-500">Shanghai Logistics Zone, Bldg A</p>
-                                  <p className="text-slate-500">Contact: Exports Department</p>
-                                </div>
-                                <div className="bg-slate-50 p-4 rounded-xl space-y-1 font-sans">
-                                  <span className="font-black text-[9px] uppercase tracking-wider text-slate-400 font-sans">Sold To (Consignee)</span>
-                                  <p className="font-extrabold text-[#010136] text-xs font-sans font-black">BIZ-TRANS LOGISTICS CO., LTD.</p>
-                                  <p className="text-slate-500 font-sans font-bold">45/2 Rama 9, Huai Khwang, Bangkok, Thailand</p>
-                                  <p className="text-slate-500 font-mono">TAX ID: 0105562000000</p>
-                                </div>
-                              </div>
+                                  {/* Client Info Grid */}
+                                  <div className="grid grid-cols-2 gap-8 text-[11px] z-10 font-sans">
+                                    <div className="bg-slate-50 p-4 rounded-xl space-y-1 font-sans">
+                                      <span className="font-black text-[9px] uppercase tracking-wider text-slate-400">Exporter (Shipper)</span>
+                                      <p className="font-extrabold text-slate-800 text-xs">GLOBAL TRADING INC.</p>
+                                      <p className="text-slate-500">Shanghai Logistics Zone, Bldg A</p>
+                                      <p className="text-slate-500">Contact: Exports Department</p>
+                                    </div>
+                                    <div className="bg-slate-50 p-4 rounded-xl space-y-1 font-sans">
+                                      <span className="font-black text-[9px] uppercase tracking-wider text-slate-400 font-sans">Sold To (Consignee)</span>
+                                      <p className="font-extrabold text-[#010136] text-xs font-sans font-black">BIZ-TRANS LOGISTICS CO., LTD.</p>
+                                      <p className="text-slate-500 font-sans font-bold">45/2 Rama 9, Huai Khwang, Bangkok, Thailand</p>
+                                      <p className="text-slate-500 font-mono">TAX ID: 0105562000000</p>
+                                    </div>
+                                  </div>
 
-                              {/* Delivery & Terms Panel */}
-                              <div className="grid grid-cols-3 gap-4 border border-slate-100 rounded-xl p-3 text-[10px] bg-slate-50/50 z-10 font-sans">
-                                <div>
-                                  <span className="block text-[8px] font-black text-slate-400 uppercase">Incoterms</span>
-                                  <p className="font-bold text-slate-700">FOB SHANGHAI, CHINA</p>
-                                </div>
-                                <div>
-                                  <span className="block text-[8px] font-black text-slate-400 uppercase">Port of Loading</span>
-                                  <p className="font-bold text-slate-700">SHANGHAI, CHINA</p>
-                                </div>
-                                <div>
-                                  <span className="block text-[8px] font-black text-slate-400 uppercase font-sans">Port of Discharge</span>
-                                  <p className="font-bold text-slate-700 font-sans font-black">BANGKOK, THAILAND</p>
-                                </div>
-                              </div>
+                                  {/* Delivery & Terms Panel */}
+                                  <div className="grid grid-cols-3 gap-4 border border-slate-100 rounded-xl p-3 text-[10px] bg-slate-50/50 z-10 font-sans">
+                                    <div>
+                                      <span className="block text-[8px] font-black text-slate-400 uppercase">Incoterms</span>
+                                      <p className="font-bold text-slate-700">FOB SHANGHAI, CHINA</p>
+                                    </div>
+                                    <div>
+                                      <span className="block text-[8px] font-black text-slate-400 uppercase">Port of Loading</span>
+                                      <p className="font-bold text-slate-700">SHANGHAI, CHINA</p>
+                                    </div>
+                                    <div>
+                                      <span className="block text-[8px] font-black text-slate-400 uppercase font-sans">Port of Discharge</span>
+                                      <p className="font-bold text-slate-700 font-sans font-black">BANGKOK, THAILAND</p>
+                                    </div>
+                                  </div>
 
-                              {/* Itemized Table */}
-                              <div className="mt-4 border border-slate-200 rounded-xl overflow-hidden z-10 font-sans">
-                                <table className="w-full text-left text-xs font-sans">
-                                  <thead>
-                                    <tr className="bg-slate-900 text-white font-black uppercase tracking-wider text-[9px]">
-                                      <th className="p-3">Description of Goods</th>
-                                      <th className="p-3 font-mono text-center">HS Code</th>
-                                      <th className="p-3 text-center">Qty / UOM</th>
-                                      <th className="p-3 text-right">Price/Unit (USD)</th>
-                                      <th className="p-3 text-right">Total (USD)</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody className="divide-y divide-slate-100 text-[11px] font-sans">
-                                    {pdfCurrentPage === 1 ? (
-                                      Array.from({ length: 4 }).map((_, i) => (
-                                        <tr key={i} className="hover:bg-slate-50/50">
-                                          <td className="p-3 max-w-[240px]">
-                                            <p className="font-bold text-slate-800 font-sans">INDUSTRIAL AUTOMATION SENSOR V{i+1}</p>
-                                            <p className="text-[9px] text-slate-400 font-sans">Item No: SKU-{10001 + i}</p>
-                                          </td>
-                                          <td className="p-3 font-mono text-center text-slate-500">8471.30.{15 * i + 10}</td>
-                                          <td className="p-3 text-center font-bold text-slate-700 font-mono">{(i + 1) * 12} PCS</td>
-                                          <td className="p-3 text-right font-mono text-slate-600">${15 * i + 120}.00</td>
-                                          <td className="p-3 text-right font-mono font-bold text-slate-800">${((i + 1) * 12) * (15 * i + 120)}.00</td>
+                                  {/* Itemized Table */}
+                                  <div className="mt-4 border border-slate-200 rounded-xl overflow-hidden z-10 font-sans">
+                                    <table className="w-full text-left text-xs font-sans">
+                                      <thead>
+                                        <tr className="bg-slate-900 text-white font-black uppercase tracking-wider text-[9px]">
+                                          <th className="p-3">Description of Goods</th>
+                                          <th className="p-3 font-mono text-center">HS Code</th>
+                                          <th className="p-3 text-center">Qty / UOM</th>
+                                          <th className="p-3 text-right">Price/Unit (USD)</th>
+                                          <th className="p-3 text-right">Total (USD)</th>
                                         </tr>
-                                      ))
-                                    ) : pdfCurrentPage === 2 ? (
-                                      Array.from({ length: 4 }).map((_, i) => {
-                                        const idx = i + 4;
-                                        return (
-                                          <tr key={idx} className="hover:bg-slate-50/50 font-sans">
-                                            <td className="p-3 max-w-[240px]">
-                                              <p className="font-bold text-slate-800 font-sans">INDUSTRIAL AUTOMATION ACCESSORY MOD{idx+1}</p>
-                                              <p className="text-[9px] text-slate-400 font-sans">Item No: SKU-{10001 + idx}</p>
+                                      </thead>
+                                      <tbody className="divide-y divide-slate-100 text-[11px] font-sans">
+                                        {pageNum === 1 ? (
+                                          Array.from({ length: 4 }).map((_, i) => (
+                                            <tr key={i} className="hover:bg-slate-50/50">
+                                              <td className="p-3 max-w-[240px]">
+                                                <p className="font-bold text-slate-800 font-sans">INDUSTRIAL AUTOMATION SENSOR V{i+1}</p>
+                                                <p className="text-[9px] text-slate-400 font-sans">Item No: SKU-{10001 + i}</p>
+                                              </td>
+                                              <td className="p-3 font-mono text-center text-slate-500">8471.30.{15 * i + 10}</td>
+                                              <td className="p-3 text-center font-bold text-slate-700 font-mono">{(i + 1) * 12} PCS</td>
+                                              <td className="p-3 text-right font-mono text-slate-600">${15 * i + 120}.00</td>
+                                              <td className="p-3 text-right font-mono font-bold text-slate-800">${((i + 1) * 12) * (15 * i + 120)}.00</td>
+                                            </tr>
+                                          ))
+                                        ) : pageNum === 2 ? (
+                                          Array.from({ length: 4 }).map((_, i) => {
+                                            const idx = i + 4;
+                                            return (
+                                              <tr key={idx} className="hover:bg-slate-50/50 font-sans">
+                                                <td className="p-3 max-w-[240px]">
+                                                  <p className="font-bold text-slate-800 font-sans">INDUSTRIAL AUTOMATION ACCESSORY MOD{idx+1}</p>
+                                                  <p className="text-[9px] text-slate-400 font-sans">Item No: SKU-{10001 + idx}</p>
+                                                </td>
+                                                <td className="p-3 font-mono text-center text-slate-500">8471.30.{10 * idx + 10}</td>
+                                                <td className="p-3 text-center font-bold text-slate-700 font-mono">{(idx + 1) * 5} PCS</td>
+                                                <td className="p-3 text-right font-mono text-slate-600">${10 * idx + 8}.00</td>
+                                                <td className="p-3 text-right font-mono font-bold text-slate-800">${((idx + 1) * 5) * (10 * idx + 8)}.00</td>
+                                              </tr>
+                                            );
+                                          })
+                                        ) : (
+                                          <tr>
+                                            <td colSpan={5} className="p-8 text-center text-slate-400 font-sans leading-relaxed text-xs">
+                                              <p className="font-bold text-slate-800 mb-2 uppercase tracking-wide">End of Commercial Statement</p>
+                                              <p>This document constitutes a full legal sales invoice statement. All quantities and unit prices are final as packed.</p>
                                             </td>
-                                            <td className="p-3 font-mono text-center text-slate-500">8471.30.{10 * idx + 10}</td>
-                                            <td className="p-3 text-center font-bold text-slate-700 font-mono">{(idx + 1) * 5} PCS</td>
-                                            <td className="p-3 text-right font-mono text-slate-600">${10 * idx + 8}.00</td>
-                                            <td className="p-3 text-right font-mono font-bold text-slate-800">${((idx + 1) * 5) * (10 * idx + 8)}.00</td>
                                           </tr>
-                                        );
-                                      })
-                                    ) : (
-                                      <tr>
-                                        <td colSpan={5} className="p-8 text-center text-slate-400 font-sans leading-relaxed text-xs">
-                                          <p className="font-bold text-slate-800 mb-2 uppercase tracking-wide">End of Commercial Statement</p>
-                                          <p>This document constitutes a full legal sales invoice statement. All quantities and unit prices are final as packed.</p>
-                                        </td>
-                                      </tr>
-                                    )}
-                                  </tbody>
-                                </table>
-                              </div>
+                                        )}
+                                      </tbody>
+                                    </table>
+                                  </div>
 
-                              {/* Bill Summary */}
-                              <div className="flex justify-end mt-4 z-10 w-full font-sans">
-                                <div className="w-64 bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2 text-xs">
-                                  <div className="flex justify-between font-medium text-slate-400 text-[10px] uppercase">
-                                    <span>Subtotal:</span>
-                                    <span className="font-mono">$7,520.00</span>
-                                  </div>
-                                  <div className="flex justify-between font-medium text-slate-400 text-[10px] uppercase">
-                                    <span>Shipping & Handling:</span>
-                                    <span className="font-mono">PREPAID</span>
-                                  </div>
-                                  <div className="flex justify-between font-black border-t border-slate-200 pt-2 text-[#010136]">
-                                    <span>TOTAL AMOUNT:</span>
-                                    <span className="font-mono text-indigo-600 text-[13px]">$7,520.00</span>
+                                  {/* Bill Summary */}
+                                  <div className="flex justify-end mt-4 z-10 w-full font-sans">
+                                    <div className="w-64 bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2 text-xs">
+                                      <div className="flex justify-between font-medium text-slate-400 text-[10px] uppercase">
+                                        <span>Subtotal:</span>
+                                        <span className="font-mono">$7,520.00</span>
+                                      </div>
+                                      <div className="flex justify-between font-medium text-slate-400 text-[10px] uppercase">
+                                        <span>Shipping & Handling:</span>
+                                        <span className="font-mono">PREPAID</span>
+                                      </div>
+                                      <div className="flex justify-between font-black border-t border-slate-200 pt-2 text-[#010136]">
+                                        <span>TOTAL AMOUNT:</span>
+                                        <span className="font-mono text-indigo-600 text-[13px]">$7,520.00</span>
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
+                              ))}
                             </div>
                           );
                         }
 
                         if (docUpper.includes('PACKING') || docUpper.includes('LIST')) {
                           return (
-                            <div className="p-8 min-h-[900px] w-[680px] flex flex-col gap-6 relative bg-white font-sans text-slate-800" style={{ contentVisibility: 'auto' }}>
-                              {renderWatermark('PACKING LIST')}
+                            <div className="flex flex-col gap-8">
+                              {[1, 2, 3].map((pageNum) => (
+                                <div key={pageNum} className="p-8 min-h-[900px] w-[680px] flex flex-col gap-6 relative bg-white font-sans text-slate-800 shadow-xl" style={{ contentVisibility: 'auto' }}>
+                                  {renderWatermark('PACKING LIST')}
 
-                              {/* Packing List Header */}
-                              <div className="flex justify-between items-start border-b-2 border-slate-900 pb-5 z-10">
-                                <div>
-                                  <span className="text-xs font-black tracking-widest text-[#16EA9E] bg-[#16EA9E]/10 border border-[#16EA9E]/20 px-2.5 py-1 rounded-sm uppercase text-[#12a16d]">Packing list</span>
-                                  <h1 className="text-2xl font-black tracking-tighter text-slate-800 mt-2 font-sans font-black">GLOBAL TRADING INC.</h1>
-                                  <p className="text-[11px] text-slate-400 mt-1 font-sans">123 Logistics St, Shanghai, China | logistics@globaltrading.com</p>
-                                </div>
-                                <div className="text-right font-sans">
-                                  <h2 className="text-lg font-black text-slate-800 tracking-tighter font-sans">REF# PK-2026-045</h2>
-                                  <p className="text-[11px] text-slate-400 font-mono">DATE: 20 APR 2026</p>
-                                </div>
-                              </div>
+                                  {/* Packing List Header */}
+                                  <div className="flex justify-between items-start border-b-2 border-slate-900 pb-5 z-10">
+                                    <div>
+                                      <span className="text-xs font-black tracking-widest text-[#16EA9E] bg-[#16EA9E]/10 border border-[#16EA9E]/20 px-2.5 py-1 rounded-sm uppercase text-[#12a16d]">Packing list</span>
+                                      <h1 className="text-2xl font-black tracking-tighter text-slate-800 mt-2 font-sans font-black">GLOBAL TRADING INC.</h1>
+                                      <p className="text-[11px] text-slate-400 mt-1 font-sans">123 Logistics St, Shanghai, China | logistics@globaltrading.com</p>
+                                    </div>
+                                    <div className="text-right font-sans">
+                                      <h2 className="text-lg font-black text-slate-800 tracking-tighter font-sans">REF# PK-2026-045</h2>
+                                      <p className="text-[11px] text-slate-400 font-mono">DATE: 20 APR 2026</p>
+                                    </div>
+                                  </div>
 
-                              {/* Details */}
-                              <div className="grid grid-cols-2 gap-8 text-[11px] z-10 font-sans">
-                                <div className="bg-slate-50 p-4 rounded-xl space-y-1 font-sans">
-                                  <span className="font-black text-[9px] uppercase tracking-wider text-slate-400">Shipper / Exporter</span>
-                                  <p className="font-extrabold text-slate-800 text-xs">GLOBAL TRADING INC.</p>
-                                  <p className="text-slate-500">Contact: Packing & Logistics</p>
-                                </div>
-                                <div className="bg-slate-50 p-4 rounded-xl space-y-1 font-sans">
-                                  <span className="font-black text-[9px] uppercase tracking-wider text-slate-400">Consignee</span>
-                                  <p className="font-extrabold text-[#010136] text-xs font-black">BIZ-TRANS LOGISTICS CO., LTD.</p>
-                                  <p className="text-slate-500">Bangkok, Thailand | Contact: Kunawut W.</p>
-                                </div>
-                              </div>
+                                  {/* Details */}
+                                  <div className="grid grid-cols-2 gap-8 text-[11px] z-10 font-sans">
+                                    <div className="bg-slate-50 p-4 rounded-xl space-y-1 font-sans">
+                                      <span className="font-black text-[9px] uppercase tracking-wider text-slate-400">Shipper / Exporter</span>
+                                      <p className="font-extrabold text-slate-800 text-xs">GLOBAL TRADING INC.</p>
+                                      <p className="text-slate-500">Contact: Packing & Logistics</p>
+                                    </div>
+                                    <div className="bg-slate-50 p-4 rounded-xl space-y-1 font-sans">
+                                      <span className="font-black text-[9px] uppercase tracking-wider text-slate-400">Consignee</span>
+                                      <p className="font-extrabold text-[#010136] text-xs font-black">BIZ-TRANS LOGISTICS CO., LTD.</p>
+                                      <p className="text-slate-500">Bangkok, Thailand | Contact: Kunawut W.</p>
+                                    </div>
+                                  </div>
 
-                              {/* Packages details table */}
-                              <div className="mt-4 border border-slate-200 rounded-xl overflow-hidden z-10 font-sans">
-                                <table className="w-full text-left text-xs font-sans">
-                                  <thead>
-                                    <tr className="bg-slate-900 text-white font-black uppercase tracking-wider text-[9px]">
-                                      <th className="p-3">Box / Marks</th>
-                                      <th className="p-3 font-sans">Description of Goods</th>
-                                      <th className="p-3 text-center">Qty / Unit</th>
-                                      <th className="p-3 text-right">Net Weight</th>
-                                      <th className="p-3 text-right text-sans">Gross Weight</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody className="divide-y divide-slate-100 text-[11px] font-sans">
-                                    {pdfCurrentPage === 1 ? (
-                                      Array.from({ length: 4 }).map((_, i) => (
-                                        <tr key={i} className="hover:bg-slate-50/50">
-                                          <td className="p-3 font-mono font-bold text-slate-600">BOX {i+1}/4</td>
-                                          <td className="p-3 font-sans">
-                                            <p className="font-bold text-slate-800 font-sans">INDUSTRIAL AUTOMATION SENSOR V{i+1}</p>
-                                            <p className="text-[9px] text-slate-400 font-sans">MODEL# SKU-{10001 + i}</p>
-                                          </td>
-                                          <td className="p-3 text-center font-bold text-slate-700 font-mono">{(i + 1) * 12} PCS</td>
-                                          <td className="p-3 text-right font-mono text-slate-500">{(i + 1) * 4.5} KG</td>
-                                          <td className="p-3 text-right font-mono text-slate-500">{(i + 1) * 5.2} KG</td>
+                                  {/* Packages details table */}
+                                  <div className="mt-4 border border-slate-200 rounded-xl overflow-hidden z-10 font-sans">
+                                    <table className="w-full text-left text-xs font-sans">
+                                      <thead>
+                                        <tr className="bg-slate-900 text-white font-black uppercase tracking-wider text-[9px]">
+                                          <th className="p-3">Box / Marks</th>
+                                          <th className="p-3 font-sans">Description of Goods</th>
+                                          <th className="p-3 text-center">Qty / Unit</th>
+                                          <th className="p-3 text-right">Net Weight</th>
+                                          <th className="p-3 text-right text-sans">Gross Weight</th>
                                         </tr>
-                                      ))
-                                    ) : pdfCurrentPage === 2 ? (
-                                      Array.from({ length: 3 }).map((_, i) => {
-                                        const idx = i + 4;
-                                        return (
-                                          <tr key={idx} className="hover:bg-slate-50/50 font-sans">
-                                            <td className="p-3 font-mono font-bold text-slate-600 font-mono">BOX {idx+1}/7</td>
-                                            <td className="p-3 font-sans">
-                                              <p className="font-bold text-slate-800 font-sans">AUTOMATION SENSOR BRACKET TYPE {idx+1}</p>
-                                              <p className="text-[9px] text-slate-400 font-sans">MODEL# SKU-{10001 + idx}</p>
+                                      </thead>
+                                      <tbody className="divide-y divide-slate-100 text-[11px] font-sans">
+                                        {pageNum === 1 ? (
+                                          Array.from({ length: 4 }).map((_, i) => (
+                                            <tr key={i} className="hover:bg-slate-50/50">
+                                              <td className="p-3 font-mono font-bold text-slate-600">BOX {i+1}/4</td>
+                                              <td className="p-3 font-sans">
+                                                <p className="font-bold text-slate-800 font-sans">INDUSTRIAL AUTOMATION SENSOR V{i+1}</p>
+                                                <p className="text-[9px] text-slate-400 font-sans">MODEL# SKU-{10001 + i}</p>
+                                              </td>
+                                              <td className="p-3 text-center font-bold text-slate-700 font-mono">{(i + 1) * 12} PCS</td>
+                                              <td className="p-3 text-right font-mono text-slate-500">{(i + 1) * 4.5} KG</td>
+                                              <td className="p-3 text-right font-mono text-slate-500">{(i + 1) * 5.2} KG</td>
+                                            </tr>
+                                          ))
+                                        ) : pageNum === 2 ? (
+                                          Array.from({ length: 3 }).map((_, i) => {
+                                            const idx = i + 4;
+                                            return (
+                                              <tr key={idx} className="hover:bg-slate-50/50 font-sans">
+                                                <td className="p-3 font-mono font-bold text-slate-600 font-mono">BOX {idx+1}/7</td>
+                                                <td className="p-3 font-sans">
+                                                  <p className="font-bold text-slate-800 font-sans">AUTOMATION SENSOR BRACKET TYPE {idx+1}</p>
+                                                  <p className="text-[9px] text-slate-400 font-sans">MODEL# SKU-{10001 + idx}</p>
+                                                </td>
+                                                <td className="p-3 text-center font-bold text-slate-700 font-mono">{(idx + 1) * 2} PCS</td>
+                                                <td className="p-3 text-right font-mono text-slate-500">{(idx + 1) * 1.5} KG</td>
+                                                <td className="p-3 text-right font-mono text-slate-500">{(idx + 1) * 1.8} KG</td>
+                                              </tr>
+                                            );
+                                          })
+                                        ) : (
+                                          <tr>
+                                            <td colSpan={5} className="p-8 text-center text-slate-400 font-sans leading-relaxed text-xs">
+                                              <p className="font-bold text-slate-800 mb-2 uppercase tracking-wide">End of Packaging Statement</p>
+                                              <p>All containers and boxes are packed according to international shipping rules. Weights verified before container dispatch.</p>
                                             </td>
-                                            <td className="p-3 text-center font-bold text-slate-700 font-mono">{(idx + 1) * 2} PCS</td>
-                                            <td className="p-3 text-right font-mono text-slate-500">{(idx + 1) * 1.5} KG</td>
-                                            <td className="p-3 text-right font-mono text-slate-500">{(idx + 1) * 1.8} KG</td>
                                           </tr>
-                                        );
-                                      })
-                                    ) : (
-                                      <tr>
-                                        <td colSpan={5} className="p-8 text-center text-slate-400 font-sans leading-relaxed text-xs">
-                                          <p className="font-bold text-slate-800 mb-2 uppercase tracking-wide">End of Packaging Statement</p>
-                                          <p>All containers and boxes are packed according to international shipping rules. Weights verified before container dispatch.</p>
-                                        </td>
-                                      </tr>
-                                    )}
-                                  </tbody>
-                                </table>
-                              </div>
+                                        )}
+                                      </tbody>
+                                    </table>
+                                  </div>
 
-                              {/* Summary */}
-                              <div className="grid grid-cols-3 border border-slate-200 bg-slate-50 rounded-xl p-4 text-[10px] font-sans h-20 items-center z-10 mt-auto">
-                                <div className="text-center border-r border-slate-200">
-                                  <span className="block font-black text-slate-400 uppercase text-[8px]">TOTAL PACKAGES</span>
-                                  <p className="font-black text-slate-800 text-[13px] mt-0.5">4 CARTONS (BOXES)</p>
+                                  {/* Summary */}
+                                  <div className="grid grid-cols-3 border border-slate-200 bg-slate-50 rounded-xl p-4 text-[10px] font-sans h-20 items-center z-10 mt-auto">
+                                    <div className="text-center border-r border-slate-200">
+                                      <span className="block font-black text-slate-400 uppercase text-[8px]">TOTAL PACKAGES</span>
+                                      <p className="font-black text-slate-800 text-[13px] mt-0.5">4 CARTONS (BOXES)</p>
+                                    </div>
+                                    <div className="text-center border-r border-slate-200 animate-pulse">
+                                      <span className="block font-black text-slate-400 uppercase text-[8px]">TOTAL NET WEIGHT</span>
+                                      <p className="font-black text-[#010136] text-[13px] mt-0.5">45.00 KGS</p>
+                                    </div>
+                                    <div className="text-center">
+                                      <span className="block font-black text-slate-400 uppercase text-[8px]">TOTAL GROSS WEIGHT</span>
+                                      <p className="font-black text-[#010136] text-[13px] mt-0.5">52.00 KGS</p>
+                                    </div>
+                                  </div>
                                 </div>
-                                <div className="text-center border-r border-slate-200 animate-pulse">
-                                  <span className="block font-black text-slate-400 uppercase text-[8px]">TOTAL NET WEIGHT</span>
-                                  <p className="font-black text-[#010136] text-[13px] mt-0.5">45.00 KGS</p>
-                                </div>
-                                <div className="text-center">
-                                  <span className="block font-black text-slate-400 uppercase text-[8px]">TOTAL GROSS WEIGHT</span>
-                                  <p className="font-black text-[#010136] text-[13px] mt-0.5">52.00 KGS</p>
-                                </div>
-                              </div>
+                              ))}
                             </div>
                           );
                         }
 
                         {/* Default Fallback Document Style */}
                         return (
-                          <div className="p-8 min-h-[900px] w-[680px] flex flex-col gap-6 relative bg-white font-sans text-slate-800" style={{ contentVisibility: 'auto' }}>
-                            {renderWatermark('DOCUMENT APPROVED')}
+                          <div className="flex flex-col gap-8">
+                            {[1, 2, 3].map((pageNum) => (
+                              <div key={pageNum} className="p-8 min-h-[900px] w-[680px] flex flex-col gap-6 relative bg-white font-sans text-slate-800 shadow-xl" style={{ contentVisibility: 'auto' }}>
+                                {renderWatermark('DOCUMENT APPROVED')}
 
-                            <div className="flex justify-between items-start border-b border-slate-300 pb-4 z-10 font-sans">
-                              <div className="flex items-center gap-2">
-                                <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white"><FileIcon size={14} /></div>
-                                <h1 className="text-sm font-black text-slate-800 uppercase tracking-tight font-sans">{pdfPreviewUrl}</h1>
-                              </div>
-                              <p className="text-[10px] font-mono text-slate-400 font-mono">DOC VERSION {selectedJob?.updatedDocs?.includes(pdfPreviewUrl) ? '2.0' : '1.0'}</p>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4 border border-dashed border-slate-200 rounded-xl p-4 text-[11px] bg-slate-50/40 z-10 font-sans">
-                              <div>
-                                <span className="font-black text-slate-400 uppercase tracking-wider text-[8px]">SOURCE DATA NAME</span>
-                                <p className="font-bold text-slate-700 mt-0.5 font-sans">{pdfPreviewUrl}</p>
-                              </div>
-                              <div>
-                                <span className="font-black text-slate-400 uppercase tracking-wider text-[8px]">ASSOCIATED WORKFLOW</span>
-                                <p className="font-bold text-slate-700 mt-0.5 font-sans">{selectedJob?.type || 'STANDARD VERIFICATION'}</p>
-                              </div>
-                            </div>
-
-                            <div className="z-10 mt-4 flex-1 flex flex-col gap-4 font-sans">
-                              {pdfCurrentPage === 1 ? (
-                                <>
-                                  <h3 className="font-black text-[10px] uppercase text-slate-400 tracking-wider">DOC CONTENT SUMMARY (PAGE 1)</h3>
-                                  <div className="border border-slate-200 rounded-xl p-4 flex-1 font-mono text-slate-500 font-bold text-[11px] space-y-2 whitespace-pre leading-relaxed bg-slate-50/50">
-                                    {Object.entries(tempOCRData).slice(0, 10).map(([field, value]) => (
-                                      <div key={field} className="flex justify-between border-b border-slate-100 py-1.5 font-sans text-xs">
-                                        <span className="text-[#1f5df9] font-bold font-sans">{field}:</span>
-                                        <span className="text-[#010136] font-semibold font-sans">{value}</span>
-                                      </div>
-                                    ))}
+                                <div className="flex justify-between items-start border-b border-slate-300 pb-4 z-10 font-sans">
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white"><FileIcon size={14} /></div>
+                                    <h1 className="text-sm font-black text-slate-800 uppercase tracking-tight font-sans">{pdfPreviewUrl}</h1>
                                   </div>
-                                </>
-                              ) : pdfCurrentPage === 2 ? (
-                                <>
-                                  <h3 className="font-black text-[10px] uppercase text-slate-400 tracking-wider font-sans">DOC CONTENT SUMMARY (PAGE 2)</h3>
-                                  <div className="border border-slate-200 rounded-xl p-4 flex-1 font-mono text-slate-500 font-bold text-[11px] space-y-2 whitespace-pre leading-relaxed bg-slate-50/50 font-sans">
-                                    {Object.entries(tempOCRData).slice(10, 20).map(([field, value]) => (
-                                      <div key={field} className="flex justify-between border-b border-slate-100 py-1.5 font-sans text-xs">
-                                        <span className="text-[#1f5df9] font-bold font-sans">{field}:</span>
-                                        <span className="text-[#010136] font-semibold font-sans">{value}</span>
-                                      </div>
-                                    ))}
-                                    {Object.entries(tempOCRData).length <= 10 && (
-                                      <p className="text-center text-slate-400 font-sans py-12 text-xs">No additional fields on Page 2</p>
-                                    )}
-                                  </div>
-                                </>
-                              ) : (
-                                <div className="p-8 text-center text-slate-400 font-sans h-full flex flex-col justify-center items-center">
-                                  <p className="font-bold text-[#010136] mb-2 uppercase tracking-wide">Page 3 Signature Section & Metadata</p>
-                                  <p className="text-xs max-w-sm mb-4">Official document certification and blockchain transaction logs are appended for compliance.</p>
-                                  <div className="w-1/2 border-t-2 border-slate-300 font-bold text-[9px] pt-2 text-slate-500 font-sans">AUTHORIZED STAMP SIGNATURE</div>
+                                  <p className="text-[10px] font-mono text-slate-400 font-mono font-sans">DOC VERSION {selectedJob?.updatedDocs?.includes(pdfPreviewUrl) ? '2.0' : '1.0'}</p>
                                 </div>
-                              )}
-                            </div>
+
+                                <div className="grid grid-cols-2 gap-4 border border-dashed border-slate-200 rounded-xl p-4 text-[11px] bg-slate-50/40 z-10 font-sans">
+                                  <div>
+                                    <span className="font-black text-slate-400 uppercase tracking-wider text-[8px]">SOURCE DATA NAME</span>
+                                    <p className="font-bold text-slate-700 mt-0.5 font-sans">{pdfPreviewUrl}</p>
+                                  </div>
+                                  <div>
+                                    <span className="font-black text-slate-400 uppercase tracking-wider text-[8px]">ASSOCIATED WORKFLOW</span>
+                                    <p className="font-bold text-slate-700 mt-0.5 font-sans">{selectedJob?.type || 'STANDARD VERIFICATION'}</p>
+                                  </div>
+                                </div>
+
+                                <div className="z-10 mt-4 flex-1 flex flex-col gap-4 font-sans">
+                                  {pageNum === 1 ? (
+                                    <>
+                                      <h3 className="font-black text-[10px] uppercase text-slate-400 tracking-wider font-sans">DOC CONTENT SUMMARY (PAGE 1)</h3>
+                                      <div className="border border-slate-200 rounded-xl p-4 flex-1 font-mono text-slate-500 font-bold text-[11px] space-y-2 whitespace-pre leading-relaxed bg-slate-50/50">
+                                        {Object.entries(tempOCRData).slice(0, 10).map(([field, value]) => (
+                                          <div key={field} className="flex justify-between border-b border-slate-100 py-1.5 font-sans text-xs font-sans">
+                                            <span className="text-[#1f5df9] font-bold font-sans">{field}:</span>
+                                            <span className="text-[#010136] font-semibold font-sans">{value}</span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </>
+                                  ) : pageNum === 2 ? (
+                                    <>
+                                      <h3 className="font-black text-[10px] uppercase text-slate-400 tracking-wider font-sans">DOC CONTENT SUMMARY (PAGE 2)</h3>
+                                      <div className="border border-slate-200 rounded-xl p-4 flex-1 font-mono text-slate-500 font-bold text-[11px] space-y-2 whitespace-pre leading-relaxed bg-slate-50/50 font-sans">
+                                        {Object.entries(tempOCRData).slice(10, 20).map(([field, value]) => (
+                                          <div key={field} className="flex justify-between border-b border-slate-100 py-1.5 font-sans text-xs">
+                                            <span className="text-[#1f5df9] font-bold font-sans">{field}:</span>
+                                            <span className="text-[#010136] font-semibold font-sans">{value}</span>
+                                          </div>
+                                        ))}
+                                        {Object.entries(tempOCRData).length <= 10 && (
+                                          <p className="text-center text-slate-400 font-sans py-12 text-xs">No additional fields on Page 2</p>
+                                        )}
+                                      </div>
+                                    </>
+                                  ) : (
+                                    <div className="p-8 text-center text-slate-400 font-sans h-full flex flex-col justify-center items-center">
+                                      <p className="font-bold text-[#010136] mb-2 uppercase tracking-wide font-sans">Page 3 Signature Section & Metadata</p>
+                                      <p className="text-xs max-w-sm mb-4">Official document certification and blockchain transaction logs are appended for compliance.</p>
+                                      <div className="w-1/2 border-t-2 border-slate-300 font-bold text-[9px] pt-2 text-slate-500 font-sans">AUTHORIZED STAMP SIGNATURE</div>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
                           </div>
                         );
                       })()}
