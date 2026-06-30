@@ -1354,26 +1354,6 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
                                                 </button>
                                               </div>
 
-                                              {/* AI Prompt Input for main field */}
-                                              <div className="pt-1 space-y-1 mx-4 mb-4 !mt-0">
-                                                <div className="flex items-center gap-1.5 text-[11px] font-black text-[#010136]/75 uppercase tracking-wider pl-0.5 select-none">
-                                                  <span className="text-blue-500">✨</span>
-                                                  <span>{isTh ? 'Prompt AI สำหรับฟิลด์นี้' : 'AI Prompt for this Field'}</span>
-                                                  <Tooltip title={isTh ? 'ระบุเงื่อนไข/คำแนะนำเฉพาะในการหาและดึงข้อมูลของฟิลด์นี้ (เช่น อยู่มุมขวาบน, ต้องขึ้นต้นด้วยตัวอักษร...) เพื่อนำทาง AI' : 'Specify custom extraction instructions for this field to guide the AI model.'}>
-                                                    <HelpCircle size={13} className="text-[#010136]/40 cursor-help" />
-                                                  </Tooltip>
-                                                </div>
-                                                <textarea
-                                                  value={label.aiPrompt || ''}
-                                                  onChange={(e) => handleUpdateLabelRow(config.docTypeId, label.id, { aiPrompt: e.target.value })}
-                                                  placeholder={isTh 
-                                                    ? 'คำอธิบายหรือคำสั่งเพิ่มเติมสำหรับฟิลด์นี้ เช่น "ฟิลด์นี้จะเจอที่มุมขวาบนของเอกสารเป็นส่วนใหญ่", "เป็นรหัส 10 หลักขึ้นต้นด้วย PO"' 
-                                                    : 'Additional prompt instruction, e.g., "This field is usually located at the top-right corner of the page", "Must start with prefix PO-"'}
-                                                  rows={2}
-                                                  className="w-full px-3 py-2 text-xs font-semibold text-slate-800 bg-white border border-slate-200 rounded-[4px] hover:border-blue-300 focus:border-[#1f5df9] focus:outline-none focus:ring-1 focus:ring-[#1f5df9]/10 placeholder-slate-400 transition-all resize-y"
-                                                />
-                                              </div>
-
                                               {/* Sub-fields block for array type */}
                                               {label.type === 'array' && (
                                                 <div className="mx-4 mb-4 pl-6 border-l-2 border-dashed border-[#1f5df9]/40 space-y-3 pt-1">
@@ -1452,26 +1432,6 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
                                                             >
                                                               <Trash2 size={13} />
                                                             </button>
-                                                          </div>
-
-                                                          {/* AI Prompt Input for sub-field */}
-                                                          <div className="space-y-1 pt-0.5">
-                                                            <div className="flex items-center gap-1.5 text-[10px] font-black text-[#010136]/60 uppercase tracking-wider pl-0.5 select-none">
-                                                              <span className="text-blue-500">✨</span>
-                                                              <span>{isTh ? 'Prompt AI สำหรับฟิลด์ย่อยนี้' : 'AI Prompt for this Sub-Field'}</span>
-                                                              <Tooltip title={isTh ? 'คำสั่งเสริมพิเศษสำหรับ AI ในการดึงค่าฟิลด์ย่อยนี้ในรายการตาราง/อาร์เรย์' : 'Custom extraction instruction for this nested array item field.'}>
-                                                                <HelpCircle size={12} className="text-[#010136]/40 cursor-help" />
-                                                              </Tooltip>
-                                                            </div>
-                                                            <textarea
-                                                              value={subLabel.aiPrompt || ''}
-                                                              onChange={(e) => handleUpdateSubLabelRow(config.docTypeId, label.id, subLabel.id, { aiPrompt: e.target.value })}
-                                                              placeholder={isTh 
-                                                                ? 'คำสั่งเฉพาะ เช่น "คอลัมน์แรกในตาราง", "ตัดเครื่องหมายสกุลเงินออก", "มักมีคำว่า Code นำหน้า"' 
-                                                                : 'Nested field instructions, e.g., "Found in the first column", "Remove currency symbols", "Typically prefixed with Code"'}
-                                                              rows={1}
-                                                              className="w-full px-2.5 py-1.5 text-[11px] font-semibold text-slate-800 bg-white border border-slate-200 rounded-[4px] hover:border-blue-300 focus:border-[#1f5df9] focus:outline-none focus:ring-1 focus:ring-[#1f5df9]/10 placeholder-slate-400 transition-all resize-y"
-                                                            />
                                                           </div>
                                                         </div>
                                                       ))}
