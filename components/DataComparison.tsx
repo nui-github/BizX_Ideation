@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { diffChars } from 'diff';
 import { 
   FileText, Upload, ArrowRight, Check, AlertCircle, 
   Search, Download, Columns, ChevronLeft, ChevronRight,
   Plus, Trash2, ArrowLeftRight, FileSpreadsheet, File as FileIcon,
   CheckCircle2, XCircle, Info, Eye, EyeOff, Send, Filter, ListFilter, ArrowLeft, Save, RotateCcw,
   LayoutGrid, List, ScanEye, Bot, ChevronDown, Lock, Unlock, HelpCircle, X, Loader2, ShieldCheck, ArrowUpRight, ScanSearch, History, Edit3, UploadCloud, AlertTriangle,
-  Printer, RotateCw, ZoomIn, ZoomOut, Menu, Copy
+  Printer, RotateCw, ZoomIn, ZoomOut, Menu, Copy, Star
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Tabs, Tag, Badge, Empty, Button, message } from 'antd';
@@ -2372,6 +2373,7 @@ const mockWorkflows: Workflow[] = [
         let value = f.source;
         let status: 'MATCH' | 'MISMATCH' | 'SYNONYM' | 'NA' = 'MATCH';
         let ruleTitle = '';
+        let ruleDesc = '';
 
         // Randomly simulate N/A for certain fields in certain docs
         if ((docName === 'FTA / CO' && f.name === 'Total Quantity')) {
@@ -2389,14 +2391,16 @@ const mockWorkflows: Workflow[] = [
              if (f.name === 'Consignee Name' && docName === 'PACKING LIST') {
                 value = 'BIZ-TRANS LOGISTICS (THAILA ND) CO., LTD.';
                 status = 'SYNONYM';
-                ruleTitle = 'Synonym Rule: Entity Alias Mapping';
+                ruleTitle = 'Master lookup (ฐานข้อมูล)';
+                ruleDesc = 'ข้อมูลตรงกับฐานข้อมูลคู่ค้า (Alias)';
              } else if (f.name === 'Port of Loading' && docName === 'INVOICE') { // Changed to mismatch
                 value = 'CN SHG';
                 status = 'MISMATCH';
              } else if (f.name === 'Port of Discharge' && docName === 'PACKING LIST') {
                 value = 'BANGKOK PORT';
                 status = 'SYNONYM';
-                ruleTitle = 'Geocode Mapping: BANGKOK -> PORT';
+                ruleTitle = 'Master lookup (ฐานข้อมูล)';
+                ruleDesc = 'ตรงกับรหัสท่าเรือในระบบ';
              } else if (f.name === 'Consignee TAX ID' && docName === 'PACKING LIST') {
                 status = 'MISMATCH';
                 value = '010556200000X';
@@ -2435,11 +2439,13 @@ const mockWorkflows: Workflow[] = [
              } else if (f.name === 'Vessel / Flight' && (docName.toUpperCase().includes('FORM') || docName.toUpperCase().includes('B / L') || docName.toUpperCase().includes('WAYBILL'))) {
                 value = 'MSC ALICIA V.2';
                 status = 'SYNONYM';
-                ruleTitle = 'Synonym Rule: Vessel Name Variation';
+                ruleTitle = 'เปรียบเทียบตามเงื่อนไข (CONDITIONAL)';
+                ruleDesc = 'ละเว้นคำนำหน้าชื่อเรือ (Prefix)';
              } else if (f.name === 'Country of Origin' && (docName.toUpperCase().includes('FORM') || docName.toUpperCase().includes('CO') || docName.toUpperCase().includes('CERT') || docName.toUpperCase().includes('FTA') || docName.toUpperCase().includes('B / L'))) {
                 value = 'PRC';
                 status = 'SYNONYM';
-                ruleTitle = 'Synonym Rule: Country Alias Mapping';
+                ruleTitle = 'Master lookup (ฐานข้อมูล)';
+                ruleDesc = 'ชื่อประเทศตรงกับรหัส PRC (China)';
              } else if (f.name === 'Freight Charges' && docName.toUpperCase().includes('INVOICE')) {
                 value = 'COLLECT';
                 status = 'MISMATCH';
@@ -2450,15 +2456,18 @@ const mockWorkflows: Workflow[] = [
              if (f.name === 'Consignee Name' && docName === 'Form D') {
                 value = 'BIZ-TRANS LOGISTICS';
                 status = 'SYNONYM';
-                ruleTitle = 'Synonym Rule: Entity Alias Mapping';
+                ruleTitle = 'Master lookup (ฐานข้อมูล)';
+                ruleDesc = 'ข้อมูลตรงกับฐานข้อมูลคู่ค้า (Alias)';
              } else if (f.name === 'Port of Loading' && docName === 'Form D') {
                 value = 'CN SHA';
                 status = 'SYNONYM';
-                ruleTitle = 'Geocode Mapping: SHANGHAI -> SHA';
+                ruleTitle = 'Master lookup (ฐานข้อมูล)';
+                ruleDesc = 'รหัสตรงกับเมือง SHANGHAI';
              } else if (f.name === 'Port of Discharge' && docName === 'Form D') {
                 value = 'TH BKK';
                 status = 'SYNONYM';
-                ruleTitle = 'Geocode Mapping: BANGKOK -> BKK';
+                ruleTitle = 'Master lookup (ฐานข้อมูล)';
+                ruleDesc = 'รหัสตรงกับเมือง BANGKOK';
              }
           }
 
@@ -2468,7 +2477,8 @@ const mockWorkflows: Workflow[] = [
               if (f.source === master && tIdx % 2 === 1) {
                 value = syns[Math.floor(Math.random() * syns.length)];
                 status = 'SYNONYM';
-                ruleTitle = 'Synonym Rule: Geo-location Mapping';
+                ruleTitle = 'Master lookup (ฐานข้อมูล)';
+                ruleDesc = 'คำพ้องความหมายในระบบ';
               }
             });
           }
@@ -2483,7 +2493,8 @@ const mockWorkflows: Workflow[] = [
               } else if (f.name === 'Consignee Name' && tIdx % 2 === 1) {
                 value = 'BIZ-TRANS LOGISTICS (THAILAND) CO., LTD.';
                 status = 'SYNONYM';
-                ruleTitle = 'Synonym Rule: Entity Alias Mapping';
+                ruleTitle = 'Master lookup (ฐานข้อมูล)';
+                ruleDesc = 'ข้อมูลตรงกับฐานข้อมูลคู่ค้า (Alias)';
               }
             } else if (docUpper.includes('BL') || docUpper.includes('B / L') || docUpper.includes('B/L') || docUpper.includes('LADING') || docUpper.includes('WAYBILL')) {
               if (f.name === 'Total Quantity') {
@@ -2492,7 +2503,8 @@ const mockWorkflows: Workflow[] = [
               } else if (f.name === 'Vessel / Flight' && tIdx % 2 === 1) {
                 value = 'MSC ALICIA V.2';
                 status = 'SYNONYM';
-                ruleTitle = 'Synonym Rule: Vessel Name Variation';
+                ruleTitle = 'เปรียบเทียบตามเงื่อนไข (CONDITIONAL)';
+                ruleDesc = 'ละเว้นคำนำหน้าชื่อเรือ (Prefix)';
               }
             }
           }
@@ -2525,7 +2537,8 @@ const mockWorkflows: Workflow[] = [
              const syns = synonymRules[f.source] || [];
              if (syns.includes(value)) {
                status = 'SYNONYM';
-               ruleTitle = 'Synonym Rule: Manual Entry Accepted';
+               ruleTitle = 'เปรียบเทียบตามเงื่อนไข (CONDITIONAL)';
+               ruleDesc = 'ตรงกับเงื่อนไขที่ผู้ใช้ระบุ (Manual Accepted)';
              } else {
                status = 'MISMATCH';
              }
@@ -2538,12 +2551,24 @@ const mockWorkflows: Workflow[] = [
           value = f.source;
         }
 
+        // Mock logic for isPrimary: INVOICE is primary for Header fields, PACKING LIST for Footer fields
+        let isPrimary = false;
+        if (f.part === 'Header' && docName.toUpperCase().includes('INVOICE')) {
+          isPrimary = true;
+        } else if (f.part === 'Footer' && docName.toUpperCase().includes('PACKING')) {
+          isPrimary = true;
+        } else if (f.part === 'Description' && docName.toUpperCase().includes('INVOICE')) {
+          isPrimary = true;
+        }
+
         return {
           fileId: `target-${tIdx + 1}`,
           fileName: docName,
           value,
           status,
-          ruleTitle
+          ruleTitle,
+          ruleDesc,
+          isPrimary
         };
       });
 
@@ -3338,17 +3363,13 @@ const mockWorkflows: Workflow[] = [
                           );
                           return;
                         }
-                        if (!isProcessing) {
-                          setSelectedJob(job);
-                          setStep(1);
-                        }
+                        setSelectedJob(job);
+                        setStep(1);
                       }} 
                       className={`transition-all group ${
                         isBlocked 
                           ? 'cursor-not-allowed bg-slate-50/50 hover:bg-slate-50/50 opacity-60' 
-                          : isProcessing 
-                            ? 'cursor-not-allowed opacity-80' 
-                            : 'hover:bg-blue-50/20 cursor-pointer'
+                          : 'hover:bg-blue-50/20 cursor-pointer'
                       }`}
                     >
                       <td className="px-8 py-5">
@@ -3413,7 +3434,7 @@ const mockWorkflows: Workflow[] = [
                         <div className="flex items-center justify-end gap-2">
                           <Tooltip content={isBlocked ? (language === 'TH' ? 'ขั้นตอนก่อนหน้ายังไม่เสร็จสิ้น' : 'Previous step not completed') : t.ttViewCompare}>
                             <button 
-                              disabled={isProcessing || isBlocked}
+                              disabled={isBlocked}
                               onClick={(e) => {
                                 e.stopPropagation();
                                 if (isBlocked) {
@@ -3427,7 +3448,7 @@ const mockWorkflows: Workflow[] = [
                                 setSelectedJob(job);
                                 setStep(1);
                               }}
-                              className={`p-2.5 rounded-[4px] transition-all ${(isProcessing || isBlocked) ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:text-[#1f5df9] hover:bg-blue-50'}`}
+                              className={`p-2.5 rounded-[4px] transition-all ${isBlocked ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:text-[#1f5df9] hover:bg-blue-50'}`}
                             >
                               <Eye size={20} />
                             </button>
@@ -3704,11 +3725,9 @@ const mockWorkflows: Workflow[] = [
 
                     return (
                   <tr key={job.id} onClick={() => {
-                    if (!isProcessing) {
                       setSelectedJob(job);
                       setStep(1);
-                    }
-                  }} className={`transition-all group ${isProcessing ? 'cursor-not-allowed opacity-80' : 'hover:bg-blue-50/20 cursor-pointer'}`}>
+                  }} className={`transition-all group hover:bg-blue-50/20 cursor-pointer`}>
                     <td className="px-8 py-5">
                       <div className="flex items-center gap-4">
                         <div className={`w-2.5 h-2.5 rounded-full shadow-sm ${
@@ -3746,12 +3765,11 @@ const mockWorkflows: Workflow[] = [
                       <div className="flex items-center justify-end gap-2">
                         <Tooltip content={t.ttViewCompare}>
                           <button 
-                            disabled={isProcessing}
                             onClick={() => {
                               setSelectedJob(job);
                               setStep(1);
                             }}
-                            className={`p-2.5 rounded-[4px] transition-all ${isProcessing ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:text-[#1f5df9] hover:bg-blue-50'}`}
+                            className={`p-2.5 rounded-[4px] transition-all text-slate-400 hover:text-[#1f5df9] hover:bg-blue-50`}
                           >
                             <Eye size={20} />
                           </button>
@@ -5967,20 +5985,18 @@ const mockWorkflows: Workflow[] = [
                       </span>
                       <div className="flex items-center gap-1 flex-wrap">
                         {hiddenLockedDocs.map(name => (
-                          <span 
-                            key={name}
-                            className="bg-slate-50 border border-slate-200/50 pl-2 pr-1.5 py-0.5 rounded-lg text-[9px] font-black text-slate-700 flex items-center gap-1 hover:border-slate-300 transition-colors shadow-sm"
-                          >
-                            <span className="max-w-[70px] truncate uppercase">{name}</span>
-                            <button
+                          <Tooltip key={name} content={language === 'TH' ? 'คลิกเพื่อแสดงคอลัมน์นี้' : 'Click to unhide column'}>
+                            <button 
                               onClick={() => setHiddenLockedDocs(prev => prev.filter(x => x !== name))}
                               disabled={isUnassigned}
-                              className="p-0.5 hover:bg-slate-200 rounded-[4px] text-blue-600 transform active:scale-95 transition-all cursor-pointer flex items-center disabled:opacity-30 disabled:cursor-not-allowed"
-                              title={language === 'TH' ? 'แสดงคอลัมน์นี้' : 'Unhide column'}
+                              className="bg-slate-50 border border-slate-200/50 pl-2 pr-1.5 py-0.5 rounded-lg text-[9px] font-black text-slate-700 flex items-center gap-1 hover:border-slate-300 hover:bg-slate-100 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transform active:scale-95"
                             >
-                              <Eye size={10} />
+                              <span className="max-w-[70px] truncate uppercase">{name}</span>
+                              <div className="p-0.5 text-blue-600 flex items-center">
+                                <Eye size={10} />
+                              </div>
                             </button>
-                          </span>
+                          </Tooltip>
                         ))}
                       </div>
                     </div>
@@ -6125,8 +6141,13 @@ const mockWorkflows: Workflow[] = [
                                       <div className="flex flex-col gap-0.5 items-center">
                                          {/* Status and Action Buttons */}
                                          <div className="flex items-center justify-between w-full px-1">
-                                            <div className="flex items-center gap-1 scale-95 origin-left">
-                                               <div className={`w-1 h-1 rounded-full ${
+                                            <div className={`flex items-center gap-1 scale-95 origin-left ${
+                                              displayStatus === ComparisonDocStatus.MATCHED || displayStatus === ComparisonDocStatus.LOCKED ? 'px-1.5 py-0.5 bg-emerald-50 text-emerald-600 border border-emerald-200/60 rounded-[4px] shadow-sm' :
+                                              displayStatus === ComparisonDocStatus.OCR_DONE ? 'px-1.5 py-0.5 bg-amber-50 text-amber-600 border border-amber-200/60 rounded-[4px] shadow-sm' :
+                                              displayStatus === ComparisonDocStatus.ERROR || displayStatus === ComparisonDocStatus.MISMATCHED ? 'px-1.5 py-0.5 bg-rose-50 text-rose-600 border border-rose-200/60 rounded-[4px] shadow-sm' :
+                                              ''
+                                            }`}>
+                                               <div className={`w-1.5 h-1.5 rounded-full ${
                                                  displayStatus === ComparisonDocStatus.MATCHED || displayStatus === ComparisonDocStatus.LOCKED ? 'bg-emerald-500' :
                                                  displayStatus === ComparisonDocStatus.OCR_DONE ? 'bg-amber-500' :
                                                  displayStatus === ComparisonDocStatus.EXTRACTING || displayStatus === ComparisonDocStatus.RECEIVED ? 'bg-amber-500 animate-pulse' :
@@ -6290,8 +6311,8 @@ const mockWorkflows: Workflow[] = [
                                                   <CheckCircle2 size={9} strokeWidth={2.5} />
                                                   <span>{displaySynonymCount}</span>
                                                 </div>
-                                              </Tooltip>
-                                            )}
+                                                </Tooltip>
+                                               )}
                                                {displayMismatchCount > 0 && (
                                                  <Tooltip content={part === 'Description' ? t.ttMismatchedCountDesc : t.ttMismatchedCount}><div className="flex items-center gap-1 px-1.5 py-0.5 rounded border bg-rose-50 text-rose-600 border-rose-100/50 shadow-sm text-[9px] font-black tracking-tight">
                                                    <AlertCircle size={9} strokeWidth={2.5} />
@@ -6391,7 +6412,21 @@ const mockWorkflows: Workflow[] = [
                                             'text-slate-300'
                                          }`}>
                                             <div className="flex items-center gap-2">
-                                               <span className="break-all">{target.value}</span>
+                                               <span className="break-all">
+                                                 {target.status === 'MISMATCH' && target.value && res.sourceValue ? (
+                                                   diffChars(String(res.sourceValue), String(target.value)).map((part, index) => {
+                                                     if (part.added) {
+                                                       return <span key={index} className="bg-rose-200 text-rose-900 rounded-[2px] font-bold px-0.5">{part.value}</span>;
+                                                     }
+                                                     if (!part.removed) {
+                                                       return <span key={index}>{part.value}</span>;
+                                                     }
+                                                     return null;
+                                                   })
+                                                 ) : (
+                                                   target.value
+                                                 )}
+                                               </span>
                                                {target.status === 'MATCH' && (
                                                   <Tooltip content="ตรงกัน">
                                                     <Check size={12} className="text-emerald-500 shrink-0 cursor-help" strokeWidth={4} />
@@ -6408,7 +6443,7 @@ const mockWorkflows: Workflow[] = [
                                                   </Tooltip>
                                                 )}
                                                {target.status === 'SYNONYM' && (
-                                                  <Tooltip content="ข้อมูลตามเงื่อนไข">
+                                                  <Tooltip content={target.ruleTitle ? `${language === 'TH' ? 'ตรงตามเงื่อนไข:' : 'Matched Condition:'} ${target.ruleTitle}` : "ข้อมูลตามเงื่อนไข"}>
                                                     <CheckCircle2 size={14} className="text-amber-500 shrink-0 cursor-help" />
                                                   </Tooltip>
                                                 )}
@@ -6416,17 +6451,34 @@ const mockWorkflows: Workflow[] = [
 
                                             {target.status === 'MISMATCH' && (
                                               <div className="mt-0.5 text-[8px] font-black text-rose-400 uppercase tracking-tighter shrink-0">
-                                                {language === 'TH' ? 'ค่ามาตรฐาน:' : t.master + ':'} {res.sourceValue}
+                                                {language === 'TH' ? 'ค่ามาตรฐาน:' : t.master + ':'}{' '}
+                                                {target.value && res.sourceValue ? (
+                                                  diffChars(String(target.value), String(res.sourceValue)).map((part, index) => {
+                                                    if (part.added) {
+                                                      return <span key={index} className="bg-rose-100 text-rose-600 rounded-[2px] font-bold px-0.5">{part.value}</span>;
+                                                    }
+                                                    if (!part.removed) {
+                                                      return <span key={index}>{part.value}</span>;
+                                                    }
+                                                    return null;
+                                                  })
+                                                ) : (
+                                                  res.sourceValue
+                                                )}
                                               </div>
                                             )}
-                                            
+
                                             {target.status === 'SYNONYM' && target.ruleTitle && (
-                                              <div className="absolute top-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-slate-800 text-white text-[10px] font-bold rounded-2xl pointer-events-none opacity-0 group-hover/cell:opacity-100 transition-all z-50 whitespace-nowrap shadow-2xl border border-slate-700 pointer-events-none -translate-y-8 group-hover/cell:-translate-y-12">
-                                                <div className="flex items-center gap-2">
-                                                  <ArrowUpRight size={12} className="text-amber-400" />
-                                                  {target.ruleTitle}
-                                                </div>
-                                                <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                                              <div className="mt-0.5 px-1.5 py-0.5 bg-amber-50 text-amber-700 border border-amber-200/60 rounded-[4px] text-[8px] font-black tracking-tighter shrink-0 shadow-sm flex items-center gap-1 w-fit max-w-full">
+                                                <ListFilter size={8} className="text-amber-600 shrink-0" strokeWidth={3} />
+                                                <span className="truncate max-w-[140px] leading-tight">{target.ruleTitle}</span>
+                                              </div>
+                                            )}
+
+                                            {(target as any).isPrimary && (
+                                              <div className="mt-0.5 px-1.5 py-0.5 bg-blue-50 text-blue-600 border border-blue-200/60 rounded-[4px] text-[8px] font-black uppercase tracking-wider shrink-0 shadow-sm flex items-center gap-1">
+                                                <Star size={8} className="fill-blue-600" />
+                                                {language === 'TH' ? 'เอกสารหลัก' : 'PRIMARY DOC'}
                                               </div>
                                             )}
                                          </div>
