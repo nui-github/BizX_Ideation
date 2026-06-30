@@ -1251,11 +1251,12 @@ const mockWorkflows: Workflow[] = [
       accuracyScore: 0.0,
       docs: {
         'Customs Declaration': ComparisonDocStatus.RECEIVED,
-        'Tax Invoice': ComparisonDocStatus.MISSING
+        'Tax Invoice': ComparisonDocStatus.MISSING,
+        'Packing List': ComparisonDocStatus.RECEIVED
       },
       progress: 50,
-      totalDocs: 2,
-      foundDocs: 1,
+      totalDocs: 3,
+      foundDocs: 2,
       matchedCount: 0,
       mismatchedCount: 0
     },
@@ -1296,11 +1297,12 @@ const mockWorkflows: Workflow[] = [
       accuracyScore: 75.0,
       docs: {
         'Billing Invoice': ComparisonDocStatus.MATCHED,
-        'Receipt': ComparisonDocStatus.RECEIVED
+        'Receipt': ComparisonDocStatus.RECEIVED,
+        'Tax Invoice': ComparisonDocStatus.RECEIVED
       },
       progress: 50,
-      totalDocs: 2,
-      foundDocs: 2,
+      totalDocs: 3,
+      foundDocs: 3,
       matchedCount: 1,
       mismatchedCount: 0
     },
@@ -1315,11 +1317,13 @@ const mockWorkflows: Workflow[] = [
       totalFieldsCount: 30,
       accuracyScore: 0.0,
       docs: {
-        'Payment Voucher': ComparisonDocStatus.MISSING
+        'Payment Voucher': ComparisonDocStatus.MISSING,
+        'Invoice': ComparisonDocStatus.MISSING,
+        'Purchase Order': ComparisonDocStatus.RECEIVED
       },
       progress: 0,
-      totalDocs: 1,
-      foundDocs: 0,
+      totalDocs: 3,
+      foundDocs: 1,
       matchedCount: 0,
       mismatchedCount: 0
     },
@@ -1381,10 +1385,11 @@ const mockWorkflows: Workflow[] = [
       accuracyScore: 0.0,
       docs: {
         'Import Entry': ComparisonDocStatus.MISSING,
-        'Duty Receipt': ComparisonDocStatus.MISSING
+        'Duty Receipt': ComparisonDocStatus.MISSING,
+        'Receipt': ComparisonDocStatus.MISSING
       },
       progress: 0,
-      totalDocs: 2,
+      totalDocs: 3,
       foundDocs: 0,
       matchedCount: 0,
       mismatchedCount: 0
@@ -1400,10 +1405,12 @@ const mockWorkflows: Workflow[] = [
       totalFieldsCount: 50,
       accuracyScore: 0.0,
       docs: {
-        'Compliance Cert': ComparisonDocStatus.MISSING
+        'Compliance Cert': ComparisonDocStatus.MISSING,
+        'Review Form': ComparisonDocStatus.MISSING,
+        'Legal Advice': ComparisonDocStatus.MISSING
       },
       progress: 0,
-      totalDocs: 1,
+      totalDocs: 3,
       foundDocs: 0,
       matchedCount: 0,
       mismatchedCount: 0
@@ -1444,11 +1451,12 @@ const mockWorkflows: Workflow[] = [
       accuracyScore: 0.0,
       docs: {
         'B / L': ComparisonDocStatus.RECEIVED,
-        'Insurance': ComparisonDocStatus.RECEIVED
+        'Insurance': ComparisonDocStatus.RECEIVED,
+        'Certificate of Origin': ComparisonDocStatus.RECEIVED
       },
       progress: 50,
-      totalDocs: 2,
-      foundDocs: 2,
+      totalDocs: 3,
+      foundDocs: 3,
       matchedCount: 0,
       mismatchedCount: 0
     },
@@ -1463,10 +1471,12 @@ const mockWorkflows: Workflow[] = [
       totalFieldsCount: 40,
       accuracyScore: 0.0,
       docs: {
-        'Invoice Draft': ComparisonDocStatus.MISSING
+        'Invoice Draft': ComparisonDocStatus.MISSING,
+        'Proforma Invoice': ComparisonDocStatus.MISSING,
+        'Payment Receipt': ComparisonDocStatus.MISSING
       },
       progress: 0,
-      totalDocs: 1,
+      totalDocs: 3,
       foundDocs: 0,
       matchedCount: 0,
       mismatchedCount: 0
@@ -1486,12 +1496,13 @@ const mockWorkflows: Workflow[] = [
       accuracyScore: 100.0,
       docs: {
         'Invoice': ComparisonDocStatus.LOCKED,
-        'Packing List': ComparisonDocStatus.LOCKED
+        'Packing List': ComparisonDocStatus.LOCKED,
+        'B / L': ComparisonDocStatus.LOCKED
       },
       progress: 100,
-      totalDocs: 2,
-      foundDocs: 2,
-      matchedCount: 2,
+      totalDocs: 3,
+      foundDocs: 3,
+      matchedCount: 3,
       mismatchedCount: 0
     },
     {
@@ -1507,12 +1518,13 @@ const mockWorkflows: Workflow[] = [
       accuracyScore: 100.0,
       docs: {
         'HS Code Cert': ComparisonDocStatus.LOCKED,
-        'Form D': ComparisonDocStatus.LOCKED
+        'Form D': ComparisonDocStatus.LOCKED,
+        'Invoice': ComparisonDocStatus.LOCKED
       },
       progress: 100,
-      totalDocs: 2,
-      foundDocs: 2,
-      matchedCount: 2,
+      totalDocs: 3,
+      foundDocs: 3,
+      matchedCount: 3,
       mismatchedCount: 0
     },
     {
@@ -1527,12 +1539,13 @@ const mockWorkflows: Workflow[] = [
       accuracyScore: 100.0,
       docs: {
         'Purchase Order': ComparisonDocStatus.LOCKED,
-        'Delivery Note': ComparisonDocStatus.LOCKED
+        'Delivery Note': ComparisonDocStatus.LOCKED,
+        'Quotation': ComparisonDocStatus.LOCKED
       },
       progress: 100,
-      totalDocs: 2,
-      foundDocs: 2,
-      matchedCount: 2,
+      totalDocs: 3,
+      foundDocs: 3,
+      matchedCount: 3,
       mismatchedCount: 0
     },
 
@@ -1550,12 +1563,13 @@ const mockWorkflows: Workflow[] = [
       accuracyScore: 100.0,
       docs: {
         'Invoice': ComparisonDocStatus.LOCKED,
-        'Form D': ComparisonDocStatus.LOCKED
+        'Form D': ComparisonDocStatus.LOCKED,
+        'Packing List': ComparisonDocStatus.LOCKED
       },
       progress: 100,
-      totalDocs: 2,
-      foundDocs: 2,
-      matchedCount: 2,
+      totalDocs: 3,
+      foundDocs: 3,
+      matchedCount: 3,
       mismatchedCount: 0
     },
     {
@@ -1571,12 +1585,13 @@ const mockWorkflows: Workflow[] = [
       accuracyScore: 100.0,
       docs: {
         'Port Release Permit': ComparisonDocStatus.LOCKED,
-        'Gate Pass': ComparisonDocStatus.LOCKED
+        'Gate Pass': ComparisonDocStatus.LOCKED,
+        'Customs Dec': ComparisonDocStatus.LOCKED
       },
       progress: 100,
-      totalDocs: 2,
-      foundDocs: 2,
-      matchedCount: 2,
+      totalDocs: 3,
+      foundDocs: 3,
+      matchedCount: 3,
       mismatchedCount: 0
     },
     {
@@ -1591,12 +1606,13 @@ const mockWorkflows: Workflow[] = [
       accuracyScore: 99.0,
       docs: {
         'Billing Statement': ComparisonDocStatus.LOCKED,
-        'Tax Invoice': ComparisonDocStatus.LOCKED
+        'Tax Invoice': ComparisonDocStatus.LOCKED,
+        'Receipt': ComparisonDocStatus.LOCKED
       },
       progress: 100,
-      totalDocs: 2,
-      foundDocs: 2,
-      matchedCount: 2,
+      totalDocs: 3,
+      foundDocs: 3,
+      matchedCount: 3,
       mismatchedCount: 0
     },
 
@@ -1614,12 +1630,13 @@ const mockWorkflows: Workflow[] = [
       accuracyScore: 100.0,
       docs: {
         'Invoice': ComparisonDocStatus.LOCKED,
-        'Packing List': ComparisonDocStatus.LOCKED
+        'Packing List': ComparisonDocStatus.LOCKED,
+        'B/L': ComparisonDocStatus.LOCKED
       },
       progress: 100,
-      totalDocs: 2,
-      foundDocs: 2,
-      matchedCount: 2,
+      totalDocs: 3,
+      foundDocs: 3,
+      matchedCount: 3,
       mismatchedCount: 0
     },
     {
@@ -1635,12 +1652,13 @@ const mockWorkflows: Workflow[] = [
       accuracyScore: 100.0,
       docs: {
         'Certificate of Origin': ComparisonDocStatus.LOCKED,
-        'Form E': ComparisonDocStatus.LOCKED
+        'Form E': ComparisonDocStatus.LOCKED,
+        'Packing List': ComparisonDocStatus.LOCKED
       },
       progress: 100,
-      totalDocs: 2,
-      foundDocs: 2,
-      matchedCount: 2,
+      totalDocs: 3,
+      foundDocs: 3,
+      matchedCount: 3,
       mismatchedCount: 0
     },
 
@@ -1658,12 +1676,13 @@ const mockWorkflows: Workflow[] = [
       accuracyScore: 100.0,
       docs: {
         'Invoice': ComparisonDocStatus.LOCKED,
-        'B/L': ComparisonDocStatus.LOCKED
+        'B/L': ComparisonDocStatus.LOCKED,
+        'Packing List': ComparisonDocStatus.LOCKED
       },
       progress: 100,
-      totalDocs: 2,
-      foundDocs: 2,
-      matchedCount: 2,
+      totalDocs: 3,
+      foundDocs: 3,
+      matchedCount: 3,
       mismatchedCount: 0
     },
     {
@@ -1679,12 +1698,13 @@ const mockWorkflows: Workflow[] = [
       accuracyScore: 100.0,
       docs: {
         'Road Waybill': ComparisonDocStatus.LOCKED,
-        'Border Crossing Permit': ComparisonDocStatus.LOCKED
+        'Border Crossing Permit': ComparisonDocStatus.LOCKED,
+        'Customs Form': ComparisonDocStatus.LOCKED
       },
       progress: 100,
-      totalDocs: 2,
-      foundDocs: 2,
-      matchedCount: 2,
+      totalDocs: 3,
+      foundDocs: 3,
+      matchedCount: 3,
       mismatchedCount: 0
     },
     {
@@ -1700,12 +1720,13 @@ const mockWorkflows: Workflow[] = [
       accuracyScore: 100.0,
       docs: {
         'Billing Invoice': ComparisonDocStatus.LOCKED,
-        'Receipt Summary': ComparisonDocStatus.LOCKED
+        'Receipt Summary': ComparisonDocStatus.LOCKED,
+        'Purchase Order': ComparisonDocStatus.LOCKED
       },
       progress: 100,
-      totalDocs: 2,
-      foundDocs: 2,
-      matchedCount: 2,
+      totalDocs: 3,
+      foundDocs: 3,
+      matchedCount: 3,
       mismatchedCount: 0
     },
 
@@ -1722,11 +1743,12 @@ const mockWorkflows: Workflow[] = [
       accuracyScore: 0.0,
       docs: {
         'Invoice': ComparisonDocStatus.RECEIVED,
-        'Air Waybill': ComparisonDocStatus.RECEIVED
+        'Air Waybill': ComparisonDocStatus.RECEIVED,
+        'Packing List': ComparisonDocStatus.RECEIVED
       },
       progress: 40,
-      totalDocs: 2,
-      foundDocs: 2,
+      totalDocs: 3,
+      foundDocs: 3,
       matchedCount: 0,
       mismatchedCount: 0
     },
@@ -1741,10 +1763,12 @@ const mockWorkflows: Workflow[] = [
       totalFieldsCount: 110,
       accuracyScore: 0.0,
       docs: {
-        'Carrier Declaration': ComparisonDocStatus.MISSING
+        'Carrier Declaration': ComparisonDocStatus.MISSING,
+        'Invoice': ComparisonDocStatus.MISSING,
+        'Packing List': ComparisonDocStatus.MISSING
       },
       progress: 0,
-      totalDocs: 1,
+      totalDocs: 3,
       foundDocs: 0,
       matchedCount: 0,
       mismatchedCount: 0
@@ -1760,10 +1784,12 @@ const mockWorkflows: Workflow[] = [
       totalFieldsCount: 45,
       accuracyScore: 0.0,
       docs: {
-        'Legal Permit': ComparisonDocStatus.MISSING
+        'Legal Permit': ComparisonDocStatus.MISSING,
+        'Invoice': ComparisonDocStatus.MISSING,
+        'Certificate': ComparisonDocStatus.MISSING
       },
       progress: 0,
-      totalDocs: 1,
+      totalDocs: 3,
       foundDocs: 0,
       matchedCount: 0,
       mismatchedCount: 0
@@ -1782,11 +1808,12 @@ const mockWorkflows: Workflow[] = [
       accuracyScore: 78.5,
       docs: {
         'Commercial Invoice': ComparisonDocStatus.MISMATCHED,
-        'Cert of Origin': ComparisonDocStatus.MATCHED
+        'Cert of Origin': ComparisonDocStatus.MATCHED,
+        'Packing List': ComparisonDocStatus.RECEIVED
       },
       progress: 50,
-      totalDocs: 2,
-      foundDocs: 2,
+      totalDocs: 3,
+      foundDocs: 3,
       matchedCount: 1,
       mismatchedCount: 1
     },
@@ -1801,10 +1828,12 @@ const mockWorkflows: Workflow[] = [
       totalFieldsCount: 120,
       accuracyScore: 0.0,
       docs: {
-        'Customs Bond': ComparisonDocStatus.RECEIVED
+        'Customs Bond': ComparisonDocStatus.RECEIVED,
+        'Invoice': ComparisonDocStatus.MISSING,
+        'Packing List': ComparisonDocStatus.MISSING
       },
       progress: 50,
-      totalDocs: 1,
+      totalDocs: 3,
       foundDocs: 1,
       matchedCount: 0,
       mismatchedCount: 0
@@ -1820,10 +1849,12 @@ const mockWorkflows: Workflow[] = [
       totalFieldsCount: 80,
       accuracyScore: 0.0,
       docs: {
-        'Billing Sheet': ComparisonDocStatus.MISSING
+        'Billing Sheet': ComparisonDocStatus.MISSING,
+        'Invoice': ComparisonDocStatus.MISSING,
+        'Receipt': ComparisonDocStatus.MISSING
       },
       progress: 0,
-      totalDocs: 1,
+      totalDocs: 3,
       foundDocs: 0,
       matchedCount: 0,
       mismatchedCount: 0
@@ -1885,10 +1916,12 @@ const mockWorkflows: Workflow[] = [
       totalFieldsCount: 120,
       accuracyScore: 0.0,
       docs: {
-        'Customs Dec': ComparisonDocStatus.MISSING
+        'Customs Dec': ComparisonDocStatus.MISSING,
+        'Invoice': ComparisonDocStatus.MISSING,
+        'Packing List': ComparisonDocStatus.MISSING
       },
       progress: 0,
-      totalDocs: 1,
+      totalDocs: 3,
       foundDocs: 0,
       matchedCount: 0,
       mismatchedCount: 0
@@ -2553,11 +2586,13 @@ const mockWorkflows: Workflow[] = [
 
         // Mock logic for isPrimary: INVOICE is primary for Header fields, PACKING LIST for Footer fields
         let isPrimary = false;
-        if (f.part === 'Header' && docName.toUpperCase().includes('INVOICE')) {
+        if (f.part === 'Header' && (docName.toUpperCase().includes('INVOICE') || docName.toUpperCase().includes('B / L'))) {
           isPrimary = true;
-        } else if (f.part === 'Footer' && docName.toUpperCase().includes('PACKING')) {
+        } else if (f.part === 'Footer' && (docName.toUpperCase().includes('PACKING') || docName.toUpperCase().includes('B / L'))) {
           isPrimary = true;
-        } else if (f.part === 'Description' && docName.toUpperCase().includes('INVOICE')) {
+        } else if (f.part === 'Description' && (docName.toUpperCase().includes('INVOICE') || docName.toUpperCase().includes('B / L'))) {
+          isPrimary = true;
+        } else if (tIdx === 0 && !Object.keys(job.docs).some(d => d.toUpperCase().includes('INVOICE') || d.toUpperCase().includes('PACKING'))) {
           isPrimary = true;
         }
 
@@ -6418,10 +6453,10 @@ const mockWorkflows: Workflow[] = [
                                                      if (part.added) {
                                                        return <span key={index} className="bg-rose-200 text-rose-900 rounded-[2px] font-bold px-0.5">{part.value}</span>;
                                                      }
-                                                     if (!part.removed) {
-                                                       return <span key={index}>{part.value}</span>;
+                                                     if (part.removed) {
+                                                       return <span key={index} className="bg-rose-200 text-rose-900 rounded-[2px] font-bold px-0.5 line-through opacity-60">{part.value}</span>;
                                                      }
-                                                     return null;
+                                                     return <span key={index}>{part.value}</span>;
                                                    })
                                                  ) : (
                                                    target.value
@@ -6450,17 +6485,17 @@ const mockWorkflows: Workflow[] = [
                                             </div>
 
                                             {target.status === 'MISMATCH' && (
-                                              <div className="mt-0.5 text-[8px] font-black text-rose-400 uppercase tracking-tighter shrink-0">
+                                              <div className="mt-1 text-[11px] font-black text-rose-400 uppercase tracking-tight shrink-0">
                                                 {language === 'TH' ? 'ค่ามาตรฐาน:' : t.master + ':'}{' '}
                                                 {target.value && res.sourceValue ? (
                                                   diffChars(String(target.value), String(res.sourceValue)).map((part, index) => {
                                                     if (part.added) {
                                                       return <span key={index} className="bg-rose-100 text-rose-600 rounded-[2px] font-bold px-0.5">{part.value}</span>;
                                                     }
-                                                    if (!part.removed) {
-                                                      return <span key={index}>{part.value}</span>;
+                                                    if (part.removed) {
+                                                      return <span key={index} className="bg-rose-100 text-rose-600 rounded-[2px] font-bold px-0.5 line-through opacity-60">{part.value}</span>;
                                                     }
-                                                    return null;
+                                                    return <span key={index}>{part.value}</span>;
                                                   })
                                                 ) : (
                                                   res.sourceValue
@@ -6469,15 +6504,14 @@ const mockWorkflows: Workflow[] = [
                                             )}
 
                                             {target.status === 'SYNONYM' && target.ruleTitle && (
-                                              <div className="mt-0.5 px-1.5 py-0.5 bg-amber-50 text-amber-700 border border-amber-200/60 rounded-[4px] text-[8px] font-black tracking-tighter shrink-0 shadow-sm flex items-center gap-1 w-fit max-w-full">
-                                                <ListFilter size={8} className="text-amber-600 shrink-0" strokeWidth={3} />
-                                                <span className="truncate max-w-[140px] leading-tight">{target.ruleTitle}</span>
+                                              <div className="mt-1 px-2 py-1 bg-amber-50 text-amber-700 border border-amber-200/60 rounded-[4px] text-[11px] font-black tracking-tight shrink-0 shadow-sm flex items-center gap-1.5 w-fit max-w-full">
+                                                <ListFilter size={12} className="text-amber-600 shrink-0" strokeWidth={3} />
+                                                <span className="truncate max-w-[200px] leading-tight">{target.ruleTitle}</span>
                                               </div>
                                             )}
 
-                                            {(target as any).isPrimary && (
-                                              <div className="mt-0.5 px-1.5 py-0.5 bg-blue-50 text-blue-600 border border-blue-200/60 rounded-[4px] text-[8px] font-black uppercase tracking-wider shrink-0 shadow-sm flex items-center gap-1">
-                                                <Star size={8} className="fill-blue-600" />
+                                            {(target as any).isPrimary && res.targets.find((t: any) => t.isPrimary) === target && (
+                                              <div className="mt-1 px-2 py-1 bg-blue-50 text-blue-600 border border-blue-200/60 rounded-[4px] text-[11px] font-black uppercase tracking-wider shrink-0 shadow-sm flex items-center gap-1.5">
                                                 {language === 'TH' ? 'เอกสารหลัก' : 'PRIMARY DOC'}
                                               </div>
                                             )}
