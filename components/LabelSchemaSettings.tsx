@@ -17,6 +17,7 @@ export interface SchemaLabel {
   type?: string; // e.g. string, number, boolean, date, array
   subLabels?: SchemaLabel[];
   section?: 'Header' | 'Description' | 'Footer';
+  aiPrompt?: string;
 }
 
 export interface DocTypeSchemaConfig {
@@ -1120,52 +1121,13 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
                 className="rounded-xl border-slate-200 font-semibold text-slate-800 hover:border-blue-300 focus:border-[#1f5df9] focus:shadow-sm shadow-2xs placeholder-slate-400"
               />
             </div>
-
-
-            {/* AI Prompt Input (Prompt AI) */}
-            <div className="space-y-1.5 pt-2">
-              <label className="text-xs font-black text-[#010136] uppercase tracking-wider flex items-center gap-1.5">
-                <span className="flex items-center gap-1">
-                  <span className="text-blue-600">✨</span>
-                  <span>{isTh ? 'Prompt AI สำหรับการสกัดข้อมูลเอกสาร' : 'Document Extraction AI Prompt'}</span>
-                </span>
-                <Tooltip title={isTh ? 'ระบุคำสั่ง (Prompt) ที่ใช้สั่งการ AI ในการสกัดและวิเคราะห์ข้อมููลอย่างละเอียดแบบเฉพาะเจาะจง' : 'Specify custom AI system prompt instructions to guide the extraction behavior.'}>
-                  <HelpCircle size={14} className="text-[#010136]/40 cursor-help" />
-                </Tooltip>
-              </label>
-              <Input.TextArea 
-                value={formAiPrompt} 
-                onChange={(e) => setFormAiPrompt(e.target.value)}
-                placeholder={isTh ? 
-`คุณคือผู้เชี่ยวชาญด้านการประมวลผลและสกัดข้อมูลจากเอกสารสากล (Global OCR Helper) 
-หน้าที่ของคุณคือตรวจสอบและถอดคีย์ค่าข้อมูลต่าง ๆ จากเอกสารที่อัปโหลด เช่น เลขที่เอกสาร, วันที่, จำนวนเงิน, รายการสินค้า หรืออื่น ๆ ที่ระบุตามโครงสร้างฟิลด์อย่างเคร่งครัด
-- ตรวจสอบความถูกต้องและสอดคล้องของเอกสารทั้งหมด
-- ห้ามทำการคาดเดา เขียนข้อมูลขึ้นมาเอง (No hallucination) หรือเพิ่มเติมข้อมูลที่ไม่อยู่ในภาพ/เอกสารจริง
-- หากไม่มีฟิลด์ดังกล่าวในเอกสาร ให้ส่งค่ากลับเป็น null เสมอ` : 
-`You are an expert global OCR and document parsing assistant. 
-Your task is to highly accurately extract structured elements from the uploaded documents according to the labels defined. 
-- Ensure high fidelity extraction with zero hallucination.
-- If a specific field or key is not explicitly mentioned or found in the text, return null instead of fabricating data.`}
-                rows={5}
-                style={{ borderRadius: 4 }}
-                className="border-slate-200 font-semibold text-slate-800 hover:border-blue-300 focus:border-[#1f5df9] focus:shadow-sm shadow-2xs placeholder-slate-450 text-xs leading-relaxed"
-              />
-              <p className="text-[10px] text-slate-400 font-bold leading-normal">
-                {isTh ? '* จะทำหน้าที่เป็นคำสั่งพื้นฐาน (System Instruction) ตลอดกระบวนการสกัดหรือประมวลผลเอกสารสคีมานี้' : '* Serves as the base System Instruction during standard extraction for this schema.'}
-              </p>
-              <p className="text-[10px] text-blue-500 font-bold leading-normal bg-blue-50/50 p-2 border border-blue-100 rounded-sm mt-1">
-                {isTh 
-                  ? '* คำแนะนำ: หากระบุเงื่อนไขสำหรับฟิลด์ใดใน Prompt ชุดนี้ กรุณาใช้ชื่อฟิลด์ให้ตรงเป๊ะกับชื่อฟิลด์ (Schema Field Name) ที่กำหนดด้านล่างนี้ เพื่อช่วยให้ AI ค้นพบและจับคู่ได้อย่างแม่นยำสูงสุด' 
-                  : '* Hint: If you write prompt guidelines for specific fields, please use the exact field names (Schema Field Name) declared in your schema below to help the AI detect and match them with maximum accuracy.'}
-              </p>
-            </div>
           </div>
 
           <hr className="border-slate-100" />
 
           {/* Connect & Add Doc Types and its Labels */}
           <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200/40">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50 p-3 rounded-[8px] border border-slate-200/40">
               <div className="space-y-1">
                 <span className="text-xs font-black text-[#010136] uppercase tracking-wider flex items-center gap-1.5">
                   <FileText size={15} className="text-[#1f5df9]" />
@@ -1221,7 +1183,7 @@ Your task is to highly accurately extract structured elements from the uploaded 
                       key={config.docTypeId}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-2xs"
+                      className="bg-white rounded-[8px] border border-slate-200 overflow-hidden shadow-2xs"
                     >
                       {/* DocType Header - Clickable Accordion Header */}
                       <div 
@@ -1298,7 +1260,7 @@ Your task is to highly accurately extract structured elements from the uploaded 
                               ].map((sect) => {
                                 const sectionLabels = config.labels.filter(label => (label.section || 'Header') === sect.key);
                                 return (
-                                  <div key={sect.key} className="border border-slate-200 rounded-2xl p-4 bg-white space-y-4 shadow-3xs">
+                                  <div key={sect.key} className="border border-slate-200 rounded-[8px] p-4 bg-white space-y-4 shadow-3xs">
                                     {/* Section Sub-Header */}
                                     <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                                       <div className="flex items-center gap-2">
@@ -1323,15 +1285,15 @@ Your task is to highly accurately extract structured elements from the uploaded 
                                     {/* Fields List */}
                                     <div className="space-y-3.5">
                                       {sectionLabels.length === 0 ? (
-                                        <div className="py-6 text-center text-slate-400 text-xs font-medium border border-dashed border-slate-100 rounded-xl bg-slate-50/20">
+                                        <div className="py-6 text-center text-slate-400 text-xs font-medium border border-dashed border-slate-100 rounded-[8px] bg-slate-50/20">
                                           {isTh ? 'ยังไม่มีฟิลด์ในส่วนนี้' : 'No fields defined. Click "+ เพิ่ม Field" to begin.'}
                                         </div>
                                       ) : (
                                         <div className="space-y-4 animate-in fade-in duration-200">
                                           {sectionLabels.map((label) => (
-                                            <div key={label.id} className="p-4 bg-slate-50/50 rounded-2xl border border-slate-200/50 space-y-3.5 transition-all">
+                                            <div key={label.id} className="pt-4 pb-0 px-0 bg-slate-50/50 rounded-[8px] border border-slate-200/50 space-y-3.5 transition-all">
                                               {/* Main Row */}
-                                              <div className="flex gap-4 items-center w-full">
+                                              <div className="flex gap-4 items-center w-full px-4">
                                                 {/* Field Name Input */}
                                                 <div className="flex-1 min-w-0">
                                                   <input 
@@ -1339,7 +1301,7 @@ Your task is to highly accurately extract structured elements from the uploaded 
                                                     value={label.name}
                                                     onChange={(e) => handleUpdateLabelRow(config.docTypeId, label.id, { name: e.target.value })}
                                                     placeholder={isTh ? 'ชื่อ field' : 'field name'}
-                                                    className="w-full px-3.5 py-2 font-mono bg-white text-slate-800 font-semibold border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1f5df9]/10 text-sm h-[40px] transition-all border-slate-200 hover:border-slate-300 focus:border-[#1f5df9]"
+                                                    className="w-full px-3.5 py-2 font-mono bg-white text-slate-800 font-semibold border rounded-[4px] focus:outline-none focus:ring-2 focus:ring-[#1f5df9]/10 text-sm h-[40px] transition-all border-slate-200 hover:border-slate-300 focus:border-[#1f5df9]"
                                                   />
                                                 </div>
 
@@ -1355,13 +1317,13 @@ Your task is to highly accurately extract structured elements from the uploaded 
                                                         handleUpdateLabelRow(config.docTypeId, label.id, { type: newType });
                                                       }
                                                     }}
-                                                    className="w-full pl-3.5 pr-8 py-2 bg-white text-slate-700 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1f5df9]/10 text-sm font-semibold h-[40px] appearance-none cursor-pointer"
+                                                    className="w-full pl-3.5 pr-8 py-2 bg-white text-slate-700 border border-slate-200 rounded-[4px] focus:outline-none focus:ring-2 focus:ring-[#1f5df9]/10 text-sm font-semibold h-[40px] appearance-none cursor-pointer"
                                                   >
-                                                    <option value="string">string</option>
-                                                    <option value="number">number</option>
-                                                    <option value="boolean">boolean</option>
-                                                    <option value="date">date</option>
-                                                    <option value="array">array</option>
+                                                    <option value="string">{isTh ? 'ข้อความ (Text)' : 'Text (string)'}</option>
+                                                    <option value="number">{isTh ? 'ตัวเลข (Number)' : 'Number'}</option>
+                                                    <option value="boolean">{isTh ? 'ใช่/ไม่ใช่ (Yes/No)' : 'Yes/No (boolean)'}</option>
+                                                    <option value="date">{isTh ? 'วันที่ (Date)' : 'Date'}</option>
+                                                    <option value="array">{isTh ? 'ตาราง/กลุ่มรายการ (Array)' : 'Table/List (array)'}</option>
                                                   </select>
                                                   <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
                                                     <ChevronDown size={14} />
@@ -1392,9 +1354,29 @@ Your task is to highly accurately extract structured elements from the uploaded 
                                                 </button>
                                               </div>
 
+                                              {/* AI Prompt Input for main field */}
+                                              <div className="pt-1 space-y-1 mx-4 mb-4 !mt-0">
+                                                <div className="flex items-center gap-1.5 text-[11px] font-black text-[#010136]/75 uppercase tracking-wider pl-0.5 select-none">
+                                                  <span className="text-blue-500">✨</span>
+                                                  <span>{isTh ? 'Prompt AI สำหรับฟิลด์นี้' : 'AI Prompt for this Field'}</span>
+                                                  <Tooltip title={isTh ? 'ระบุเงื่อนไข/คำแนะนำเฉพาะในการหาและดึงข้อมูลของฟิลด์นี้ (เช่น อยู่มุมขวาบน, ต้องขึ้นต้นด้วยตัวอักษร...) เพื่อนำทาง AI' : 'Specify custom extraction instructions for this field to guide the AI model.'}>
+                                                    <HelpCircle size={13} className="text-[#010136]/40 cursor-help" />
+                                                  </Tooltip>
+                                                </div>
+                                                <textarea
+                                                  value={label.aiPrompt || ''}
+                                                  onChange={(e) => handleUpdateLabelRow(config.docTypeId, label.id, { aiPrompt: e.target.value })}
+                                                  placeholder={isTh 
+                                                    ? 'คำอธิบายหรือคำสั่งเพิ่มเติมสำหรับฟิลด์นี้ เช่น "ฟิลด์นี้จะเจอที่มุมขวาบนของเอกสารเป็นส่วนใหญ่", "เป็นรหัส 10 หลักขึ้นต้นด้วย PO"' 
+                                                    : 'Additional prompt instruction, e.g., "This field is usually located at the top-right corner of the page", "Must start with prefix PO-"'}
+                                                  rows={2}
+                                                  className="w-full px-3 py-2 text-xs font-semibold text-slate-800 bg-white border border-slate-200 rounded-[4px] hover:border-blue-300 focus:border-[#1f5df9] focus:outline-none focus:ring-1 focus:ring-[#1f5df9]/10 placeholder-slate-400 transition-all resize-y"
+                                                />
+                                              </div>
+
                                               {/* Sub-fields block for array type */}
                                               {label.type === 'array' && (
-                                                <div className="pl-6 border-l-2 border-dashed border-[#1f5df9]/40 space-y-3 pt-1">
+                                                <div className="mx-4 mb-4 pl-6 border-l-2 border-dashed border-[#1f5df9]/40 space-y-3 pt-1">
                                                   <div className="flex items-center justify-between">
                                                     <span className="text-[11px] font-black text-[#010136]/75 uppercase tracking-wider flex items-center gap-1.5 label-section-title">
                                                       <span className="w-1.5 h-1.5 rounded-full bg-[#16EA9E]" />
@@ -1412,63 +1394,85 @@ Your task is to highly accurately extract structured elements from the uploaded 
 
                                                   {/* Sub-fields list */}
                                                   {(!label.subLabels || label.subLabels.length === 0) ? (
-                                                    <div className="p-4 text-center text-slate-400 text-xs font-semibold bg-white/70 border border-dashed border-slate-200/80 rounded-xl">
+                                                    <div className="p-4 text-center text-slate-400 text-xs font-semibold bg-white/70 border border-dashed border-slate-200/80 rounded-[8px]">
                                                       {isTh ? 'ยังไม่มีฟิลด์ย่อย กดปุ่ม "เพิ่ม Field ย่อย" เพื่อเริ่มกำหนดค่า' : 'No nested fields yet. Click "Add Sub Field" to begin.'}
                                                     </div>
                                                   ) : (
                                                     <div className="space-y-2.5">
                                                       {label.subLabels.map((subLabel) => (
-                                                        <div key={subLabel.id} className="flex gap-3 items-center w-full bg-white p-2.5 rounded-xl border border-slate-200/60 shadow-3xs hover:shadow-2xs transition-all animate-in slide-in-from-top-1 duration-150">
-                                                          {/* Sub-Field Name Input */}
-                                                          <div className="flex-1 min-w-0">
-                                                            <input 
-                                                              type="text"
-                                                              value={subLabel.name}
-                                                              onChange={(e) => handleUpdateSubLabelRow(config.docTypeId, label.id, subLabel.id, { name: e.target.value })}
-                                                              placeholder={isTh ? 'ชื่อ field ย่อย' : 'sub-field name'}
-                                                              className="w-full px-3 py-1.5 font-mono bg-white text-slate-800 font-semibold border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1f5df9]/10 text-xs h-[36px] transition-all hover:border-slate-300 focus:border-[#1f5df9]"
+                                                        <div key={subLabel.id} className="p-3 bg-white rounded-[8px] border border-slate-200/60 shadow-3xs hover:shadow-2xs transition-all animate-in slide-in-from-top-1 duration-150 space-y-2">
+                                                          <div className="flex gap-3 items-center w-full">
+                                                            {/* Sub-Field Name Input */}
+                                                            <div className="flex-1 min-w-0">
+                                                              <input 
+                                                                type="text"
+                                                                value={subLabel.name}
+                                                                onChange={(e) => handleUpdateSubLabelRow(config.docTypeId, label.id, subLabel.id, { name: e.target.value })}
+                                                                placeholder={isTh ? 'ชื่อ field ย่อย' : 'sub-field name'}
+                                                                className="w-full px-3 py-1.5 font-mono bg-white text-slate-800 font-semibold border border-slate-200 rounded-[4px] focus:outline-none focus:ring-2 focus:ring-[#1f5df9]/10 text-xs h-[36px] transition-all hover:border-slate-300 focus:border-[#1f5df9]"
+                                                              />
+                                                            </div>
+
+                                                            {/* Sub-Field Type Selector */}
+                                                            <div className="relative w-32">
+                                                              <select
+                                                                value={subLabel.type || 'string'}
+                                                                onChange={(e) => handleUpdateSubLabelRow(config.docTypeId, label.id, subLabel.id, { type: e.target.value })}
+                                                                className="w-full pl-3 pr-8 py-1.5 bg-white text-slate-700 border border-slate-200 rounded-[4px] focus:outline-none focus:ring-2 focus:ring-[#1f5df9]/10 text-xs font-semibold h-[36px] appearance-none cursor-pointer"
+                                                              >
+                                                                <option value="string">{isTh ? 'ข้อความ (Text)' : 'Text (string)'}</option>
+                                                                <option value="number">{isTh ? 'ตัวเลข (Number)' : 'Number'}</option>
+                                                                <option value="boolean">{isTh ? 'ใช่/ไม่ใช่ (Yes/No)' : 'Yes/No (boolean)'}</option>
+                                                                <option value="date">{isTh ? 'วันที่ (Date)' : 'Date'}</option>
+                                                              </select>
+                                                              <div className="pointer-events-none absolute inset-y-0 right-2 w-4 flex items-center text-slate-400">
+                                                                <ChevronDown size={12} />
+                                                              </div>
+                                                            </div>
+
+                                                            {/* Sub-Field Required */}
+                                                            <div className="flex items-center min-w-[90px] pl-1">
+                                                              <label className="flex items-center gap-1.5 select-none cursor-pointer text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors">
+                                                                <input 
+                                                                  type="checkbox"
+                                                                  checked={subLabel.required}
+                                                                  onChange={(e) => handleUpdateSubLabelRow(config.docTypeId, label.id, subLabel.id, { required: e.target.checked })}
+                                                                  className="w-3.5 h-3.5 rounded border-slate-300 text-[#1f5df9] focus:ring-[#1f5df9]/20 cursor-pointer"
+                                                                />
+                                                                <span>Required</span>
+                                                              </label>
+                                                            </div>
+
+                                                            {/* Delete Sub-Field */}
+                                                            <button
+                                                              type="button"
+                                                              onClick={() => handleRemoveSubLabelRow(config.docTypeId, label.id, subLabel.id)}
+                                                              className="p-1.5 text-rose-500 hover:text-rose-750 hover:bg-rose-50 active:scale-95 border border-transparent rounded-[4px] transition-all cursor-pointer flex items-center justify-center h-[32px] w-[32px]"
+                                                              title={isTh ? 'ลบ field ย่อย' : 'Delete sub-field'}
+                                                            >
+                                                              <Trash2 size={13} />
+                                                            </button>
+                                                          </div>
+
+                                                          {/* AI Prompt Input for sub-field */}
+                                                          <div className="space-y-1 pt-0.5">
+                                                            <div className="flex items-center gap-1.5 text-[10px] font-black text-[#010136]/60 uppercase tracking-wider pl-0.5 select-none">
+                                                              <span className="text-blue-500">✨</span>
+                                                              <span>{isTh ? 'Prompt AI สำหรับฟิลด์ย่อยนี้' : 'AI Prompt for this Sub-Field'}</span>
+                                                              <Tooltip title={isTh ? 'คำสั่งเสริมพิเศษสำหรับ AI ในการดึงค่าฟิลด์ย่อยนี้ในรายการตาราง/อาร์เรย์' : 'Custom extraction instruction for this nested array item field.'}>
+                                                                <HelpCircle size={12} className="text-[#010136]/40 cursor-help" />
+                                                              </Tooltip>
+                                                            </div>
+                                                            <textarea
+                                                              value={subLabel.aiPrompt || ''}
+                                                              onChange={(e) => handleUpdateSubLabelRow(config.docTypeId, label.id, subLabel.id, { aiPrompt: e.target.value })}
+                                                              placeholder={isTh 
+                                                                ? 'คำสั่งเฉพาะ เช่น "คอลัมน์แรกในตาราง", "ตัดเครื่องหมายสกุลเงินออก", "มักมีคำว่า Code นำหน้า"' 
+                                                                : 'Nested field instructions, e.g., "Found in the first column", "Remove currency symbols", "Typically prefixed with Code"'}
+                                                              rows={1}
+                                                              className="w-full px-2.5 py-1.5 text-[11px] font-semibold text-slate-800 bg-white border border-slate-200 rounded-[4px] hover:border-blue-300 focus:border-[#1f5df9] focus:outline-none focus:ring-1 focus:ring-[#1f5df9]/10 placeholder-slate-400 transition-all resize-y"
                                                             />
                                                           </div>
-
-                                                          {/* Sub-Field Type Selector */}
-                                                          <div className="relative w-32">
-                                                            <select
-                                                              value={subLabel.type || 'string'}
-                                                              onChange={(e) => handleUpdateSubLabelRow(config.docTypeId, label.id, subLabel.id, { type: e.target.value })}
-                                                              className="w-full pl-3 pr-8 py-1.5 bg-white text-slate-700 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1f5df9]/10 text-xs font-semibold h-[36px] appearance-none cursor-pointer"
-                                                            >
-                                                              <option value="string">string</option>
-                                                              <option value="number">number</option>
-                                                              <option value="boolean">boolean</option>
-                                                              <option value="date">date</option>
-                                                            </select>
-                                                            <div className="pointer-events-none absolute inset-y-0 right-2 w-4 flex items-center text-slate-400">
-                                                              <ChevronDown size={12} />
-                                                            </div>
-                                                          </div>
-
-                                                          {/* Sub-Field Required */}
-                                                          <div className="flex items-center min-w-[90px] pl-1">
-                                                            <label className="flex items-center gap-1.5 select-none cursor-pointer text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors">
-                                                              <input 
-                                                                type="checkbox"
-                                                                checked={subLabel.required}
-                                                                onChange={(e) => handleUpdateSubLabelRow(config.docTypeId, label.id, subLabel.id, { required: e.target.checked })}
-                                                                className="w-3.5 h-3.5 rounded border-slate-300 text-[#1f5df9] focus:ring-[#1f5df9]/20 cursor-pointer"
-                                                              />
-                                                              <span>Required</span>
-                                                            </label>
-                                                          </div>
-
-                                                          {/* Delete Sub-Field */}
-                                                          <button
-                                                            type="button"
-                                                            onClick={() => handleRemoveSubLabelRow(config.docTypeId, label.id, subLabel.id)}
-                                                            className="p-1.5 text-rose-500 hover:text-rose-750 hover:bg-rose-50 active:scale-95 border border-transparent rounded-[4px] transition-all cursor-pointer flex items-center justify-center h-[32px] w-[32px]"
-                                                            title={isTh ? 'ลบ field ย่อย' : 'Delete sub-field'}
-                                                          >
-                                                            <Trash2 size={13} />
-                                                          </button>
                                                         </div>
                                                       ))}
                                                     </div>
@@ -1486,7 +1490,7 @@ Your task is to highly accurately extract structured elements from the uploaded 
                             </div>
 
                               {/* JSON PREVIEW card matching layout of reference image */}
-                              <div className="mt-6 pt-4 border-t border-slate-100">
+                              <div className="mx-4 mb-4 mt-6 pt-4 border-t border-slate-100">
                                 <div className="text-xs font-black text-[#010136]/60 uppercase tracking-wider mb-2.5">
                                   {isTh ? 'JSON Preview' : 'JSON Preview'}
                                 </div>
@@ -1498,6 +1502,9 @@ Your task is to highly accurately extract structured elements from the uploaded 
                                           name: l.name,
                                           type: l.type || 'string'
                                         };
+                                        if (l.aiPrompt) {
+                                          res.aiPrompt = l.aiPrompt;
+                                        }
                                         if (l.type === 'array') {
                                           res.items = (l.subLabels || []).map(serializeLabelRec);
                                         }
