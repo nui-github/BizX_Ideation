@@ -18,6 +18,7 @@
 ## 3. General Principles
 - **Code Quality:** Write clean, readable, well-organized code. Ensure strict Separation of Concerns (SoC) between view logic (components) and business/data logic (services).
 - **Localization:** The platform supports multi-language display (currently Thai `TH` and English `EN`). Use variable text rendering based on the active locale state instead of hardcoded raw strings in templates.
+- **Clean & Human-Readable Labeling:** Avoid internal jargon or confusing technical abbreviations in user-facing tooltips and UI elements (e.g. use "จำนวนข้อมูลที่ตรงตามเงื่อนไข" instead of "จำนวนข้อมูลที่ตรงตามเงื่อนไข (Synonym)" in user tooltips to keep terms humble, intuitive, and accessible).
 - **Graceful Error Handling:** Interface elements must gracefully handle empty states, processing states, or missing data without breaking the layout. 
 
 ## 4. Documentation Standard

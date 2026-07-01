@@ -25,6 +25,12 @@ This design system defines the visual language, ensuring a polished, consistent,
 - **Warning / Extracting / Partial:** Amber (`#f59e0b` / background `tint`)
 - **Error / Mismatched:** Rose (`#f43f5e` / background `tint`)
 
+### Mismatch Highlighting (Inline Diff)
+- To enable precise manual review, mismatched values should not merely highlight the entire text block. Instead, implement **Inline Diff Highlighting**:
+  - Analyze differences at character/word level (e.g. via `diffChars`).
+  - Highlight only the actual differing/removed parts using a clear red/pink background (`bg-rose-200 text-rose-800` or equivalent) within the main value.
+  - The standard/original reference label underneath should hide the deleted parts and only display added or matching parts without distracting line-through elements, presenting a clean point-of-difference visual cue.
+
 ## 4. Structural Geometry (Border Radius Rules)
 To maintain structural consistency, custom border radii should be tightly controlled via SCSS overrides:
 - **4px:** All buttons (including `<button>`, `nz-button`), inputs, text fields, text areas, dropdowns, selects, and box uploads MUST strictly use a border-radius of 4px (`rounded-[4px]`).
