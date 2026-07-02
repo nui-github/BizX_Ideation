@@ -182,6 +182,57 @@ const getConciseMismatchSummary = (fieldName: string, lang: Language): string =>
   }
 };
 
+const getDetailedDiffExplanation = (targetVal: string, masterVal: string, lang: Language): string => {
+  if (!targetVal || !masterVal) return '';
+  const diffs = diffChars(String(targetVal), String(masterVal));
+  const extraParts: string[] = [];
+  const missingParts: string[] = [];
+  let unchangedCount = 0;
+  
+  diffs.forEach(part => {
+    if (part.removed) {
+      // Exist in target but not in master -> Extra (เกินมา)
+      extraParts.push(part.value);
+    } else if (part.added) {
+      // Exist in master but not in target -> Missing (ขาดไป)
+      missingParts.push(part.value);
+    } else {
+      unchangedCount += part.value.length;
+    }
+  });
+
+  const totalLength = Math.max(String(targetVal).length, String(masterVal).length);
+  const similarity = totalLength > 0 ? unchangedCount / totalLength : 0;
+
+  if (similarity < 0.4) {
+    return lang === 'TH' ? 'เป็นข้อมูลคนละคำกัน' : 'Completely different data';
+  }
+
+  if (lang === 'TH') {
+    const explanations: string[] = [];
+    if (extraParts.length > 0) {
+      const extraStr = extraParts.map(p => `"${p}"`).join(', ');
+      explanations.push(`มี ${extraStr} เกินมา`);
+    }
+    if (missingParts.length > 0) {
+      const missingStr = missingParts.map(p => `"${p}"`).join(', ');
+      explanations.push(`ขาด ${missingStr}`);
+    }
+    return explanations.join(' และ ');
+  } else {
+    const explanations: string[] = [];
+    if (extraParts.length > 0) {
+      const extraStr = extraParts.map(p => `"${p}"`).join(', ');
+      explanations.push(`has extra ${extraStr}`);
+    }
+    if (missingParts.length > 0) {
+      const missingStr = missingParts.map(p => `"${p}"`).join(', ');
+      explanations.push(`missing ${missingStr}`);
+    }
+    return explanations.join(' and ');
+  }
+};
+
 export const DataComparison: React.FC<DataComparisonProps> = ({ language, trackingItems, role = UserRole.USER }) => {
   const t = TRANSLATIONS[language];
   
@@ -6465,7 +6516,7 @@ const mockWorkflows: Workflow[] = [
                                             </div>
 
                                             
-                                             <div className="flex items-center gap-1 scale-90">
+                                             <div className="flex items-center gap-1 scale-100 origin-right">
                                                {displayStatus === ComparisonDocStatus.MISMATCHED && (
                                                     <Tooltip content={language === 'TH' ? 'อัปโหลดไฟล์ใหม่ (Replace)' : 'Replace File'}>
                                                       <button
@@ -6475,7 +6526,7 @@ const mockWorkflows: Workflow[] = [
                                                           setReplaceTargetColumn(docName);
                                                           setShowReplaceModal(true);
                                                         }}
-                                                        className={`p-1 rounded-[4px] bg-white border border-slate-200 transition-all ${
+                                                        className={`h-[18px] w-[18px] flex items-center justify-center rounded-[4px] bg-white border border-slate-200 transition-all ${
                                                           (isUnassigned || selectedJob.status === JobStatus.DONE)
                                                           ? 'text-slate-200 cursor-not-allowed opacity-50'
                                                           : 'text-indigo-400 hover:bg-indigo-500 hover:text-white hover:border-indigo-500 hover:shadow-lg shadow-sm cursor-pointer'
@@ -6754,10 +6805,14 @@ const mockWorkflows: Workflow[] = [
                                                 {target.status === 'MISMATCH' && (
                                                    <Tooltip content={(() => {
                                                       const summary = getConciseMismatchSummary(res.fieldName, language);
+                                                      const detailedDiff = getDetailedDiffExplanation(String(target.value || ''), String(res.sourceValue || ''), language);
                                                       return (
-                                                        <div className="p-0.5 text-left text-[11px] font-sans">
+                                                        <div className="p-0.5 text-left text-[11px] font-sans max-w-[220px]">
                                                           <span className="font-bold text-rose-400 block mb-0.5">{language === 'TH' ? 'ข้อมูลไม่สอดคล้องกัน' : 'Data Mismatch'}</span>
-                                                          <span className="text-slate-200 font-medium">{summary}</span>
+                                                          <span className="text-slate-200 font-medium block">{summary}</span>
+                                                          {detailedDiff && (
+                                                            <span className="text-rose-300 font-bold block mt-1 border-t border-slate-700/50 pt-1 leading-normal">{detailedDiff}</span>
+                                                          )}
                                                         </div>
                                                       );
                                                    })()}>
@@ -6772,20 +6827,27 @@ const mockWorkflows: Workflow[] = [
                                             </div>
 
                                             {target.status === 'MISMATCH' && (
-                                              <div className="mt-1 text-[11px] font-black text-rose-400 uppercase tracking-tight shrink-0">
-                                                {t.master}:{' '}
-                                                {target.value && res.sourceValue ? (
-                                                  diffChars(String(target.value), String(res.sourceValue)).map((part, index) => {
-                                                    if (part.added) {
-                                                      return <span key={index} className="bg-rose-100 text-rose-600 rounded-[2px] font-bold px-0.5">{part.value}</span>;
-                                                    }
-                                                    if (part.removed) {
-                                                      return null;
-                                                    }
-                                                    return <span key={index}>{part.value}</span>;
-                                                  })
-                                                ) : (
-                                                  res.sourceValue
+                                              <div className="flex flex-col items-center">
+                                                <div className="mt-1 text-[11px] font-black text-rose-400 uppercase tracking-tight shrink-0">
+                                                  {t.master}:{' '}
+                                                  {target.value && res.sourceValue ? (
+                                                    diffChars(String(target.value), String(res.sourceValue)).map((part, index) => {
+                                                      if (part.added) {
+                                                        return <span key={index} className="bg-rose-100 text-rose-600 rounded-[2px] font-bold px-0.5">{part.value}</span>;
+                                                      }
+                                                      if (part.removed) {
+                                                        return null;
+                                                      }
+                                                      return <span key={index}>{part.value}</span>;
+                                                    })
+                                                  ) : (
+                                                    res.sourceValue
+                                                  )}
+                                                </div>
+                                                {target.value && res.sourceValue && (
+                                                  <div className="mt-1 text-[10px] text-rose-500 font-bold bg-rose-50/80 px-1.5 py-0.5 rounded-[4px] border border-rose-100 max-w-full text-center leading-tight">
+                                                    {getDetailedDiffExplanation(String(target.value), String(res.sourceValue), language)}
+                                                  </div>
                                                 )}
                                               </div>
                                             )}

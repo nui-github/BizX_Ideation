@@ -1291,7 +1291,10 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
                                       ) : (
                                         <div className="space-y-4 animate-in fade-in duration-200">
                                           {sectionLabels.map((label) => (
-                                            <div key={label.id} className="pt-4 pb-0 px-0 bg-slate-50/50 rounded-[8px] border border-slate-200/50 space-y-3.5 transition-all">
+                                            <div 
+                                              key={label.id} 
+                                              className={`pt-4 ${label.type === 'array' ? 'pb-0' : 'pb-4'} px-0 bg-slate-50/50 rounded-[8px] border border-slate-200/50 ${label.type === 'array' ? 'space-y-3.5' : ''} transition-all`}
+                                            >
                                               {/* Main Row */}
                                               <div className="flex gap-4 items-center w-full px-4">
                                                 {/* Field Name Input */}
