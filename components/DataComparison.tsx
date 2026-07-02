@@ -468,16 +468,19 @@ export const DataComparison: React.FC<DataComparisonProps> = ({ language, tracki
     });
   };
 
+  const isAllDocsMatched = (job: ComparisonJob) => {
+    return Object.values(job.docs).every(
+      status => status === ComparisonDocStatus.MATCHED || status === ComparisonDocStatus.LOCKED
+    );
+  };
+
   const isLastSubItemWithAllDocsMatched = (job: ComparisonJob) => {
     if (!job) return false;
     const shipmentJobs = jobs.filter(j => j.reference === job.reference);
     if (shipmentJobs.length === 0) return false;
     const seqIndex = shipmentJobs.findIndex(j => j.id === job.id);
     const isLastJob = seqIndex === shipmentJobs.length - 1;
-    const isAllDocsMatched = Object.values(job.docs).every(
-      status => status === ComparisonDocStatus.MATCHED || status === ComparisonDocStatus.LOCKED
-    );
-    return isLastJob && isAllDocsMatched;
+    return isLastJob && isAllDocsMatched(job);
   };
 
   const getLastSubItemExportTooltip = (job: ComparisonJob, defaultText: string) => {
@@ -3625,7 +3628,7 @@ const mockWorkflows: Workflow[] = [
       }
     };
 
-    const getStatusBadge = (status: JobStatus, isBlocked: boolean = false) => {
+    const getStatusBadge = (job: ComparisonJob, isBlocked: boolean = false) => {
       if (isBlocked) {
         return (
           <span className="bg-rose-50 text-rose-700 border border-rose-200 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans whitespace-nowrap">
@@ -3634,6 +3637,16 @@ const mockWorkflows: Workflow[] = [
           </span>
         );
       }
+
+      let status = job.status;
+      const hasMissingDocs = Object.values(job.docs).some(s => s === ComparisonDocStatus.MISSING);
+
+      if (hasMissingDocs) {
+        status = JobStatus.PROCESSING;
+      } else if (status === JobStatus.READY && !isAllDocsMatched(job)) {
+        status = JobStatus.PENDING;
+      }
+
       switch (status) {
         case JobStatus.READY:
           return <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans whitespace-nowrap"><div className="w-1 h-1 rounded-full bg-emerald-500"></div>{language === 'TH' ? 'เสร็จสมบูรณ์' : 'READY'}</span>;
@@ -3779,7 +3792,7 @@ const mockWorkflows: Workflow[] = [
                         <p className={`text-[13px] font-black tabular-nums ${isBlocked ? 'text-slate-400' : 'text-slate-800'}`}>{job.foundDocs ?? Object.values(job.docs).filter(s => s !== ComparisonDocStatus.MISSING).length} / {job.totalDocs}</p>
                       </td>
                       <td className="px-8 py-5 min-w-[170px]">
-                        {getStatusBadge(job.status, isBlocked)}
+                        {getStatusBadge(job, isBlocked)}
                       </td>
                       <td className="px-8 py-5 text-right w-[160px]">
                         <div className="flex items-center justify-end gap-2">
@@ -3869,7 +3882,16 @@ const mockWorkflows: Workflow[] = [
       }
     };
 
-    const getStatusBadge = (status: JobStatus) => {
+    const getStatusBadge = (job: ComparisonJob) => {
+      let status = job.status;
+      const hasMissingDocs = Object.values(job.docs).some(s => s === ComparisonDocStatus.MISSING);
+
+      if (hasMissingDocs) {
+        status = JobStatus.PROCESSING;
+      } else if (status === JobStatus.READY && !isAllDocsMatched(job)) {
+        status = JobStatus.PENDING;
+      }
+
       switch (status) {
         case JobStatus.READY:
           return <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter inline-flex items-center gap-1.5 font-sans whitespace-nowrap"><div className="w-1 h-1 rounded-full bg-emerald-500"></div>{language === 'TH' ? 'เสร็จสมบูรณ์' : 'READY'}</span>;
@@ -4110,7 +4132,7 @@ const mockWorkflows: Workflow[] = [
                       <p className="text-[13px] font-black text-slate-800 tabular-nums">{job.foundDocs ?? Object.values(job.docs).filter(s => s !== ComparisonDocStatus.MISSING).length} / {job.totalDocs}</p>
                     </td>
                     <td className="px-8 py-5 min-w-[170px]">
-                      {getStatusBadge(job.status)}
+                      {getStatusBadge(job)}
                     </td>
                     <td className="px-8 py-5 text-right w-[160px]">
                       <div className="flex items-center justify-end gap-2">
@@ -6376,7 +6398,7 @@ const mockWorkflows: Workflow[] = [
                   {/* 6. Export Data Button */}
                   <Tooltip content={getLastSubItemExportTooltip(selectedJob, t.exportData)}>
                     <button 
-                      disabled={isUnassigned || selectedJob.status !== JobStatus.READY || isLastSubItemWithAllDocsMatched(selectedJob)}
+                      disabled={isUnassigned || selectedJob.status !== JobStatus.READY || !isAllDocsMatched(selectedJob)}
                       onClick={() => {
                         setExportJob(selectedJob);
                         setExportOption('workflow');
@@ -6384,7 +6406,7 @@ const mockWorkflows: Workflow[] = [
                         setSelectedExportPlatform('FTA');
                       }}
                       className={`p-2.5 rounded-[4px] transition-all flex items-center justify-center border disabled:opacity-30 disabled:cursor-not-allowed ${
-                        (selectedJob.status === JobStatus.READY && !isLastSubItemWithAllDocsMatched(selectedJob))
+                        (selectedJob.status === JobStatus.READY && isAllDocsMatched(selectedJob))
                           ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-blue-700/20 hover:from-blue-700 hover:to-indigo-700 shadow-md shadow-blue-500/10' 
                           : 'bg-white border-slate-200/60 text-slate-400 opacity-50 cursor-not-allowed'
                       }`}
