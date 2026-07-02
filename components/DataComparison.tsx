@@ -6329,7 +6329,7 @@ const mockWorkflows: Workflow[] = [
                   )}
 
                   {hiddenLockedDocs.length > 0 && (
-                    <div className="flex items-center gap-2 bg-white px-2.5 py-1.5 rounded-xl border border-slate-200/80 shadow-sm">
+                    <div className="flex items-center gap-2 bg-white px-2.5 py-1.5 h-[37px] rounded-[4px] border border-slate-200/80 shadow-sm">
                       <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5 select-none">
                         <EyeOff size={11} className="text-slate-400" />
                         {language === 'TH' ? 'ซ่อนคอลัมน์อยู่:' : 'Hidden:'}
@@ -6340,7 +6340,7 @@ const mockWorkflows: Workflow[] = [
                             <button 
                               onClick={() => setHiddenLockedDocs(prev => prev.filter(x => x !== name))}
                               disabled={isUnassigned}
-                              className="bg-slate-50 border border-slate-200/50 pl-2 pr-1.5 py-0.5 rounded-lg text-[9px] font-black text-slate-700 flex items-center gap-1 hover:border-slate-300 hover:bg-slate-100 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transform active:scale-95"
+                              className="bg-slate-50 border border-slate-200/50 pl-2 pr-1.5 py-0.5 rounded-[4px] text-[9px] font-black text-slate-700 flex items-center gap-1 hover:border-slate-300 hover:bg-slate-100 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transform active:scale-95"
                             >
                               <span className="max-w-[70px] truncate uppercase">{name}</span>
                               <div className="p-0.5 text-blue-600 flex items-center">
@@ -6408,8 +6408,8 @@ const mockWorkflows: Workflow[] = [
                         </colgroup>
                         <thead>
                            <tr>
-                              <th className="bg-blue-600 border-b border-r border-blue-700 px-4 py-1.5 min-w-[180px] flex items-center justify-center uppercase tracking-tighter shadow-[2px_0_5px_rgba(0,0,0,0.02)] h-[82px] sticky left-0 z-40">
-                                 <h3 className="text-[10px] font-black text-white uppercase tracking-widest leading-none text-center">{t.masterVsDocs}</h3>
+                              <th className="bg-slate-50 border-b border-r border-slate-200 px-4 py-1.5 min-w-[180px] flex items-center justify-center uppercase tracking-tighter shadow-[2px_0_5px_rgba(0,0,0,0.02)] h-[82px] sticky left-0 z-40">
+                                 <h3 className="text-[10px] font-black text-slate-700 uppercase tracking-widest leading-none text-center">{t.masterVsDocs}</h3>
                               </th>
 
                               {comparedDocs.map(docName => {
@@ -6752,7 +6752,7 @@ const mockWorkflows: Workflow[] = [
                                              )}
                                              {!collapsedGroups[group] && groupFields.map((res, i) => (
                                               <tr key={res.fieldName} className={`hover:bg-slate-50/80 transition-colors group/row ${i === groupFields.length - 1 ? 'border-b-2 border-slate-200/80' : ''}`}>
-                                                 <td className={`sticky left-0 z-20 bg-white border-r border-slate-100 p-4 font-black text-slate-700 group-hover/row:text-[#1f5df9] shadow-[2px_0_10px_rgba(0,0,0,0.02)] transition-colors relative`}>
+                                                 <td className={`sticky left-0 z-20 bg-slate-50 border-r border-slate-100 p-4 font-black text-slate-700 group-hover/row:text-[#1f5df9] shadow-[2px_0_10px_rgba(0,0,0,0.02)] transition-colors relative`}>
                                                   {group !== 'no-group' && <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-slate-100"></div>}
                                                   <div className="flex flex-col ml-1">
                                                      <span className="text-[11px] tracking-wide">{res.fieldName}</span>
