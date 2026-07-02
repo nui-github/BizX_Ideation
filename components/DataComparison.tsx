@@ -244,6 +244,15 @@ const getDetailedDiffExplanation = (targetVal: string, masterVal: string, lang: 
 };
 
 export const DataComparison: React.FC<DataComparisonProps> = ({ language, trackingItems, role = UserRole.USER }) => {
+  const getJobStatus = (job: ComparisonJob): JobStatus => {
+    const docs = Object.values(job.docs);
+    if (docs.some(s => s === ComparisonDocStatus.MISSING)) return JobStatus.NEW;
+    if (docs.some(s => s === ComparisonDocStatus.RECEIVED)) return JobStatus.PENDING;
+    if (docs.some(s => s === ComparisonDocStatus.EXTRACTING)) return JobStatus.PROCESSING;
+    if (docs.some(s => s === ComparisonDocStatus.MISMATCHED)) return JobStatus.REVIEW;
+    if (docs.every(s => s === ComparisonDocStatus.MATCHED || s === ComparisonDocStatus.LOCKED)) return JobStatus.READY;
+    return job.status;
+  };
   const t = TRANSLATIONS[language];
   
   const getMismatchRule = (fieldName: string, part: string, ruleTitleOverride?: string, ruleDescOverride?: string) => {
@@ -2429,44 +2438,37 @@ const mockWorkflows: Workflow[] = [
       {
         status: JobStatus.NEW,
         color: 'bg-slate-50 border-slate-200 text-slate-500',
-        label: language === 'TH' ? 'รอไฟล์ครบ' : 'PENDING FILES',
-        desc: language === 'TH' ? 'รายการใหม่ที่ดึงมาจาก Email หรืออัปโหลดเข้ามา (รวมถึงกรณีอัปโหลดและจัดกลุ่มเอกสารใหม่โดยผู้ใช้) และรอการกดยืนยันเพื่ออ่านไฟล์ (OCR)' : 'New jobs fetched from Email or uploaded (including newly grouped document columns uploaded by the user), waiting for manual OCR trigger',
-        action: language === 'TH' ? 'กด "อ่านไฟล์" ที่การ์ดเอกสารในหน้า Detail เพื่อเริ่มกระบวนการสกัดข้อมูล' : 'Click "Read File" on doc card in Detail view to start extraction'
-      },
-      {
-        status: 'PROCESSING_OCR',
-        color: 'bg-amber-500 text-white',
-        label: 'READING FILE',
-        desc: language === 'TH' ? 'ระบบ AI กำลังดำเนินการอ่านข้อมูลและระบุประเภทเอกสาร (OCR & Classifier) เช่น Invoice, B/L, Packing List' : 'AI system is reading data and identifying document types (OCR & Classifier) e.g. Invoice, B/L, Packing List',
-        action: language === 'TH' ? 'รอระบบทำงาน (ประมาณ 5 วินาทีต่อไฟล์) สถานะเอกสารจะเปลี่ยนเป็น OCR DONE โดยกรองประเภทที่ตรงตามการตั้งค่า' : 'Wait for system (approx. 5 seconds per file), doc status will change to OCR DONE, filtering types configured'
+        label: language === 'TH' ? 'รอไฟล์ครบ' : 'NEW (WAITING FILES)',
+        desc: language === 'TH' ? 'รายการที่มีเอกสารบางไฟล์ยังไม่ได้อัปโหลดเข้าสู่ระบบ' : 'Jobs with some documents still missing (waiting to be uploaded)',
+        action: language === 'TH' ? 'อัปโหลดไฟล์ที่ยังขาดอยู่ให้ครบถ้วน' : 'Upload all missing documents'
       },
       {
         status: JobStatus.PENDING,
         color: 'bg-blue-50 border-blue-200 text-blue-700',
         label: language === 'TH' ? 'รอดำเนินการ' : 'PENDING',
-        desc: language === 'TH' ? 'เปรียบเทียบข้อมูลผ่านแล้ว (Match ทั้งหมด) หรือรอให้ผู้ใช้กดเริ่มการเปรียบเทียบข้อมูล' : 'Comparison passed (All Matched) or waiting for user to start comparison process',
-        action: language === 'TH' ? 'หากข้อมูลถูกต้องครบถ้วน ให้กด Lock เอกสารเพื่อเปลี่ยนสถานะเป็น READY' : 'If data is correct, click Lock on documents to change status to READY'
+        desc: language === 'TH' ? 'เอกสารทั้งหมดถูกอัปโหลดแล้ว แต่ยังไม่ได้เริ่มกระบวนการอ่านไฟล์ หรือเปรียบเทียบข้อมูล' : 'All files uploaded, but not yet extracted or compared',
+        action: language === 'TH' ? 'กด "อ่านไฟล์" บนการ์ดเอกสารเพื่อเริ่มกระบวนการ' : 'Click "Read File" on doc cards to start extraction'
       },
       {
         status: JobStatus.PROCESSING,
         color: 'bg-blue-600 text-white',
         label: 'COMPARING',
-        desc: language === 'TH' ? 'ระบบ AI กำลังดำเนินการเปรียบเทียบข้อมูลระหว่างเอกสารตามกฎที่ตั้งไว้' : 'AI system is comparing data between documents based on defined rules',
+        desc: language === 'TH' ? 'ระบบ AI กำลังดำเนินการเปรียบเทียบข้อมูล' : 'AI system is currently extracting/comparing data',
         action: language === 'TH' ? 'รอระบบทำงาน (อัปเดตสถานะอัตโนมัติเมื่อเสร็จสิ้น)' : 'Wait for system (auto-updates when finished)'
       },
       {
         status: JobStatus.REVIEW,
         color: 'bg-amber-50 border-amber-200 text-amber-700',
         label: 'REVIEW',
-        desc: language === 'TH' ? 'พบจุดที่ข้อมูลไม่ตรงกัน (Mismatch) หรือความมั่นใจจำแนกประเภทเอกสารต่ำกว่าเกณฑ์ Auto-accept (%) โดยผ่านพอร์ต Pending Review' : 'Found data mismatch or document classifier confidence is below Auto-accept (%) entering Pending Review port',
-        action: language === 'TH' ? 'ตรวจสอบ Matrix Grid, แก้ไขค่าที่ผิด หรือตรวจทานเอกสารใน Pending Review เสมอเพื่อเพิ่มความถูกต้อง' : 'Check Matrix Grid, fix errors, or review documents in Pending Review to ensure correctness'
+        desc: language === 'TH' ? 'พบความไม่ตรงกันของข้อมูล (Mismatch) ที่ต้องให้ผู้ใช้ตรวจสอบ' : 'Found data mismatch requiring manual review',
+        action: language === 'TH' ? 'ตรวจสอบรายการในหน้า Detail และทำการแก้ไขให้ถูกต้อง' : 'Check Matrix Grid in Detail view and correct errors'
       },
       {
         status: JobStatus.READY,
-        color: 'bg-emerald-50 border-emerald-200 text-emerald-700',
-        label: 'READY',
-        desc: language === 'TH' ? 'เอกสารทั้งหมดในชุดนี้ได้รับการตรวจสอบและล็อก (Lock) เพื่อยืนยันความถูกต้องแล้ว' : 'All documents in this set have been verified and locked to confirm correctness',
-        action: language === 'TH' ? 'ข้อมูลถูกล็อกป้องกันการแก้ไข และพร้อมสำหรับการส่งออก (Export/Send)' : 'Data is locked from editing and ready for Export/Send'
+        color: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+        label: language === 'TH' ? 'เสร็จสมบูรณ์' : 'READY',
+        desc: language === 'TH' ? 'เอกสารทั้งหมดได้รับการเปรียบเทียบและถูกต้องตรงกัน (Matched)' : 'All documents are successfully matched',
+        action: language === 'TH' ? 'รายการพร้อมสำหรับการส่งออกข้อมูล (Export)' : 'Job is ready for Export'
       },
       {
         status: 'DOC_UPDATED',
@@ -3638,14 +3640,7 @@ const mockWorkflows: Workflow[] = [
         );
       }
 
-      let status = job.status;
-      const hasMissingDocs = Object.values(job.docs).some(s => s === ComparisonDocStatus.MISSING);
-
-      if (hasMissingDocs) {
-        status = JobStatus.PROCESSING;
-      } else if (status === JobStatus.READY && !isAllDocsMatched(job)) {
-        status = JobStatus.PENDING;
-      }
+      const status = getJobStatus(job);
 
       switch (status) {
         case JobStatus.READY:
@@ -3883,14 +3878,7 @@ const mockWorkflows: Workflow[] = [
     };
 
     const getStatusBadge = (job: ComparisonJob) => {
-      let status = job.status;
-      const hasMissingDocs = Object.values(job.docs).some(s => s === ComparisonDocStatus.MISSING);
-
-      if (hasMissingDocs) {
-        status = JobStatus.PROCESSING;
-      } else if (status === JobStatus.READY && !isAllDocsMatched(job)) {
-        status = JobStatus.PENDING;
-      }
+      const status = getJobStatus(job);
 
       switch (status) {
         case JobStatus.READY:
@@ -6171,35 +6159,40 @@ const mockWorkflows: Workflow[] = [
                         <h2 className="text-xl font-black text-slate-800 tracking-tighter leading-none uppercase">
                           {selectedJob.reference}
                         </h2>
-                        <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider group/status cursor-help relative border ${
-                           selectedJob.status === JobStatus.READY ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 
-                           selectedJob.status === JobStatus.DONE ? 'bg-teal-50 border-teal-200 text-teal-700' : 
-                           selectedJob.status === JobStatus.PENDING ? 'bg-blue-50 border-blue-200 text-blue-700' :
-                           selectedJob.status === JobStatus.NEW ? 'bg-slate-50 border-slate-200 text-slate-500' :
-                           selectedJob.status === JobStatus.REVIEW ? 'bg-amber-50 border-amber-200 text-amber-600' :
-                           selectedJob.status === JobStatus.PROCESSING ? 'bg-blue-600 border-blue-700 text-white animate-pulse' :
-                           'bg-slate-50 border-slate-200 text-slate-500'
-                         }`}
-                         onClick={() => setShowStatusGuide(true)}
-                         >
-                           {(selectedJob.status === JobStatus.PROCESSING || selectedJob.status === JobStatus.REVIEW) && (
-                             <div className={`w-1.5 h-1.5 rounded-full ${selectedJob.status === JobStatus.PROCESSING ? 'bg-white' : 'bg-amber-500'} animate-pulse`}></div>
-                           )}
-                           {selectedJob.status === JobStatus.READY 
-                               ? (language === 'TH' ? 'เสร็จสมบูรณ์' : 'READY') 
-                               : selectedJob.status === JobStatus.DONE 
-                               ? (language === 'TH' ? 'ส่งออกแล้ว' : 'EXPORTED') 
-                               : selectedJob.status === JobStatus.PENDING 
-                               ? (language === 'TH' ? 'รอดำเนินการ' : 'PENDING') 
-                               : selectedJob.status === JobStatus.NEW 
-                               ? (language === 'TH' ? 'รอไฟล์ครบ' : 'PENDING FILES') 
-                               : selectedJob.status === JobStatus.PROCESSING 
-                               ? (language === 'TH' ? 'กำลังเปรียบเทียบข้อมูล' : 'COMPARING') 
-                               : selectedJob.status === JobStatus.REVIEW 
-                               ? (language === 'TH' ? 'รอตรวจสอบ' : 'REVIEW') 
-                               : selectedJob.status}
-                           <HelpCircle size={10} className="ml-1 opacity-40 group-hover/status:opacity-100 transition-opacity" />
-                        </div>
+                        {(() => {
+                           const status = getJobStatus(selectedJob);
+                           return (
+                             <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider group/status cursor-help relative border ${
+                                status === JobStatus.READY ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 
+                                status === JobStatus.DONE ? 'bg-teal-50 border-teal-200 text-teal-700' : 
+                                status === JobStatus.PENDING ? 'bg-blue-50 border-blue-200 text-blue-700' :
+                                status === JobStatus.NEW ? 'bg-slate-50 border-slate-200 text-slate-500' :
+                                status === JobStatus.REVIEW ? 'bg-amber-50 border-amber-200 text-amber-600' :
+                                status === JobStatus.PROCESSING ? 'bg-blue-600 border-blue-700 text-white animate-pulse' :
+                                'bg-slate-50 border-slate-200 text-slate-500'
+                              }`}
+                              onClick={() => setShowStatusGuide(true)}
+                              >
+                                {(status === JobStatus.PROCESSING || status === JobStatus.REVIEW) && (
+                                  <div className={`w-1.5 h-1.5 rounded-full ${status === JobStatus.PROCESSING ? 'bg-white' : 'bg-amber-500'} animate-pulse`}></div>
+                                )}
+                                {status === JobStatus.READY 
+                                    ? (language === 'TH' ? 'เสร็จสมบูรณ์' : 'READY') 
+                                    : status === JobStatus.DONE 
+                                    ? (language === 'TH' ? 'ส่งออกแล้ว' : 'EXPORTED') 
+                                    : status === JobStatus.PENDING 
+                                    ? (language === 'TH' ? 'รอดำเนินการ' : 'PENDING') 
+                                    : status === JobStatus.NEW 
+                                    ? (language === 'TH' ? 'รอไฟล์ครบ' : 'PENDING FILES') 
+                                    : status === JobStatus.PROCESSING 
+                                    ? (language === 'TH' ? 'กำลังเปรียบเทียบข้อมูล' : 'COMPARING') 
+                                    : status === JobStatus.REVIEW 
+                                    ? (language === 'TH' ? 'รอตรวจสอบ' : 'REVIEW') 
+                                    : status}
+                                <HelpCircle size={10} className="ml-1 opacity-40 group-hover/status:opacity-100 transition-opacity" />
+                             </div>
+                           );
+                        })()}
                       </div>
                       <div className="flex items-center gap-2 flex-wrap">
                          <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{selectedJob.workflowName}</p>
@@ -6397,8 +6390,8 @@ const mockWorkflows: Workflow[] = [
 
                   {/* 6. Export Data Button */}
                   <Tooltip content={getLastSubItemExportTooltip(selectedJob, t.exportData)}>
-                    <button 
-                      disabled={isUnassigned || selectedJob.status !== JobStatus.READY || !isAllDocsMatched(selectedJob)}
+                      <button 
+                      disabled={isUnassigned || selectedJob.status !== JobStatus.READY || !isAllDocsMatched(selectedJob) || isLastSubItemWithAllDocsMatched(selectedJob)}
                       onClick={() => {
                         setExportJob(selectedJob);
                         setExportOption('workflow');
@@ -6406,7 +6399,7 @@ const mockWorkflows: Workflow[] = [
                         setSelectedExportPlatform('FTA');
                       }}
                       className={`p-2.5 rounded-[4px] transition-all flex items-center justify-center border disabled:opacity-30 disabled:cursor-not-allowed ${
-                        (selectedJob.status === JobStatus.READY && isAllDocsMatched(selectedJob))
+                        (selectedJob.status === JobStatus.READY && isAllDocsMatched(selectedJob) && !isLastSubItemWithAllDocsMatched(selectedJob))
                           ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-blue-700/20 hover:from-blue-700 hover:to-indigo-700 shadow-md shadow-blue-500/10' 
                           : 'bg-white border-slate-200/60 text-slate-400 opacity-50 cursor-not-allowed'
                       }`}
