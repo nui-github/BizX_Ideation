@@ -158,7 +158,7 @@ const parseDateValue = (dateStr: string | undefined): number => {
 
 const getConciseMismatchSummary = (fieldName: string, lang: Language): string => {
   if (lang === 'TH') {
-    if (fieldName === 'Consignee Name' || fieldName === 'Consignee TAX ID') return 'ข้อมูลคู่ค้าไม่ตรงกับฐานข้อมูลหลัก';
+    if (fieldName === 'Consignee Name' || fieldName === 'Consignee TAX ID') return 'ข้อมูลคู่ค้าไม่ตรงกับเอกสารหลัก';
     if (fieldName === 'Port of Loading' || fieldName === 'Port of Discharge') return 'ท่าเรือต้นทาง/ปลายทางไม่ตรงกัน';
     if (fieldName === "Q'ty by line" || fieldName === 'Total Quantity') return 'จำนวนสินค้าไม่สอดคล้องกัน';
     if (fieldName === 'Price / Unit' || fieldName === 'Invoice Amount') return 'ราคาต่อหน่วย/มูลค่ารวมไม่สอดคล้องกัน';
@@ -184,6 +184,16 @@ const getConciseMismatchSummary = (fieldName: string, lang: Language): string =>
 
 const getDetailedDiffExplanation = (targetVal: string, masterVal: string, lang: Language): string => {
   if (!targetVal || !masterVal) return '';
+
+  const isNumeric = (val: string) => {
+    const cleanVal = val.replace(/,/g, '').trim();
+    return cleanVal !== '' && !isNaN(Number(cleanVal));
+  };
+
+  if (isNumeric(targetVal) && isNumeric(masterVal)) {
+    return lang === 'TH' ? 'ค่าต่างกัน' : 'Value is different';
+  }
+
   const diffs = diffChars(String(targetVal), String(masterVal));
   const extraParts: string[] = [];
   const missingParts: string[] = [];
