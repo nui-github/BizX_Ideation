@@ -8,9 +8,11 @@ Represents a single logistics transaction or workflow.
 ```typescript
 export enum JobStatus {
   NEW = 'NEW',
+  PENDING = 'PENDING',
+  REVIEW = 'REVIEW',
   READY = 'READY',
-  PROCESSING = 'PROCESSING',
   DONE = 'DONE',
+  PROCESSING = 'PROCESSING',
 }
 
 export interface Job {
@@ -31,9 +33,10 @@ Tracks individual files within a job (e.g., Invoice, Packing List, B/L).
 
 ```typescript
 export enum ComparisonDocStatus {
-  RECEIVED = 'RECEIVED',
   MISSING = 'MISSING',
+  RECEIVED = 'RECEIVED',
   EXTRACTING = 'EXTRACTING',
+  OCR_DONE = 'OCR_DONE',
   MATCHED = 'MATCHED',
   MISMATCHED = 'MISMATCHED',
   ERROR = 'ERROR',

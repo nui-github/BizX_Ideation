@@ -333,8 +333,8 @@ export const CreateJobModal: React.FC<CreateJobModalProps> = ({
           reference: shipmentName.trim(),
           createdAt: new Date().toISOString(),
           expiryDate: new Date(Date.now() + (7 + i) * 24 * 60 * 60 * 1000).toISOString(),
-          // First job in the sequence is processing/ready, others are waiting
-          status: i === 0 ? JobStatus.NEW : JobStatus.PROCESSING,
+          // All jobs in the sequence start as NEW (waiting for files)
+          status: JobStatus.NEW,
           docs: docTypes.reduce((acc, type) => {
             acc[type] = ComparisonDocStatus.MISSING;
             return acc;
