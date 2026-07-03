@@ -6642,6 +6642,14 @@ const mockWorkflows: Workflow[] = [
                               let displayMismatchCount = 0;
                               let totalLabel = originalPartResults.length;
 
+                              const readDocsCount = selectedJob ? Object.values(selectedJob.docs).filter(status => 
+                                status !== ComparisonDocStatus.MISSING && 
+                                status !== ComparisonDocStatus.RECEIVED && 
+                                status !== ComparisonDocStatus.EXTRACTING && 
+                                status !== ComparisonDocStatus.ERROR
+                              ).length : 0;
+                              const showHeaderBadges = readDocsCount >= 2;
+
                               if (part === 'Description') {
                                 const groups = Array.from(new Set(originalPartResults.map(r => r.group || 'no-group'))).filter(g => g !== 'no-group');
                                 totalLabel = groups.length;
@@ -6690,27 +6698,29 @@ const mockWorkflows: Workflow[] = [
                                                 </div>
                                               </div>
                                               
-                                              <div className="flex items-center gap-1.5 translate-y-[1px]">
-                                               <Tooltip content={part === 'Description' ? t.ttMatchedCountDesc : t.ttMatchedCount}><div className={`flex items-center gap-1 px-1.5 py-0.5 rounded border text-[9px] font-black tracking-tight ${showOnlyDiff ? 'bg-slate-50 text-slate-400 border-slate-200 shadow-none opacity-60' : (displayMatchCount > 0 ? 'bg-emerald-50 text-emerald-600 border-emerald-100/50 shadow-sm' : 'bg-slate-50 text-slate-300 border-slate-100')}`}>
-                                                 <Check size={9} strokeWidth={4} />
-                                                 <span>{displayMatchCount}</span>
-                                               </div>
-                                               </Tooltip>
-                                               {displaySynonymCount > 0 && (
-                                                <Tooltip content={t.ttSynonymCount}><div className={`flex items-center gap-1 px-1.5 py-0.5 rounded border text-[9px] font-black tracking-tight ${showOnlyDiff ? 'bg-slate-50 text-slate-400 border-slate-200 shadow-none opacity-60' : 'bg-amber-50 text-amber-600 border-amber-100/50 shadow-sm'}`}>
-                                                  <CheckCircle2 size={9} strokeWidth={2.5} />
-                                                  <span>{displaySynonymCount}</span>
-                                                </div>
-                                                </Tooltip>
-                                               )}
-                                               {displayMismatchCount > 0 && (
-                                                 <Tooltip content={part === 'Description' ? t.ttMismatchedCountDesc : t.ttMismatchedCount}><div className="flex items-center gap-1 px-1.5 py-0.5 rounded border bg-rose-50 text-rose-600 border-rose-100/50 shadow-sm text-[9px] font-black tracking-tight">
-                                                   <AlertCircle size={9} strokeWidth={2.5} />
-                                                   <span>{displayMismatchCount}</span>
+                                              {showHeaderBadges && (
+                                                <div className="flex items-center gap-1.5 translate-y-[1px]">
+                                                 <Tooltip content={part === 'Description' ? t.ttMatchedCountDesc : t.ttMatchedCount}><div className={`flex items-center gap-1 px-1.5 py-0.5 rounded border text-[9px] font-black tracking-tight ${showOnlyDiff ? 'bg-slate-50 text-slate-400 border-slate-200 shadow-none opacity-60' : (displayMatchCount > 0 ? 'bg-emerald-50 text-emerald-600 border-emerald-100/50 shadow-sm' : 'bg-slate-50 text-slate-300 border-slate-100')}`}>
+                                                   <Check size={9} strokeWidth={4} />
+                                                   <span>{displayMatchCount}</span>
                                                  </div>
                                                  </Tooltip>
-                                               )}
-                                             </div>
+                                                 {displaySynonymCount > 0 && (
+                                                  <Tooltip content={t.ttSynonymCount}><div className={`flex items-center gap-1 px-1.5 py-0.5 rounded border text-[9px] font-black tracking-tight ${showOnlyDiff ? 'bg-slate-50 text-slate-400 border-slate-200 shadow-none opacity-60' : 'bg-amber-50 text-amber-600 border-amber-100/50 shadow-sm'}`}>
+                                                    <CheckCircle2 size={9} strokeWidth={2.5} />
+                                                    <span>{displaySynonymCount}</span>
+                                                  </div>
+                                                  </Tooltip>
+                                                 )}
+                                                 {displayMismatchCount > 0 && (
+                                                   <Tooltip content={part === 'Description' ? t.ttMismatchedCountDesc : t.ttMismatchedCount}><div className="flex items-center gap-1 px-1.5 py-0.5 rounded border bg-rose-50 text-rose-600 border-rose-100/50 shadow-sm text-[9px] font-black tracking-tight">
+                                                     <AlertCircle size={9} strokeWidth={2.5} />
+                                                     <span>{displayMismatchCount}</span>
+                                                   </div>
+                                                   </Tooltip>
+                                                 )}
+                                               </div>
+                                              )}
                                            </div>
                                          </div>
                                        </th>
