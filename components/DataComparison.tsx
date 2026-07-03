@@ -6925,6 +6925,16 @@ const mockWorkflows: Workflow[] = [
 
                                  {comparedDocs.map(docName => {
                                     const target = res.targets.find(t => t.fileName === docName);
+                                    const isMissing = selectedJob && selectedJob.docs[docName] === ComparisonDocStatus.MISSING;
+                                    if (isMissing) {
+                                      return (
+                                        <td key={docName} className="p-0 border-r border-slate-100 bg-slate-50/5">
+                                          <div className="px-4 py-4 text-xs font-bold text-slate-400 text-center flex items-center justify-center min-h-full font-mono">
+                                            -
+                                          </div>
+                                        </td>
+                                      );
+                                    }
                                     if (!target) {
                                       return (
                                         <td key={docName} className="p-0 border-r border-slate-100 bg-slate-50/5">
