@@ -402,6 +402,35 @@ export const DataComparison: React.FC<DataComparisonProps> = ({ language, tracki
   const [showUnclaimPrompt, setShowUnclaimPrompt] = useState(false);
   const [leftPanelCollapsed, setLeftPanelCollapsed] = useState(true);
   const [overriddenValues, setOverriddenValues] = useState<Record<string, string>>({}); // field-tIdx -> value
+  const [confirmedMismatches, setConfirmedMismatches] = useState<Record<string, boolean>>({}); // job_doc_field -> boolean
+
+  const toggleConfirmMismatch = (docName: string, fieldName: string) => {
+    if (!selectedJob) return;
+    const key = `${selectedJob.id}_${docName}_${fieldName}`;
+    
+    setConfirmedMismatches(prev => {
+      const isConfirmed = !prev[key];
+      
+      // Add an audit log entry for this action
+      const newLog = {
+        id: Math.random().toString(36).substr(2, 9),
+        docName: docName,
+        timestamp: new Date().toISOString(),
+        action: isConfirmed ? 'CONFIRM_DATA' : 'UNCONFIRM_DATA',
+        details: language === 'TH' 
+          ? `ยืนยันความถูกต้องฟิลด์ "${fieldName}" ใน "${docName}"` 
+          : `Manually confirmed field "${fieldName}" in "${docName}"`,
+        version: selectedJob.updatedDocs?.includes(docName) ? 2 : 1,
+        user: 'Kunawut W.'
+      };
+      setOcrLogs(prevLogs => [newLog, ...prevLogs]);
+
+      return {
+        ...prev,
+        [key]: isConfirmed
+      };
+    });
+  };
   const [showStatusGuide, setShowStatusGuide] = useState(false);
   const [tempOCRData, setTempOCRData] = useState<Record<string, string>>({});
   const [originalOCRData, setOriginalOCRData] = useState<Record<string, string>>({});
@@ -2930,6 +2959,14 @@ const mockWorkflows: Workflow[] = [
           }
         }
 
+        // Check if user has manually confirmed/approved this mismatched value
+        const confirmedKey = `${job.id}_${docName}_${f.name}`;
+        if (status === 'MISMATCH' && confirmedMismatches[confirmedKey]) {
+          status = 'MATCH';
+          ruleTitle = language === 'TH' ? 'ผ่านการตรวจสอบแล้ว' : 'Verified';
+          ruleDesc = language === 'TH' ? 'ยืนยันความถูกต้องของข้อมูลแล้ว' : 'Manually verified and confirmed';
+        }
+
         // Rule: If document is MATCHED or LOCKED, it should not show mismatches
         if ((docStatus === ComparisonDocStatus.MATCHED || docStatus === ComparisonDocStatus.LOCKED) && status === 'MISMATCH') {
           status = 'MATCH';
@@ -4289,7 +4326,7 @@ const mockWorkflows: Workflow[] = [
         status: unvalidatedDocs.has(t.fileName) ? 'WAITING' as any : t.status
       }))
     }));
-  }, [selectedJob, overriddenValues, comparedDocs, unvalidatedDocs]);
+  }, [selectedJob, overriddenValues, comparedDocs, unvalidatedDocs, confirmedMismatches]);
 
   const allComparisonResults = React.useMemo(() => {
     if (!selectedJob) return [];
@@ -4313,7 +4350,7 @@ const mockWorkflows: Workflow[] = [
         status: unvalidatedDocs.has(t.fileName) ? 'WAITING' as any : t.status
       }))
     }));
-  }, [selectedJob, overriddenValues, unvalidatedDocs]);
+  }, [selectedJob, overriddenValues, unvalidatedDocs, confirmedMismatches]);
 
   const mismatchedFileNames = React.useMemo(() => {
     const set = new Set<string>();
@@ -4794,8 +4831,8 @@ const mockWorkflows: Workflow[] = [
                     {activeBoardTab !== 'pending' && selectedJob?.docs[pdfPreviewUrl] && (() => {
                       const docStatus = selectedJob.docs[pdfPreviewUrl];
                       const isMismatched = mismatchedFileNames.has(pdfPreviewUrl);
-                      const displayStatus = (docStatus === ComparisonDocStatus.MATCHED) && isMismatched
-                        ? ComparisonDocStatus.MISMATCHED
+                      const displayStatus = (docStatus === ComparisonDocStatus.MATCHED || docStatus === ComparisonDocStatus.MISMATCHED)
+                        ? (isMismatched ? ComparisonDocStatus.MISMATCHED : ComparisonDocStatus.MATCHED)
                         : docStatus;
                       
                       const isMatchedOrLocked = displayStatus === ComparisonDocStatus.MATCHED || displayStatus === ComparisonDocStatus.LOCKED;
@@ -4874,8 +4911,8 @@ const mockWorkflows: Workflow[] = [
                     const isActive = docName === pdfPreviewUrl;
                     const docStatus = selectedJob.docs[docName];
                     const isMismatched = mismatchedFileNames.has(docName);
-                    const displayStatus = (docStatus === ComparisonDocStatus.MATCHED) && isMismatched
-                      ? ComparisonDocStatus.MISMATCHED
+                    const displayStatus = (docStatus === ComparisonDocStatus.MATCHED || docStatus === ComparisonDocStatus.MISMATCHED)
+                      ? (isMismatched ? ComparisonDocStatus.MISMATCHED : ComparisonDocStatus.MATCHED)
                       : docStatus;
                     const isMatchedOrLocked = displayStatus === ComparisonDocStatus.MATCHED || displayStatus === ComparisonDocStatus.LOCKED;
                     const isAmber = displayStatus === ComparisonDocStatus.RECEIVED || 
@@ -6571,8 +6608,8 @@ const mockWorkflows: Workflow[] = [
                                  const isReady = docStatus !== ComparisonDocStatus.RECEIVED && docStatus !== ComparisonDocStatus.EXTRACTING && docStatus !== ComparisonDocStatus.MISSING;
                                  
                                  // Derived status for display - override MATCHED if there are actual mismatches in data
-                                 const displayStatus = (docStatus === ComparisonDocStatus.MATCHED) && isMismatched
-                                   ? ComparisonDocStatus.MISMATCHED
+                                 const displayStatus = (docStatus === ComparisonDocStatus.MATCHED || docStatus === ComparisonDocStatus.MISMATCHED)
+                                   ? (isMismatched ? ComparisonDocStatus.MISMATCHED : ComparisonDocStatus.MATCHED)
                                    : docStatus;
                                  
                                  return (
@@ -6945,8 +6982,10 @@ const mockWorkflows: Workflow[] = [
                                         </td>
                                       );
                                     }
+                                    const isUserConfirmed = target && (target.ruleTitle === 'ยืนยันโดยผู้ใช้' || target.ruleTitle === 'Confirmed by User' || target.ruleTitle === 'ผ่านการตรวจสอบแล้ว' || target.ruleTitle === 'Verified');
                                     return (
                                       <td key={docName} className={`p-0 border-r border-slate-100 transition-all ${
+                                         isUserConfirmed ? 'bg-emerald-50/10' :
                                          target.status === 'MATCH' ? 'bg-white' :
                                          target.status === 'WAITING' ? 'bg-white' :
                                          target.status === 'MISMATCH' ? 'bg-rose-50/30' :
@@ -6954,6 +6993,7 @@ const mockWorkflows: Workflow[] = [
                                          'bg-slate-50/10 opacity-50'
                                       }`}>
                                          <div className={`px-4 py-4 text-[11px] font-black text-center min-h-full flex flex-col items-center justify-center gap-1.5 group/cell relative overflow-visible ${
+                                            isUserConfirmed ? 'text-emerald-700' :
                                             target.status === 'MATCH' ? 'text-slate-600' :
                                             target.status === 'WAITING' ? 'text-slate-500' :
                                             target.status === 'MISMATCH' ? 'text-rose-600' :
@@ -7027,10 +7067,32 @@ const mockWorkflows: Workflow[] = [
                                                     res.sourceValue
                                                   )}
                                                 </div>
+                                                <button
+                                                  onClick={() => toggleConfirmMismatch(docName, res.fieldName)}
+                                                  className="mt-2 px-2.5 py-0.5 rounded bg-rose-500 hover:bg-rose-600 text-white font-extrabold text-[9px] uppercase tracking-wider shadow-sm transition-all flex items-center gap-1 cursor-pointer"
+                                                >
+                                                  <Check size={9} strokeWidth={4} />
+                                                  <span>{language === 'TH' ? 'ยืนยันใช้ค่านี้' : 'Confirm value'}</span>
+                                                </button>
                                               </div>
                                             )}
 
-                                            {target.status === 'SYNONYM' && target.ruleTitle && target.ruleTitle !== 'Master lookup (ฐานข้อมูล)' && (
+                                            {isUserConfirmed && (
+                                              <div className="flex flex-col items-center gap-1 mt-1">
+                                                <div className="px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200/60 rounded-[4px] text-[9px] font-black tracking-tight shrink-0 shadow-sm flex items-center gap-1">
+                                                  <Check size={9} className="text-emerald-600" strokeWidth={4} />
+                                                  <span>{target.ruleTitle}</span>
+                                                </div>
+                                                <button
+                                                  onClick={() => toggleConfirmMismatch(docName, res.fieldName)}
+                                                  className="px-1.5 py-0.5 rounded bg-slate-100 hover:bg-rose-50 text-slate-500 hover:text-rose-600 border border-slate-200 hover:border-rose-200 font-extrabold text-[8px] uppercase tracking-wider transition-all flex items-center gap-1 cursor-pointer"
+                                                >
+                                                  <span>{language === 'TH' ? 'ยกเลิก' : 'Undo'}</span>
+                                                </button>
+                                              </div>
+                                            )}
+
+                                            {target.status === 'SYNONYM' && target.ruleTitle && target.ruleTitle !== 'Master lookup (ฐานข้อมูล)' && target.ruleTitle !== 'ยืนยันโดยผู้ใช้' && target.ruleTitle !== 'Confirmed by User' && target.ruleTitle !== 'ผ่านการตรวจสอบแล้ว' && target.ruleTitle !== 'Verified' && (
                                               <div className="mt-1 px-2 py-1 bg-amber-50 text-amber-700 border border-amber-200/60 rounded-[4px] text-[11px] font-black tracking-tight shrink-0 shadow-sm flex items-center gap-1.5 w-fit max-w-full">
                                                 <ListFilter size={12} className="text-amber-600 shrink-0" strokeWidth={3} />
                                                 <span className="truncate max-w-[200px] leading-tight">{target.ruleTitle}</span>
@@ -7087,10 +7149,14 @@ const mockWorkflows: Workflow[] = [
                         <div className="h-8 w-[1px] bg-slate-200 mx-1"></div>
 
                         {(() => {
-                           const accuracyValue = selectedJob.accuracyScore !== undefined 
-                             ? selectedJob.accuracyScore 
-                             : Number(((comparisonResults.filter(r => r.targets.every(t => t.status === 'MATCH' || t.status === 'SYNONYM' || t.status === 'NA')).length / comparisonResults.length) * 100).toFixed(1));
-                           
+                           const accuracyValue = (() => {
+                             if (!comparisonResults || comparisonResults.length === 0) {
+                               return selectedJob.accuracyScore !== undefined ? selectedJob.accuracyScore : 100.0;
+                             }
+                             const totalRows = comparisonResults.length;
+                             const matchedRows = comparisonResults.filter(r => r.targets.every(t => t.status === 'MATCH' || t.status === 'SYNONYM' || t.status === 'NA')).length;
+                             return Number(((matchedRows / totalRows) * 100).toFixed(1));
+                           })();
                            return (
                              <div className="flex items-center gap-3 bg-white pl-1 pr-3 py-1 rounded-full border border-slate-200 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] hover:shadow-[0_4px_15px_-4px_rgba(0,0,0,0.15)] transition-all duration-300 group cursor-default">
                                 <div className="relative w-8 h-8 flex items-center justify-center">
