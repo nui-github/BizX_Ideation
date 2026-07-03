@@ -195,18 +195,10 @@ const getDetailedDiffExplanation = (targetVal: string, masterVal: string, lang: 
   }
 
   const diffs = diffChars(String(targetVal), String(masterVal));
-  const extraParts: string[] = [];
-  const missingParts: string[] = [];
   let unchangedCount = 0;
   
   diffs.forEach(part => {
-    if (part.removed) {
-      // Exist in target but not in master -> Extra (เกินมา)
-      extraParts.push(part.value);
-    } else if (part.added) {
-      // Exist in master but not in target -> Missing (ขาดไป)
-      missingParts.push(part.value);
-    } else {
+    if (!part.removed && !part.added) {
       unchangedCount += part.value.length;
     }
   });
@@ -218,29 +210,7 @@ const getDetailedDiffExplanation = (targetVal: string, masterVal: string, lang: 
     return lang === 'TH' ? 'เป็นข้อมูลคนละคำกัน' : 'Completely different data';
   }
 
-  if (lang === 'TH') {
-    const explanations: string[] = [];
-    if (extraParts.length > 0) {
-      const extraStr = extraParts.map(p => `"${p}"`).join(', ');
-      explanations.push(`มี ${extraStr} เกินมา`);
-    }
-    if (missingParts.length > 0) {
-      const missingStr = missingParts.map(p => `"${p}"`).join(', ');
-      explanations.push(`ขาด ${missingStr}`);
-    }
-    return explanations.join(' และ ');
-  } else {
-    const explanations: string[] = [];
-    if (extraParts.length > 0) {
-      const extraStr = extraParts.map(p => `"${p}"`).join(', ');
-      explanations.push(`has extra ${extraStr}`);
-    }
-    if (missingParts.length > 0) {
-      const missingStr = missingParts.map(p => `"${p}"`).join(', ');
-      explanations.push(`missing ${missingStr}`);
-    }
-    return explanations.join(' and ');
-  }
+  return lang === 'TH' ? 'ค่าต่างกันบางส่วน' : 'Partially different value';
 };
 
 export const DataComparison: React.FC<DataComparisonProps> = ({ language, trackingItems, role = UserRole.USER }) => {
@@ -6879,11 +6849,6 @@ const mockWorkflows: Workflow[] = [
                                                     res.sourceValue
                                                   )}
                                                 </div>
-                                                {target.value && res.sourceValue && (
-                                                  <div className="mt-1 text-[10px] text-rose-500 font-bold bg-rose-50/80 px-1.5 py-0.5 rounded-[4px] border border-rose-100 max-w-full text-center leading-tight">
-                                                    {getDetailedDiffExplanation(String(target.value), String(res.sourceValue), language)}
-                                                  </div>
-                                                )}
                                               </div>
                                             )}
 
