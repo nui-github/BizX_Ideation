@@ -214,15 +214,6 @@ const getDetailedDiffExplanation = (targetVal: string, masterVal: string, lang: 
 };
 
 export const DataComparison: React.FC<DataComparisonProps> = ({ language, trackingItems, role = UserRole.USER }) => {
-  const getJobStatus = (job: ComparisonJob): JobStatus => {
-    const docs = Object.values(job.docs);
-    if (docs.some(s => s === ComparisonDocStatus.MISSING)) return JobStatus.NEW;
-    if (docs.some(s => s === ComparisonDocStatus.RECEIVED)) return JobStatus.PENDING;
-    if (docs.some(s => s === ComparisonDocStatus.EXTRACTING)) return JobStatus.PROCESSING;
-    if (docs.some(s => s === ComparisonDocStatus.MISMATCHED)) return JobStatus.REVIEW;
-    if (docs.every(s => s === ComparisonDocStatus.MATCHED || s === ComparisonDocStatus.LOCKED)) return JobStatus.READY;
-    return job.status;
-  };
   const t = TRANSLATIONS[language];
   
   const getMismatchRule = (fieldName: string, part: string, ruleTitleOverride?: string, ruleDescOverride?: string) => {
@@ -509,40 +500,6 @@ export const DataComparison: React.FC<DataComparisonProps> = ({ language, tracki
     }).sort((a, b) => {
       return parseDateValue(b.createdAt) - parseDateValue(a.createdAt);
     });
-  };
-
-  const isAllDocsMatched = (job: ComparisonJob) => {
-    return Object.values(job.docs).every(
-      status => status === ComparisonDocStatus.MATCHED || status === ComparisonDocStatus.LOCKED
-    );
-  };
-
-  const isLastSubItemWithAllDocsMatched = (job: ComparisonJob) => {
-    if (!job) return false;
-    const shipmentJobs = jobs.filter(j => j.reference === job.reference);
-    if (shipmentJobs.length === 0) return false;
-    const seqIndex = shipmentJobs.findIndex(j => j.id === job.id);
-    const isLastJob = seqIndex === shipmentJobs.length - 1;
-    return isLastJob && isAllDocsMatched(job);
-  };
-
-  const getLastSubItemExportTooltip = (job: ComparisonJob, defaultText: string) => {
-    if (!isLastSubItemWithAllDocsMatched(job)) {
-      return defaultText;
-    }
-    return (
-      <div className="flex flex-col gap-1 p-0.5 text-left min-w-[220px]">
-        <div className="font-black text-amber-400 text-[11px] uppercase tracking-wider flex items-center gap-1">
-          <AlertCircle size={12} />
-          <span>{language === 'TH' ? 'สิ้นสุดกระบวนการ' : 'End of Process'}</span>
-        </div>
-        <div className="text-white font-bold text-[10px] leading-relaxed">
-          {language === 'TH' 
-            ? 'จับคู่สำเร็จครบทุกไฟล์แล้ว และไม่มีขั้นตอนหรือรายการย่อยถัดไป' 
-            : 'All documents matched successfully. No subsequent steps exist.'}
-        </div>
-      </div>
-    );
   };
 
   const [selectedPendingId, setSelectedPendingId] = useState<string | null>(null);
@@ -3003,22 +2960,97 @@ const mockWorkflows: Workflow[] = [
     });
   };
 
+  const getEffectiveDocStatus = (job: ComparisonJob, docName: string, originalStatus: ComparisonDocStatus) => {
+    if (originalStatus === ComparisonDocStatus.MATCHED || originalStatus === ComparisonDocStatus.MISMATCHED) {
+      // Check if there are any actual MISMATCH targets for this docName in this job
+      const baseResults = getMockComparisonResults(job);
+      const hasMismatch = baseResults.some(res => 
+        res.targets.some(t => {
+          if (t.fileName !== docName) return false;
+          let status = t.status;
+          const confirmedKey = `${job.id}_${docName}_${res.fieldName}`;
+          if (status === 'MISMATCH' && confirmedMismatches[confirmedKey]) {
+            status = 'MATCH';
+          }
+          return status === 'MISMATCH';
+        })
+      );
+      return hasMismatch ? ComparisonDocStatus.MISMATCHED : ComparisonDocStatus.MATCHED;
+    }
+    return originalStatus;
+  };
+
+  const getJobStatus = (job: ComparisonJob): JobStatus => {
+    const docs = Object.entries(job.docs).map(([docName, s]) => 
+      getEffectiveDocStatus(job, docName, s)
+    );
+    if (docs.some(s => s === ComparisonDocStatus.MISSING)) return JobStatus.NEW;
+    if (docs.some(s => s === ComparisonDocStatus.RECEIVED)) return JobStatus.PENDING;
+    if (docs.some(s => s === ComparisonDocStatus.EXTRACTING)) return JobStatus.PROCESSING;
+    if (docs.some(s => s === ComparisonDocStatus.MISMATCHED)) return JobStatus.REVIEW;
+    if (docs.every(s => s === ComparisonDocStatus.MATCHED || s === ComparisonDocStatus.LOCKED)) return JobStatus.READY;
+    return job.status;
+  };
+
   const areAllFilesMatched = React.useMemo(() => {
     if (!selectedJob) return false;
     const results = getMockComparisonResults(selectedJob);
     return results.every(r => r.targets.every(t => (t.status as string) === 'MATCH' || (t.status as string) === 'SYNONYM' || (t.status as string) === 'NA'));
-  }, [selectedJob, overriddenValues]); // added overriddenValues
+  }, [selectedJob, overriddenValues, confirmedMismatches]); // added overriddenValues and confirmedMismatches
 
   useEffect(() => {
-    if (selectedJob && selectedJob.status === JobStatus.REVIEW && areAllFilesMatched) {
-      setJobs(prev => prev.map(job => {
-        if (job.id === selectedJob.id) {
-          return { ...job, status: JobStatus.READY, isLocked: true };
-        }
-        return job;
-      }));
+    if (selectedJob) {
+      const currentStatus = getJobStatus(selectedJob);
+      if (selectedJob.status !== currentStatus) {
+        setJobs(prev => prev.map(job => {
+          if (job.id === selectedJob.id) {
+            const isNowReady = currentStatus === JobStatus.READY;
+            return { 
+              ...job, 
+              status: currentStatus, 
+              isLocked: isNowReady ? true : job.isLocked 
+            };
+          }
+          return job;
+        }));
+      }
     }
-  }, [selectedJob?.id, selectedJob?.status, areAllFilesMatched]);
+  }, [selectedJob?.id, confirmedMismatches, overriddenValues]);
+
+  const isAllDocsMatched = (job: ComparisonJob) => {
+    return Object.entries(job.docs).every(([docName, status]) => {
+      const s = getEffectiveDocStatus(job, docName, status);
+      return s === ComparisonDocStatus.MATCHED || s === ComparisonDocStatus.LOCKED;
+    });
+  };
+
+  const isLastSubItemWithAllDocsMatched = (job: ComparisonJob) => {
+    if (!job) return false;
+    const shipmentJobs = jobs.filter(j => j.reference === job.reference);
+    if (shipmentJobs.length === 0) return false;
+    const seqIndex = shipmentJobs.findIndex(j => j.id === job.id);
+    const isLastJob = seqIndex === shipmentJobs.length - 1;
+    return isLastJob && isAllDocsMatched(job);
+  };
+
+  const getLastSubItemExportTooltip = (job: ComparisonJob, defaultText: string) => {
+    if (!isLastSubItemWithAllDocsMatched(job)) {
+      return defaultText;
+    }
+    return (
+      <div className="flex flex-col gap-1 p-0.5 text-left min-w-[220px]">
+        <div className="font-black text-amber-400 text-[11px] uppercase tracking-wider flex items-center gap-1">
+          <AlertCircle size={12} />
+          <span>{language === 'TH' ? 'สิ้นสุดกระบวนการ' : 'End of Process'}</span>
+        </div>
+        <div className="text-white font-bold text-[10px] leading-relaxed">
+          {language === 'TH' 
+            ? 'จับคู่สำเร็จครบทุกไฟล์แล้ว และไม่มีขั้นตอนหรือรายการย่อยถัดไป' 
+            : 'All documents matched successfully. No subsequent steps exist.'}
+        </div>
+      </div>
+    );
+  };
 
   const renderPendingInbox = () => {
     const filterItems = ['All', 'Email', 'Doc type'];
