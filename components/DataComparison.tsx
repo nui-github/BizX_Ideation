@@ -362,6 +362,41 @@ export const DataComparison: React.FC<DataComparisonProps> = ({ language, tracki
   const [assigneeFilter, setAssigneeFilter] = useState('ALL');
   const [sortBy, setSortBy] = useState('UPDATE_NEW');
   const [pdfPreviewUrl, setPdfPreviewUrl] = useState<string | null>(null);
+  const [activeSubFileId, setActiveSubFileId] = useState<string | null>(null);
+
+  const getSubFilesForDoc = (docName: string) => {
+    if (!docName) return [];
+    const docUpper = docName.toUpperCase();
+    if (docUpper.includes('B / L') || docUpper.includes('B/L') || docUpper.includes('LADING')) {
+      return [
+        { id: `${docName}_sub_1`, label: language === 'TH' ? 'ใบที่ 1 (MAERSK_01.pdf)' : 'File 1 (MAERSK_01.pdf)', fileName: 'B_L_1.pdf', suffix: 'Container 1' },
+        { id: `${docName}_sub_2`, label: language === 'TH' ? 'ใบที่ 2 (MAERSK_02.pdf)' : 'File 2 (MAERSK_02.pdf)', fileName: 'B_L_2.pdf', suffix: 'Container 2' },
+        { id: `${docName}_sub_3`, label: language === 'TH' ? 'ใบที่ 3 (MAERSK_03.pdf)' : 'File 3 (MAERSK_03.pdf)', fileName: 'B_L_3.pdf', suffix: 'Container 3' },
+      ];
+    }
+    if (docUpper.includes('INVOICE') || docUpper.includes('INV')) {
+      return [
+        { id: `${docName}_sub_1`, label: language === 'TH' ? 'ใบที่ 1 (INV_01.pdf)' : 'File 1 (INV_01.pdf)', fileName: 'Invoice_1.pdf', suffix: 'Invoice 1' },
+        { id: `${docName}_sub_2`, label: language === 'TH' ? 'ใบที่ 2 (INV_02.pdf)' : 'File 2 (INV_02.pdf)', fileName: 'Invoice_2.pdf', suffix: 'Invoice 2' },
+      ];
+    }
+    return [
+      { id: docName, label: docName, fileName: `${docName.replace(/\s/g, '_')}.pdf`, suffix: '' }
+    ];
+  };
+
+  useEffect(() => {
+    if (pdfPreviewUrl) {
+      const subs = getSubFilesForDoc(pdfPreviewUrl);
+      if (subs.length > 0) {
+        setActiveSubFileId(subs[0].id);
+      } else {
+        setActiveSubFileId(null);
+      }
+    } else {
+      setActiveSubFileId(null);
+    }
+  }, [pdfPreviewUrl]);
   const [showLockPrompt, setShowLockPrompt] = useState(false);
   const [showClaimPrompt, setShowClaimPrompt] = useState(false);
   const [showUnclaimPrompt, setShowUnclaimPrompt] = useState(false);
@@ -1365,25 +1400,29 @@ const mockWorkflows: Workflow[] = [
   }, [tempOCRData, originalOCRData]);
 
   const handleSaveOCR = () => {
-    if (!pdfPreviewUrl) return;
+    if (!pdfPreviewUrl || !activeSubFileId) return;
     const updates: Record<string, string> = { ...overriddenValues };
     
     // Check if any fields were actually changed to record a meaningful log
     const changedFields: string[] = [];
     Object.entries(tempOCRData).forEach(([field, value]) => {
-      updates[`${pdfPreviewUrl}_${field}`] = value as string;
+      updates[`${activeSubFileId}_${field}`] = value as string;
       if (originalOCRData[field] !== value) {
         changedFields.push(field);
       }
     });
 
     if (changedFields.length > 0) {
+      const activeSubObj = getSubFilesForDoc(pdfPreviewUrl).find(s => s.id === activeSubFileId);
+      const subLabel = activeSubObj ? activeSubObj.label : activeSubFileId;
       const newLog = {
         id: Math.random().toString(36).substr(2, 9),
         docName: pdfPreviewUrl,
         timestamp: new Date().toISOString(),
         action: 'EDIT_DATA',
-        details: language === 'TH' ? `แก้ไขฟิลด์: ${changedFields.join(', ')}` : `Edited fields: ${changedFields.join(', ')}`,
+        details: language === 'TH' 
+          ? `แก้ไขฟิลด์ในใบย่อย (${subLabel}): ${changedFields.join(', ')}` 
+          : `Edited fields in sub-file (${subLabel}): ${changedFields.join(', ')}`,
         version: selectedJob?.updatedDocs?.includes(pdfPreviewUrl) ? 2 : 1,
         user: 'Kunawut W.'
       };
@@ -1397,13 +1436,32 @@ const mockWorkflows: Workflow[] = [
   };
 
   useEffect(() => {
-    if (pdfPreviewUrl && selectedJob) {
+    if (pdfPreviewUrl && selectedJob && activeSubFileId) {
       const results = getMockComparisonResults(selectedJob);
       const initialData: Record<string, string> = {};
       results.forEach(res => {
-        const target = res.targets.find(t => t.fileName === pdfPreviewUrl);
-        if (target && target.status !== 'NA') {
-          initialData[res.fieldName] = target.value;
+        // First check manual edits for this specific subfile
+        const overrideKey = `${activeSubFileId}_${res.fieldName}`;
+        if (overriddenValues[overrideKey] !== undefined) {
+          initialData[res.fieldName] = overriddenValues[overrideKey];
+        } else {
+          const target = res.targets.find(t => t.fileName === pdfPreviewUrl);
+          if (target && target.status !== 'NA') {
+            let baseVal = target.value;
+            // Introduce subtle variations for sub-files to make the demo incredibly high-fidelity and lifelike
+            if (activeSubFileId.endsWith('_sub_2')) {
+              if (res.fieldName === 'Consignee TAX ID') baseVal = '0105562000002';
+              if (res.fieldName === 'Port of Loading') baseVal = 'SHANGHAI, CHINA (S2)';
+              if (res.fieldName === 'Vessel / Flight') baseVal = 'MSC FLORENCE';
+              if (res.fieldName === 'Total Quantity') baseVal = '320';
+            } else if (activeSubFileId.endsWith('_sub_3')) {
+              if (res.fieldName === 'Consignee TAX ID') baseVal = '0105562000003';
+              if (res.fieldName === 'Port of Loading') baseVal = 'SHANGHAI, CHINA (S3)';
+              if (res.fieldName === 'Vessel / Flight') baseVal = 'MSC GENEVA';
+              if (res.fieldName === 'Total Quantity') baseVal = '180';
+            }
+            initialData[res.fieldName] = baseVal;
+          }
         }
       });
       setTempOCRData(initialData);
@@ -1414,7 +1472,7 @@ const mockWorkflows: Workflow[] = [
       setActiveRightTab('excel');
       setCopiedJson(false);
     }
-  }, [pdfPreviewUrl, selectedJob]);
+  }, [pdfPreviewUrl, selectedJob, activeSubFileId]);
 
   // Move jobs state to the top
   const [jobs, setJobs] = useState<ComparisonJob[]>([
@@ -4188,9 +4246,8 @@ const mockWorkflows: Workflow[] = [
   const comparedDocs = React.useMemo(() => {
     if (!selectedJob) return [];
 
-    // Show all visible docs as columns to avoid losing info when sidebar is collapsed, excluding hidden locked docs
+    // Show all docs as columns (including missing ones so they can still be uploaded and viewed), excluding hidden locked docs
     return Object.keys(selectedJob.docs).filter(docName => 
-      (selectedJob.status === JobStatus.NEW || selectedJob.status === JobStatus.PENDING || selectedJob.docs[docName] !== ComparisonDocStatus.MISSING) &&
       !hiddenLockedDocs.includes(docName)
     );
   }, [selectedJob, hiddenLockedDocs]);
@@ -4806,6 +4863,97 @@ const mockWorkflows: Workflow[] = [
               </div>
             </div>
 
+            {/* File Switcher Tab Bar */}
+            {selectedJob && Object.keys(selectedJob.docs).length > 1 && (
+              <div className="bg-slate-50 border-b border-slate-200/60 px-5 py-3 flex items-center gap-3 shrink-0 overflow-x-auto select-none custom-scrollbar">
+                <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest mr-1">
+                  {language === 'TH' ? 'เลือกไฟล์สลับดู:' : 'SELECT FILE TO VIEW:'}
+                </span>
+                <div className="flex items-center gap-2">
+                  {Object.keys(selectedJob.docs).map(docName => {
+                    const isActive = docName === pdfPreviewUrl;
+                    const docStatus = selectedJob.docs[docName];
+                    const isMismatched = mismatchedFileNames.has(docName);
+                    const displayStatus = (docStatus === ComparisonDocStatus.MATCHED) && isMismatched
+                      ? ComparisonDocStatus.MISMATCHED
+                      : docStatus;
+                    const isMatchedOrLocked = displayStatus === ComparisonDocStatus.MATCHED || displayStatus === ComparisonDocStatus.LOCKED;
+                    const isAmber = displayStatus === ComparisonDocStatus.RECEIVED || 
+                                    displayStatus === ComparisonDocStatus.EXTRACTING || 
+                                    displayStatus === ComparisonDocStatus.OCR_DONE;
+                    const isRose = displayStatus === ComparisonDocStatus.ERROR || displayStatus === ComparisonDocStatus.MISMATCHED;
+
+                    return (
+                      <button
+                        key={docName}
+                        onClick={() => {
+                          if (docName === pdfPreviewUrl) return;
+                          // Auto-save changes first if there are any!
+                          if (hasOCRChanges) {
+                            handleSaveOCR();
+                          }
+                          setPdfPreviewUrl(docName);
+                        }}
+                        className={`flex items-center gap-2 px-3 py-1.5 rounded-[4px] border text-xs font-black transition-all cursor-pointer ${
+                          isActive
+                            ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/15'
+                            : 'bg-white hover:bg-slate-50 text-slate-600 border-slate-200 hover:border-slate-300'
+                        }`}
+                      >
+                        <FileText size={12} />
+                        <span>{docName}</span>
+                        
+                        {/* Tiny status indicator */}
+                        <div className={`w-1.5 h-1.5 rounded-full ${
+                          isActive 
+                            ? 'bg-white' 
+                            : isMatchedOrLocked ? 'bg-emerald-500' :
+                              isAmber ? 'bg-amber-500' :
+                              isRose ? 'bg-rose-500' : 'bg-slate-300'
+                        }`} />
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Sub-file Switcher Tab Bar */}
+            {selectedJob && pdfPreviewUrl && getSubFilesForDoc(pdfPreviewUrl).length > 1 && (
+              <div className="bg-slate-50/50 border-b border-slate-200/50 px-5 py-2 flex items-center gap-2 shrink-0 overflow-x-auto select-none custom-scrollbar">
+                <span className="text-[10px] font-bold uppercase text-slate-400 tracking-wider mr-1.5 flex items-center gap-1">
+                  <span className="w-1 h-2.5 bg-indigo-500 rounded-full inline-block"></span>
+                  {language === 'TH' ? 'เลือกใบย่อยในกลุ่ม:' : 'SELECT SUB-FILE:'}
+                </span>
+                <div className="flex items-center gap-1.5">
+                  {getSubFilesForDoc(pdfPreviewUrl).map((subFile) => {
+                    const isActive = subFile.id === activeSubFileId;
+                    return (
+                      <button
+                        key={subFile.id}
+                        onClick={() => {
+                          if (subFile.id === activeSubFileId) return;
+                          if (hasOCRChanges) {
+                            handleSaveOCR();
+                          }
+                          setActiveSubFileId(subFile.id);
+                        }}
+                        className={`flex items-center gap-1.5 px-3 py-1 rounded-[4px] border text-[11px] font-extrabold transition-all duration-200 cursor-pointer ${
+                          isActive
+                            ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm shadow-indigo-500/10'
+                            : 'bg-white hover:bg-slate-100 text-slate-600 border-slate-200 hover:border-slate-300'
+                        }`}
+                      >
+                        <FileText size={11} />
+                        <span>{subFile.label}</span>
+                        <div className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-white' : 'bg-emerald-500'}`} />
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Side-by-side Dual Panels */}
             <div className="flex-1 bg-slate-100 flex overflow-hidden min-h-0">
                
@@ -4925,7 +5073,7 @@ const mockWorkflows: Workflow[] = [
                                     </div>
                                     <div className="text-right">
                                       <h2 className="text-xs font-black text-slate-400 tracking-wider font-sans">BILL OF LADING FOR OCEAN TRANSPORT</h2>
-                                      <p className="font-mono text-xs font-bold text-slate-700">B/L No. 953074879</p>
+                                      <p className="font-mono text-xs font-bold text-slate-700">B/L No. 953074879{activeSubFileId?.endsWith('_sub_2') ? '-02' : activeSubFileId?.endsWith('_sub_3') ? '-03' : '-01'}</p>
                                     </div>
                                   </div>
 
@@ -4939,7 +5087,7 @@ const mockWorkflows: Workflow[] = [
                                     </div>
                                     <div className="border-b border-slate-800 p-3 space-y-1">
                                       <span className="font-black text-[9px] uppercase text-slate-400">Booking No. / References</span>
-                                      <p className="font-bold font-mono text-slate-800">953074879</p>
+                                      <p className="font-bold font-mono text-slate-800">953074879{activeSubFileId?.endsWith('_sub_2') ? '-02' : activeSubFileId?.endsWith('_sub_3') ? '-03' : '-01'}</p>
                                       <span className="block font-black text-[9px] uppercase text-slate-400 mt-2">Export References</span>
                                       <p className="font-bold font-mono text-slate-800">131660-3/5</p>
                                     </div>
@@ -4961,19 +5109,19 @@ const mockWorkflows: Workflow[] = [
                                   <div className="grid grid-cols-4 border border-t-0 border-slate-800 text-[9px] z-10">
                                     <div className="border-r p-2">
                                       <span className="block font-black text-[8px] text-slate-400 uppercase">Pre-Carriage By</span>
-                                      <p className="font-bold text-slate-700">VESSEL MAERSK WISCONSIN</p>
+                                      <p className="font-bold text-slate-700">VESSEL {activeSubFileId?.endsWith('_sub_2') ? 'MAERSK FLORENCE' : activeSubFileId?.endsWith('_sub_3') ? 'MAERSK GENEVA' : 'MAERSK WISCONSIN'}</p>
                                     </div>
                                     <div className="border-r p-2">
                                       <span className="block font-black text-[8px] text-slate-400 uppercase">Place of Receipt</span>
-                                      <p className="font-bold text-slate-700">ALGECIRAS</p>
+                                      <p className="font-bold text-slate-700 font-sans">SHANGHAI</p>
                                     </div>
                                     <div className="border-r p-2">
                                       <span className="block font-black text-[8px] text-slate-400 uppercase">Port of Loading</span>
-                                      <p className="font-bold text-slate-700">ALGECIRAS</p>
+                                      <p className="font-bold text-slate-700 font-sans">SHANGHAI, CHINA</p>
                                     </div>
                                     <div className="p-2">
                                       <span className="block font-black text-[8px] text-slate-400 uppercase">Port of Discharge</span>
-                                      <p className="font-bold text-slate-700 font-sans">DAR ES SALAAM</p>
+                                      <p className="font-bold text-slate-700 font-sans">BANGKOK, THAILAND</p>
                                     </div>
                                   </div>
 
@@ -4992,11 +5140,9 @@ const mockWorkflows: Workflow[] = [
                                         <div className="grid grid-cols-12 text-[11px]">
                                           <div className="col-span-8 space-y-1">
                                             <p className="font-black text-slate-800">1 CONTAINER SAID TO CONTAIN 2 VEHICLES</p>
-                                            <p className="text-slate-500">VEHICLE REF AND TYPE 270743 TOYOTA LAND CRISER 200 STATION WAGON GX V8 TW</p>
-                                            <p className="text-slate-500">IN TD 8 SEATS AUTOMATIC (ALARM, CLIMATE CTRL, COOL BOX, R. RAIL)</p>
+                                            <p className="text-slate-500 font-sans">VEHICLE REF AND TYPE TOYOTA LAND CRUISER GX V8 TWIN-TURBO</p>
                                             <p className="text-slate-500">CHASSIS NO. JTMHV09J-X04160007</p>
-                                            <p className="text-slate-500">YEAR OF MANUF. 2014</p>
-                                            <p className="text-slate-500 font-mono">ENGINE NO. 1VD-0273330</p>
+                                            <p className="text-slate-500">YEAR OF MANUF. 2026</p>
                                           </div>
                                           <div className="col-span-2 text-right font-bold text-slate-700">5,336.140 KGS</div>
                                           <div className="col-span-2 text-right font-bold text-slate-700 font-mono">38.600 CBM</div>
@@ -5006,7 +5152,7 @@ const mockWorkflows: Workflow[] = [
                                           <div className="col-span-8 space-y-1">
                                             <p className="font-black text-slate-800">SECOND ROW DETAILS - PARTS AND ACCESSORIES</p>
                                             <p className="text-slate-500">SPARE TYRES, JACK KIT WITH LEVER, TOOL BAG, MANUAL BOOKLET</p>
-                                            <p className="text-slate-500">CONTAINER NO: MSKU 6537219, SHIPPER SEAL NO: 270743</p>
+                                            <p className="text-slate-500">CONTAINER NO: MSKU {activeSubFileId?.endsWith('_sub_2') ? '6537220' : activeSubFileId?.endsWith('_sub_3') ? '6537221' : '6537219'}, SHIPPER SEAL NO: 270743</p>
                                             <p className="text-slate-500">HS COMPLIANT CARGO OF HIGHEST DEGREE VALIDATION</p>
                                           </div>
                                           <div className="col-span-2 text-right font-bold text-slate-700 font-mono">Included</div>
@@ -5044,7 +5190,7 @@ const mockWorkflows: Workflow[] = [
                                       <p className="text-[11px] text-slate-400 mt-1 font-sans">123 Logistics St, Shanghai, China | exports@globaltrading.com</p>
                                     </div>
                                     <div className="text-right">
-                                      <h2 className="text-lg font-black text-slate-800 tracking-tighter"># INV-2026-045</h2>
+                                      <h2 className="text-lg font-black text-slate-800 tracking-tighter"># INV-2026-045{activeSubFileId?.endsWith('_sub_2') ? '-02' : '-01'}</h2>
                                       <p className="text-[11px] text-slate-400 font-mono">DATE: 20 APR 2026</p>
                                     </div>
                                   </div>
@@ -5061,7 +5207,7 @@ const mockWorkflows: Workflow[] = [
                                       <span className="font-black text-[9px] uppercase tracking-wider text-slate-400 font-sans">Sold To (Consignee)</span>
                                       <p className="font-extrabold text-[#010136] text-xs font-sans font-black">BIZ-TRANS LOGISTICS CO., LTD.</p>
                                       <p className="text-slate-500 font-sans font-bold">45/2 Rama 9, Huai Khwang, Bangkok, Thailand</p>
-                                      <p className="text-slate-500 font-mono">TAX ID: 0105562000000</p>
+                                      <p className="text-slate-500 font-mono">TAX ID: 010556200000{activeSubFileId?.endsWith('_sub_2') ? '2' : '0'}</p>
                                     </div>
                                   </div>
 
@@ -5418,27 +5564,49 @@ const mockWorkflows: Workflow[] = [
                               </div>
                               {!collapsedPreviewGroups[groupName] && (
                                 <div className="divide-y divide-slate-100 bg-white animate-in slide-in-from-top-1 fade-in duration-200">
-                                  {items.map((res: any, i: number) => (
-                                    <div key={i} className="grid grid-cols-12 hover:bg-slate-50/60 py-1.5 items-center transition-all bg-white relative">
-                                      <div className="col-span-5 text-[#1f5df9] font-bold text-[12px] capitalize font-sans leading-relaxed tracking-tight px-3 break-words">
-                                        {res.fieldName}
+                                  {items.map((res: any, i: number) => {
+                                    const fieldId = `input-field-${groupName.replace(/\s/g, '-')}-${i}`;
+                                    const isDisabled = isUnassigned || selectedJob?.status === JobStatus.DONE;
+                                    return (
+                                      <div key={i} className="grid grid-cols-12 hover:bg-slate-50/60 py-1.5 items-center transition-all bg-white relative group/row">
+                                        <div className="col-span-5 text-[#1f5df9] font-bold text-[12px] capitalize font-sans leading-relaxed tracking-tight px-3 break-words">
+                                          {res.fieldName}
+                                        </div>
+                                        <div className="col-span-7 pl-2 pr-4 relative">
+                                          <div className="relative flex items-center w-full">
+                                            <input 
+                                              id={fieldId}
+                                              type="text"
+                                              value={tempOCRData[res.fieldName] || ''}
+                                              disabled={isDisabled}
+                                              onChange={(e) => setTempOCRData(prev => ({ ...prev, [res.fieldName]: e.target.value }))}
+                                              className={`w-full p-2 pr-8 rounded-md text-[#010136] text-[13px] font-bold font-sans transition-all outline-none border border-transparent hover:border-slate-200 hover:bg-slate-50 focus:bg-white focus:border-[#1f5df9] focus:ring-2 focus:ring-[#1f5df9]/20 ${
+                                                selectedJob?.status === JobStatus.DONE 
+                                                  ? 'bg-transparent text-slate-500 cursor-not-allowed shadow-none font-semibold hover:border-transparent hover:bg-transparent' 
+                                                  : 'bg-transparent'
+                                              }`}
+                                              placeholder="Enter extracted value"
+                                            />
+                                            {!isDisabled && (
+                                              <button
+                                                type="button"
+                                                onClick={() => {
+                                                  const el = document.getElementById(fieldId);
+                                                  if (el) {
+                                                    el.focus();
+                                                  }
+                                                }}
+                                                className="absolute right-2 p-1 text-slate-400 hover:text-[#1f5df9] hover:bg-slate-200/50 rounded transition-all cursor-pointer opacity-40 group-hover/row:opacity-100 focus-within:opacity-100"
+                                                title={language === 'TH' ? 'คลิกเพื่อแก้ไขข้อมูล' : 'Click to edit value'}
+                                              >
+                                                <Edit3 size={12} className="shrink-0" />
+                                              </button>
+                                            )}
+                                          </div>
+                                        </div>
                                       </div>
-                                      <div className="col-span-7 pl-2">
-                                        <input 
-                                          type="text"
-                                          value={tempOCRData[res.fieldName] || ''}
-                                          disabled={isUnassigned || selectedJob?.status === JobStatus.DONE}
-                                          onChange={(e) => setTempOCRData(prev => ({ ...prev, [res.fieldName]: e.target.value }))}
-                                          className={`w-full p-2 rounded-md text-[#010136] text-[13px] font-bold font-sans transition-all outline-none border border-transparent hover:border-slate-200 hover:bg-slate-50 focus:bg-white focus:border-[#1f5df9] focus:ring-2 focus:ring-[#1f5df9]/20 ${
-                                            selectedJob?.status === JobStatus.DONE 
-                                              ? 'bg-transparent text-slate-500 cursor-not-allowed shadow-none font-semibold hover:border-transparent hover:bg-transparent' 
-                                              : 'bg-transparent'
-                                          }`}
-                                          placeholder="Enter extracted value"
-                                        />
-                                      </div>
-                                    </div>
-                                  ))}
+                                    );
+                                  })}
                                 </div>
                               )}
                             </div>
