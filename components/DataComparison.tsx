@@ -4932,60 +4932,7 @@ const mockWorkflows: Workflow[] = [
               </div>
             </div>
 
-            {/* File Switcher Tab Bar */}
-            {selectedJob && Object.keys(selectedJob.docs).length > 1 && (
-              <div className="bg-slate-50 border-b border-slate-200/60 px-5 py-3 flex items-center gap-3 shrink-0 overflow-x-auto select-none custom-scrollbar">
-                <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest mr-1">
-                  {language === 'TH' ? 'เลือกไฟล์สลับดู:' : 'SELECT FILE TO VIEW:'}
-                </span>
-                <div className="flex items-center gap-2">
-                  {Object.keys(selectedJob.docs).map(docName => {
-                    const isActive = docName === pdfPreviewUrl;
-                    const docStatus = selectedJob.docs[docName];
-                    const isMismatched = mismatchedFileNames.has(docName);
-                    const displayStatus = (docStatus === ComparisonDocStatus.MATCHED || docStatus === ComparisonDocStatus.MISMATCHED)
-                      ? (isMismatched ? ComparisonDocStatus.MISMATCHED : ComparisonDocStatus.MATCHED)
-                      : docStatus;
-                    const isMatchedOrLocked = displayStatus === ComparisonDocStatus.MATCHED || displayStatus === ComparisonDocStatus.LOCKED;
-                    const isAmber = displayStatus === ComparisonDocStatus.RECEIVED || 
-                                    displayStatus === ComparisonDocStatus.EXTRACTING || 
-                                    displayStatus === ComparisonDocStatus.OCR_DONE;
-                    const isRose = displayStatus === ComparisonDocStatus.ERROR || displayStatus === ComparisonDocStatus.MISMATCHED;
 
-                    return (
-                      <button
-                        key={docName}
-                        onClick={() => {
-                          if (docName === pdfPreviewUrl) return;
-                          // Auto-save changes first if there are any!
-                          if (hasOCRChanges) {
-                            handleSaveOCR();
-                          }
-                          setPdfPreviewUrl(docName);
-                        }}
-                        className={`flex items-center gap-2 px-3 py-1.5 rounded-[4px] border text-xs font-black transition-all cursor-pointer ${
-                          isActive
-                            ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/15'
-                            : 'bg-white hover:bg-slate-50 text-slate-600 border-slate-200 hover:border-slate-300'
-                        }`}
-                      >
-                        <FileText size={12} />
-                        <span>{docName}</span>
-                        
-                        {/* Tiny status indicator */}
-                        <div className={`w-1.5 h-1.5 rounded-full ${
-                          isActive 
-                            ? 'bg-white' 
-                            : isMatchedOrLocked ? 'bg-emerald-500' :
-                              isAmber ? 'bg-amber-500' :
-                              isRose ? 'bg-rose-500' : 'bg-slate-300'
-                        }`} />
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
 
             {/* Sub-file Switcher Tab Bar */}
             {selectedJob && pdfPreviewUrl && getSubFilesForDoc(pdfPreviewUrl).length > 1 && (
