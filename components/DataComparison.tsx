@@ -2981,6 +2981,7 @@ const mockWorkflows: Workflow[] = [
   };
 
   const getJobStatus = (job: ComparisonJob): JobStatus => {
+    if (job.status === JobStatus.DONE) return JobStatus.DONE;
     const docs = Object.entries(job.docs).map(([docName, s]) => 
       getEffectiveDocStatus(job, docName, s)
     );
@@ -3804,7 +3805,7 @@ const mockWorkflows: Workflow[] = [
                 {filteredJobs.map((job) => {
                   const isProcessing = job.status === JobStatus.PROCESSING;
                   const seqIndex = shipmentJobs.findIndex(j => j.id === job.id);
-                  const isWorkflowCompleted = (j: ComparisonJob) => j.status === JobStatus.DONE;
+                  const isWorkflowCompleted = (j: ComparisonJob) => j.status === JobStatus.DONE || j.status === JobStatus.READY;
                   const isBlocked = seqIndex > 0 && shipmentJobs.slice(0, seqIndex).some(prevJob => !isWorkflowCompleted(prevJob));
                   
                   return (
