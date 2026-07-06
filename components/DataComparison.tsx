@@ -7075,7 +7075,7 @@ const mockWorkflows: Workflow[] = [
                                                   </Tooltip>
                                                )}
                                                {target.status === 'SYNONYM' && (
-                                                  <Tooltip content={target.ruleTitle ? `${language === 'TH' ? 'ตรงตามเงื่อนไข:' : 'Matched Condition:'} ${target.ruleTitle}` : "ข้อมูลตามเงื่อนไข"}>
+                                                  <Tooltip content={target.ruleTitle ? `${language === 'TH' ? 'ตรงตามเงื่อนไข:' : 'Matched Condition:'} ${target.ruleTitle}` : "ตรงตามเงื่อนไข"}>
                                                     <CheckCircle2 size={14} className="text-amber-500 shrink-0 cursor-help" />
                                                   </Tooltip>
                                                 )}
@@ -7161,7 +7161,7 @@ const mockWorkflows: Workflow[] = [
                          </div>
                          <div className="flex items-center gap-2 group">
                             <div className="w-2 h-2 rounded-full bg-amber-500 group-hover:scale-125 transition-transform"></div>
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:text-slate-600 transition-colors">ข้อมูลตามเงื่อนไข</span>
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:text-slate-600 transition-colors">ตรงตามเงื่อนไข</span>
                          </div>
                          <div className="flex items-center gap-2 group">
                             <div className="w-2 h-2 rounded-full bg-rose-500 group-hover:scale-125 transition-transform"></div>

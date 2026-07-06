@@ -565,7 +565,7 @@ export const TRANSLATIONS = {
     document: "เอกสาร",
     attentionNeeded: "ต้องตรวจสอบ",
     master: "ค่าเอกสารหลัก",
-    ruleMatch: "ข้อมูลตามเงื่อนไข",
+    ruleMatch: "ตรงตามเงื่อนไข",
     ttMatchedCount: "จำนวนข้อมูลที่ตรงกัน",
     ttMismatchedCount: "จำนวนข้อมูลที่ไม่ตรงกัน",
     ttMatchedCountDesc: "จำนวนรายการที่ข้อมูลตรงกัน",
