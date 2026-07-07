@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Select, Input } from 'antd';
 import { 
-  FileText, Plus, Trash2, Edit3, AlertCircle, ArrowLeft, 
+  FileText, Plus, Trash2, Edit3, AlertCircle, XCircle, ArrowLeft, 
   Settings, Check, Search, Sparkles, X, Info, FileCode,
   LayoutGrid, List, Database, Layers
  } from 'lucide-react';
@@ -964,7 +964,11 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
               >
                 {/* Warning Yellow/Red Icon with no background circle */}
                 <div className={`flex items-center justify-center mx-auto mb-4 ${deleteConfirmDialog.usingSchemas && deleteConfirmDialog.usingSchemas.length > 0 ? 'text-rose-500' : 'text-amber-500'}`}>
-                  <AlertCircle size={48} />
+                  {deleteConfirmDialog.usingSchemas && deleteConfirmDialog.usingSchemas.length > 0 ? (
+                    <XCircle size={48} />
+                  ) : (
+                    <AlertCircle size={48} />
+                  )}
                 </div>
 
                 <div className="space-y-1.5 mb-4">

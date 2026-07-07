@@ -3,7 +3,7 @@ import { Drawer, message } from 'antd';
 import { 
   AlertCircle, Plus, Trash2, ArrowRight, CheckCircle, 
   User, Layers, HelpCircle, Briefcase, FileText,
-  GripVertical, Link2, Link2Off
+  GripVertical, Link2, Link2Off, X
 } from 'lucide-react';
 import { ComparisonJob, JobStatus, Workflow, ComparisonDocStatus } from '../types';
 
@@ -355,6 +355,15 @@ export const CreateJobModal: React.FC<CreateJobModalProps> = ({
 
   return (
     <Drawer
+      closeIcon={false}
+      extra={
+        <button 
+          onClick={onClose} 
+          className="p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 rounded-lg border-none bg-transparent cursor-pointer transition-colors"
+        >
+          <X size={20} />
+        </button>
+      }
       title={
         <div className="font-sans text-[16px] font-black tracking-tight text-[#010136] flex items-center gap-2.5 pb-2">
           <Briefcase size={20} className="text-[#1f5df9]" />

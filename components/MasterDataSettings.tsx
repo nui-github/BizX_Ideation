@@ -3,7 +3,7 @@ import { Modal, Input, Button, Tag, message, Tooltip, Empty, Drawer } from 'antd
 import { 
   Database, ArrowLeft, Plus, Search, Edit3, Trash2, HelpCircle, 
   Tag as TagIcon, Calendar, CheckCircle, ChevronRight, Hash, ShieldAlert,
-  LayoutGrid, List, Upload, Download, FileSpreadsheet, Check
+  LayoutGrid, List, Upload, Download, FileSpreadsheet, Check, X
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import * as XLSX from 'xlsx';
@@ -1045,6 +1045,15 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
 
       {/* ================= ADD / EDIT RECORD DRAWER ================= */}
       <Drawer
+        closeIcon={false}
+        extra={
+          <button 
+            onClick={() => setIsModalOpen(false)} 
+            className="p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 rounded-lg border-none bg-transparent cursor-pointer transition-colors"
+          >
+            <X size={20} />
+          </button>
+        }
         title={
           <div className="flex items-center gap-2">
             <div className="p-1.5 bg-blue-50 text-[#1f5df9] rounded-[4px]">
@@ -1200,6 +1209,15 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
 
       {/* ================= ADD NEW CUSTOM MASTER TABLE DRAWER ================= */}
       <Drawer
+        closeIcon={false}
+        extra={
+          <button 
+            onClick={() => setIsAddTableModalOpen(false)} 
+            className="p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 rounded-lg border-none bg-transparent cursor-pointer transition-colors"
+          >
+            <X size={20} />
+          </button>
+        }
         title={
           <div className="flex items-center gap-2">
             <div className="p-1.5 bg-blue-50 text-[#1f5df9] rounded-[4px]">
@@ -1268,6 +1286,15 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
 
       {/* ================= EDIT MASTER TABLE DRAWER ================= */}
       <Drawer
+        closeIcon={false}
+        extra={
+          <button 
+            onClick={() => setIsEditTableModalOpen(false)} 
+            className="p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 rounded-lg border-none bg-transparent cursor-pointer transition-colors"
+          >
+            <X size={20} />
+          </button>
+        }
         title={
           <div className="flex items-center gap-2">
             <div className="p-1.5 bg-blue-50 text-[#1f5df9] rounded-[4px]">
@@ -1339,6 +1366,15 @@ export const MasterDataSettings: React.FC<MasterDataSettingsProps> = ({ language
 
       {/* ================= IMPORT MASTER RECORD FROM EXCEL DRAWER ================= */}
       <Drawer
+        closeIcon={false}
+        extra={
+          <button 
+            onClick={() => setIsImportDrawerOpen(false)} 
+            className="p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 rounded-lg border-none bg-transparent cursor-pointer transition-colors"
+          >
+            <X size={20} />
+          </button>
+        }
         title={
           <div className="flex items-center gap-2">
             <div className="p-1.5 bg-emerald-50 text-emerald-600 rounded-[4px]">
