@@ -1410,28 +1410,37 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                   transition: draggingNodeId === node.id ? 'none' : 'transform 150ms ease-out, scale 150ms ease-out, border-color 150ms ease-out'
                 }}
               >
-                {/* Warning icon if not configured or incomplete */}
-                {(node.data.isConfigured === false || isNodeIncomplete(node)) && (
-                  <div className="absolute -top-3 -left-3 animate-pulse z-[60]">
-                    <div className={`w-8 h-8 rounded-full text-white flex items-center justify-center shadow-lg border-2 border-white ring-4 ${
-                      node.data.isConfigured === false ? 'bg-red-600 ring-red-500/20' : 'bg-amber-500 ring-amber-400/20'
-                    }`}>
-                      <AlertCircle size={18} strokeWidth={3} />
-                    </div>
-                  </div>
-                )}
+                {(() => {
+                  const isNotConfigured = node.data.isConfigured === false || isNodeIncomplete(node);
+                  const isMissingTrigger = !edges.some(e => e.target === node.id) && node.type !== 'get_file';
+                  const showWarning = isNotConfigured || isMissingTrigger;
+                  
+                  if (!showWarning) return null;
 
-                {/* Warning missing trigger */}
-                {(!edges.some(e => e.target === node.id) && node.type !== 'get_file') && (
-                  <div className="absolute -top-2.5 -right-2.5 group/tooltip z-50">
-                    <div className="w-5 h-5 rounded-full bg-rose-500 text-white flex items-center justify-center shadow-lg border-2 border-white cursor-help">
-                      <span className="text-[10px] font-black">!</span>
+                  return (
+                    <div className="absolute -top-3 -left-3 z-[60] group/tooltip">
+                      <div className={`w-8 h-8 rounded-full text-white flex items-center justify-center shadow-lg border-2 border-white ring-4 cursor-help ${
+                        isNotConfigured ? (node.data.isConfigured === false ? 'bg-red-600 ring-red-500/20' : 'bg-amber-500 ring-amber-400/20') : 'bg-amber-500 ring-amber-500/20'
+                      } ${isNotConfigured ? 'animate-pulse' : ''}`}>
+                        <AlertCircle size={18} strokeWidth={3} />
+                      </div>
+                      <div className="absolute bottom-full left-0 mb-2 w-64 p-3 bg-slate-800 text-white text-[11px] font-bold rounded-lg opacity-0 group-hover/tooltip:opacity-100 group-hover/tooltip:-translate-y-1 transition-all pointer-events-none after:content-[''] after:absolute after:top-full after:left-3 after:border-4 after:border-transparent after:border-t-slate-800 shadow-xl z-[100] whitespace-pre-wrap flex flex-col gap-1.5">
+                        {isNotConfigured && (
+                          <div className="flex gap-2">
+                            <span className="shrink-0 text-red-400">•</span>
+                            <span>{language === 'TH' ? 'โหนดนี้ยังไม่ได้ตั้งค่า หรือตั้งค่าไม่ครบถ้วน' : 'This node is not configured or configuration is incomplete'}</span>
+                          </div>
+                        )}
+                        {isMissingTrigger && (
+                          <div className="flex gap-2">
+                            <span className="shrink-0 text-amber-400">•</span>
+                            <span>{language === 'TH' ? 'โหนดนี้ไม่มี Trigger (Optional) — สามารถทำงานได้แม้ไม่มี Trigger' : 'This node has no Trigger (Optional) — It can run with or without a trigger'}</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    <div className="absolute bottom-full right-1/2 translate-x-1/2 mb-2 w-56 p-3 bg-slate-800 text-white text-[11px] font-bold rounded-lg opacity-0 group-hover/tooltip:opacity-100 group-hover/tooltip:-translate-y-1 transition-all pointer-events-none after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-slate-800 shadow-xl z-[100] whitespace-pre-wrap text-center">
-                       {language === 'TH' ? 'โหนดนี้ไม่มี Trigger — Workflow จะไม่ทำงานโดยอัตโนมัติ' : 'This node has no Trigger — Workflow will not run automatically'}
-                    </div>
-                  </div>
-                )}
+                  );
+                })()}
 
                 <div className="p-4">
                   <div className="flex items-center gap-4 mb-4">
