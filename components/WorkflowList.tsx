@@ -272,6 +272,7 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({ workflows, language,
                           </button>
                           <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover/tip:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-[100] font-bold">
                             {language === 'TH' ? 'เปิด/ปิด' : 'Toggle Status'}
+                            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800" />
                           </div>
                         </div>
                       </div>
@@ -287,6 +288,7 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({ workflows, language,
                       </button>
                       <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover/tip:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-[100] font-bold">
                          {language === 'TH' ? 'ตั้งค่า' : 'Configure'}
+                         <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800" />
                       </div>
                     </div>
 
@@ -300,6 +302,7 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({ workflows, language,
                         </button>
                         <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover/tip:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-[100] font-bold">
                            {language === 'TH' ? 'ทำซ้ำรายการ' : 'Duplicate'}
+                           <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800" />
                         </div>
                       </div>
                     )}
@@ -311,8 +314,9 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({ workflows, language,
                       >
                         <Trash2 size={16} />
                       </button>
-                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 bg-rose-600 text-white text-[10px] rounded opacity-0 group-hover/tip:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-[100] font-bold">
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover/tip:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-[100] font-bold">
                          {language === 'TH' ? 'ลบรายการ' : 'Delete'}
+                         <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800" />
                       </div>
                     </div>
                   </div>
@@ -335,6 +339,7 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({ workflows, language,
                           </button>
                           <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover/tip:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-[100] font-bold">
                              {language === 'TH' ? 'ตั้งค่า' : 'Configure'}
+                             <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800" />
                           </div>
                         </div>
 
@@ -348,6 +353,7 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({ workflows, language,
                             </button>
                             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover/tip:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-[100] font-bold">
                                {language === 'TH' ? 'ทำซ้ำรายการ' : 'Duplicate'}
+                               <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800" />
                             </div>
                           </div>
                         )}
@@ -359,8 +365,9 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({ workflows, language,
                           >
                             <Trash2 size={16} />
                           </button>
-                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 bg-rose-600 text-white text-[10px] rounded opacity-0 group-hover/tip:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-[100] font-bold">
+                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover/tip:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-[100] font-bold">
                              {language === 'TH' ? 'ลบรายการ' : 'Delete'}
+                             <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800" />
                           </div>
                         </div>
                       </div>
@@ -408,6 +415,7 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({ workflows, language,
                           </button>
                           <div className="absolute bottom-full right-0 mb-2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover/tip:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-[100] font-bold">
                             {language === 'TH' ? 'เปิด/ปิด' : 'Toggle Status'}
+                            <div className="absolute top-full right-3 border-4 border-transparent border-t-slate-800" />
                           </div>
                         </div>
                       </div>

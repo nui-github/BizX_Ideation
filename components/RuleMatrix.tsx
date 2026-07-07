@@ -1154,7 +1154,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                 </button>
                 <button 
                   onClick={confirmDelete}
-                  className="flex-1 py-2.5 rounded-[4px] text-white font-bold bg-[#0463EF] hover:bg-[#0251c8] transition-colors shadow-sm"
+                  className="flex-1 py-2.5 rounded-[4px] text-white font-bold bg-[#1F5DF9] hover:bg-[#104BE3] transition-colors shadow-sm"
                 >
                   ลบข้อมูล
                 </button>
@@ -1255,7 +1255,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                 </button>
                 <button 
                   onClick={confirmDeleteDocType}
-                  className="flex-1 py-2.5 rounded-[4px] text-white font-bold bg-[#0463EF] hover:bg-[#0251c8] transition-colors shadow-sm"
+                  className="flex-1 py-2.5 rounded-[4px] text-white font-bold bg-[#1F5DF9] hover:bg-[#104BE3] transition-colors shadow-sm"
                 >
                   ลบข้อมูล
                 </button>

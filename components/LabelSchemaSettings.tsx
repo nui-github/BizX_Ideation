@@ -912,11 +912,8 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.95 }}
                       transition={{ duration: 0.2, delay: idx * 0.04 }}
-                      className="bg-white border border-slate-200/70 hover:border-blue-300 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 group flex flex-col justify-between gap-4 relative overflow-hidden h-full"
+                      className="bg-white border border-slate-200/70 hover:border-blue-300 rounded-[8px] p-5 shadow-sm hover:shadow-md transition-all duration-300 group flex flex-col justify-between gap-4 relative overflow-hidden h-full"
                     >
-                      {/* Highlight bar top */}
-                      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-sky-400 opacity-60"></div>
-
                       <div className="space-y-4 flex-1 flex flex-col justify-between">
                         <div className="space-y-3">
                           {/* ID Badge & Header */}
@@ -1572,7 +1569,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
             </div>
 
             <div className="space-y-1.5">
-              <h3 className="text-base font-black text-[#010136] tracking-tight hover:text-[#0463EF] transition-colors">
+              <h3 className="text-base font-black text-[#010136] tracking-tight hover:text-[#1F5DF9] transition-colors">
                 {isTh ? `ต้องการลบ ${schemaToDelete.name} ใช่หรือไม่` : `Delete ${schemaToDelete.name}?`}
               </h3>
               
@@ -1622,7 +1619,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
                   handleDeleteSchema(schemaToDelete.id);
                   setSchemaToDelete(null);
                 }}
-                className="px-4 py-2.5 bg-[#0463EF] text-white hover:bg-[#0251c8] font-black text-xs uppercase tracking-wider rounded-[4px] transition-all shadow-md shadow-blue-500/10 cursor-pointer h-[40px]"
+                className="px-4 py-2.5 bg-[#1F5DF9] text-white hover:bg-[#104BE3] font-black text-xs uppercase tracking-wider rounded-[4px] transition-all shadow-md shadow-blue-500/10 cursor-pointer h-[40px]"
               >
                 {isTh ? 'ลบทันที' : 'Confirm Delete'}
               </button>

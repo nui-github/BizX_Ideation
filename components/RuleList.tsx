@@ -214,7 +214,7 @@ export const RuleList = ({ rules, onSelect, onCreate, onDelete, onToggleStatus, 
                         </button>
                         <button 
                           onClick={handleDelete}
-                          className="flex-[1.5] py-3 text-white font-black bg-[#0463EF] hover:bg-[#0251c8] hover:shadow-lg transition-all shadow-md text-xs uppercase tracking-widest"
+                          className="flex-[1.5] py-3 text-white font-black bg-[#1F5DF9] hover:bg-[#104BE3] hover:shadow-lg transition-all shadow-md text-xs uppercase tracking-widest"
                           style={{ borderRadius: '4px' }}
                         >
                           {isTh ? 'ใช่, ฉันต้องการลบรายการ' : 'Confirm Delete'}
@@ -250,7 +250,7 @@ export const RuleList = ({ rules, onSelect, onCreate, onDelete, onToggleStatus, 
                         </button>
                         <button 
                           onClick={handleDelete}
-                          className="flex-1 py-3 text-white font-black bg-[#0463EF] hover:bg-[#0251c8] hover:shadow-lg transition-all shadow-md text-xs uppercase tracking-widest"
+                          className="flex-1 py-3 text-white font-black bg-[#1F5DF9] hover:bg-[#104BE3] hover:shadow-lg transition-all shadow-md text-xs uppercase tracking-widest"
                           style={{ borderRadius: '4px' }}
                         >
                           {isTh ? 'ใช่, ฉันต้องการลบรายการ' : 'Confirm'}

@@ -13,7 +13,7 @@ This design system defines the visual language, ensuring a polished, consistent,
 - **Hierarchy:** Ensure strict contrast between primary values (black/bold weight, dark text), secondary labels (bold weight, muted slate), and micro-copy (small size, tracking widest uppercase).
 
 ## 3. Color Palette
-- **Primary Brand:** `#1f5df9` (Deep Blue)
+- **Primary Brand:** `#1F5DF9` (Deep Blue)
   - Used for: Primary interactions, active states, loading indicators, and AI analysis blocks.
 - **Accent Brand:** `#16EA9E` (Mint Green)
   - Used for: Special highlights or distinctive actions.

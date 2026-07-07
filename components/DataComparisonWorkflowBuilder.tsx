@@ -1178,11 +1178,16 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-3 md:gap-4 shrink-0 w-full sm:w-auto">
-            {/* Status Toggle moved to right */}
-            <div className="flex items-center bg-slate-100 p-1 rounded-lg border border-slate-200/50 shrink-0">
+            {/* Status Toggle as Switch */}
+            <div className="flex items-center gap-2.5 shrink-0 select-none">
+              <span className="text-[10px] font-black text-slate-500 uppercase tracking-tight">
+                {status === 'ACTIVE' ? t.statusActive : t.statusInactive}
+              </span>
               <button 
                 onClick={() => {
-                  if (status !== 'ACTIVE') {
+                  if (status === 'ACTIVE') {
+                    setStatus('INACTIVE');
+                  } else {
                     if (nodes.some(isNodeIncomplete)) {
                       setConfirmToggleDialog(true);
                     } else {
@@ -1190,15 +1195,15 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                     }
                   }
                 }}
-                className={`px-3 md:px-4 py-1.5 rounded-[4px] text-[10px] font-black uppercase transition-all ${status === 'ACTIVE' ? 'bg-emerald-500 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full px-0 border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                  status === 'ACTIVE' ? 'bg-emerald-500' : 'bg-slate-300'
+                }`}
               >
-                {t.statusActive}
-              </button>
-              <button 
-                onClick={() => setStatus('INACTIVE')}
-                className={`px-3 md:px-4 py-1.5 rounded-[4px] text-[10px] font-black uppercase transition-all ${status === 'INACTIVE' ? 'bg-slate-300 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
-              >
-                {t.statusInactive}
+                <span
+                  className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                    status === 'ACTIVE' ? 'translate-x-4' : 'translate-x-0'
+                  }`}
+                />
               </button>
             </div>
 
@@ -1836,7 +1841,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                       e.stopPropagation();
                       handleDeleteNode(node.id);
                     }}
-                    className="absolute -top-3 -right-3 w-8 h-8 rounded-[4px] bg-red-100 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center border-2 border-white shadow-lg hover:bg-red-500 hover:text-white transition-all scale-110 active:scale-95"
+                    className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-red-100 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center border-2 border-white shadow-lg hover:bg-red-500 hover:text-white transition-all scale-110 active:scale-95"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -4183,24 +4188,24 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
               initial={{ scale: 0.95, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
-              className="bg-white rounded-3xl shadow-xl w-full max-w-md overflow-hidden"
+              className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-100 text-center"
             >
               <div className="p-6">
-                <div className="w-16 h-16 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mb-6">
-                  <AlertCircle size={32} />
+                <div className="flex items-center justify-center mx-auto mb-4 text-amber-500">
+                  <AlertCircle size={48} />
                 </div>
-                <h3 className="text-2xl font-black text-slate-800 tracking-tight leading-tight mb-2">
+                <h3 className="text-xl font-black text-[#010136] tracking-tight leading-tight mb-2">
                   {language === 'TH' ? 'เวิร์กโฟลว์ยังตั้งค่าไม่สมบูรณ์' : 'Incomplete Configuration'}
                 </h3>
-                <p className="text-[15px] font-medium text-slate-500 mb-8 leading-relaxed">
+                <p className="text-xs font-semibold text-slate-500 leading-relaxed w-full mb-6">
                   {language === 'TH' 
                     ? 'workflow นี้ยังมี node ที่ config ไม่ครบ ต้องการ enable ต่อไปหรือไม่?'
                     : 'This workflow still has incomplete nodes. Are you sure you want to proceed and enable it?'}
                 </p>
-                <div className="flex justify-end gap-3">
+                <div className="flex gap-3">
                   <button 
                     onClick={() => setConfirmToggleDialog(false)}
-                    className="px-6 py-3 rounded-[4px] text-slate-600 font-bold hover:bg-slate-100 transition-colors text-sm"
+                    className="flex-1 py-2.5 border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 rounded-[4px] font-bold text-xs uppercase tracking-widest transition-all cursor-pointer h-[40px]"
                   >
                     {language === 'TH' ? 'ยกเลิก' : 'Cancel'}
                   </button>
@@ -4209,7 +4214,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                       setStatus('ACTIVE');
                       setConfirmToggleDialog(false);
                     }}
-                    className="px-6 py-3 rounded-[4px] bg-amber-500 text-white font-bold hover:bg-amber-600 transition-colors shadow-sm text-sm"
+                    className="flex-1 py-2.5 bg-[#1F5DF9] hover:bg-[#104BE3] text-white rounded-[4px] font-bold text-xs uppercase tracking-widest transition-all shadow-md cursor-pointer h-[40px]"
                   >
                     {language === 'TH' ? 'ยืนยันการเปิดใช้งาน' : 'Confirm Enable'}
                   </button>
@@ -4253,7 +4258,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                   </button>
                   <button 
                     onClick={() => handleDeleteNode(deleteConfirmation.nodeId, true)}
-                    className="flex-1 py-3 bg-[#0463EF] hover:bg-[#0251c8] text-white rounded-[4px] font-black text-xs uppercase tracking-widest transition-all shadow-md shadow-blue-500/15"
+                    className="flex-1 py-3 bg-[#1F5DF9] hover:bg-[#104BE3] text-white rounded-[4px] font-black text-xs uppercase tracking-widest transition-all shadow-md shadow-blue-500/15"
                   >
                     {language === 'TH' ? 'ลบทันที' : 'Confirm Delete'}
                   </button>

@@ -3778,7 +3778,7 @@ const mockWorkflows: Workflow[] = [
           </div>
           <button 
             onClick={() => setShowCreateJobModal(true)}
-            className="px-4 py-2 bg-[#1f5df9] text-white rounded-[4px] flex items-center gap-2 text-xs font-black uppercase tracking-widest hover:bg-blue-600 transition-all shadow-sm cursor-pointer"
+            className="px-4 py-2 bg-[#1f5df9] text-white rounded-[4px] flex items-center gap-2 text-xs font-black uppercase tracking-widest hover:bg-[#104BE3] transition-all shadow-sm cursor-pointer"
           >
             <Plus size={16} />
             {language === 'TH' ? 'สร้างรายการย่อย' : 'CREATE CHILD JOB'}
@@ -5700,7 +5700,7 @@ const mockWorkflows: Workflow[] = [
                       disabled={isUnassigned || !hasOCRChanges || selectedJob?.status === JobStatus.DONE}
                       className={`w-full py-4 rounded-[4px] font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2 group cursor-pointer ${
                         (!isUnassigned && hasOCRChanges) && selectedJob?.status !== JobStatus.DONE
-                          ? 'bg-[#1f5df9] text-white shadow-lg shadow-blue-500/25 hover:bg-blue-600' 
+                          ? 'bg-[#1f5df9] text-white shadow-lg shadow-blue-500/25 hover:bg-[#104BE3]' 
                           : 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-70 border border-slate-200/50 shadow-none'
                       }`}
                     >
@@ -5959,7 +5959,7 @@ const mockWorkflows: Workflow[] = [
                     setShowWorkflowWarning(false);
                     // Navigation logic would go here
                   }}
-                  className="w-full py-4 bg-[#1f5df9] text-white rounded-[4px] font-black text-sm uppercase tracking-widest hover:bg-blue-600 transition-all flex items-center justify-center gap-2 border-none"
+                  className="w-full py-4 bg-[#1f5df9] text-white rounded-[4px] font-black text-sm uppercase tracking-widest hover:bg-[#104BE3] transition-all flex items-center justify-center gap-2 border-none"
                  >
                    {language === 'TH' ? 'ไปที่ตั้งค่าเวิร์กโฟลว์' : 'Go to Set Workflow'}
                  </button>
@@ -6086,7 +6086,7 @@ const mockWorkflows: Workflow[] = [
               <div className="flex flex-col w-full gap-2.5 mt-2">
                   <button 
                     onClick={handleClaimJob}
-                    className="w-full py-3.5 bg-[#1f5df9] hover:bg-blue-600 text-white rounded-[4px] font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-blue-500/10 hover:shadow-blue-500/25 border-none"
+                    className="w-full py-3.5 bg-[#1f5df9] hover:bg-[#104BE3] text-white rounded-[4px] font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-blue-500/10 hover:shadow-blue-500/25 border-none"
                   >
                     <Check size={16} strokeWidth={3} />
                     <span>{language === 'TH' ? 'ใช่, ยืนยันรับงาน' : 'YES, CLAIM JOB'}</span>
@@ -6219,7 +6219,7 @@ const mockWorkflows: Workflow[] = [
                 </div>
                 <button 
                   onClick={() => setShowCreateJobModal(true)}
-                  className="px-4 py-2 bg-[#1f5df9] text-white rounded-[4px] flex items-center gap-2 text-xs font-black uppercase tracking-widest hover:bg-blue-600 transition-all shadow-sm cursor-pointer"
+                  className="px-4 py-2 bg-[#1f5df9] text-white rounded-[4px] flex items-center gap-2 text-xs font-black uppercase tracking-widest hover:bg-[#104BE3] transition-all shadow-sm cursor-pointer"
                   id="create-new-job-btn"
                 >
                   <Plus size={16} />
@@ -6622,7 +6622,7 @@ const mockWorkflows: Workflow[] = [
                                              }}
                                              className={`w-full h-7 text-white rounded-[4px] flex items-center justify-center gap-1.5 transition-all transform active:scale-95 border-none cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed disabled:transform-none disabled:active:scale-100 ${
                                                docStatus === ComparisonDocStatus.MISSING
-                                                 ? 'bg-[#0463EF] hover:bg-blue-600 shadow-md shadow-blue-500/25 disabled:hover:bg-[#0463EF]'
+                                                 ? 'bg-[#1F5DF9] hover:bg-[#104BE3] shadow-md shadow-blue-500/25 disabled:hover:bg-[#1F5DF9]'
                                                  : 'bg-emerald-600 hover:bg-emerald-700 shadow-md shadow-emerald-500/25 disabled:hover:bg-emerald-600'
                                              }`}
                                            >
@@ -6780,7 +6780,7 @@ const mockWorkflows: Workflow[] = [
                                  </p>
                                  <button
                                    onClick={() => setShowOnlyDiff(false)}
-                                   className="px-4 py-2 bg-[#0463EF] hover:bg-blue-600 text-white rounded-[4px] text-xs font-black uppercase tracking-widest transition-all shadow-sm cursor-pointer border-none"
+                                   className="px-4 py-2 bg-[#1F5DF9] hover:bg-[#104BE3] text-white rounded-[4px] text-xs font-black uppercase tracking-widest transition-all shadow-sm cursor-pointer border-none"
                                  >
                                    {language === 'TH' ? 'ดูข้อมูลทั้งหมด' : 'Show All Data'}
                                  </button>

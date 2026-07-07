@@ -1325,7 +1325,7 @@ function App() {
                     </button>
                     <button 
                       onClick={() => executeToggleWorkflowStatus(confirmToggleDialog.workflow!, confirmToggleDialog.type)}
-                      className="flex-1 py-2.5 bg-[#0463EF] hover:bg-[#0251c8] text-white rounded-[4px] font-bold text-xs uppercase tracking-widest transition-all shadow-md cursor-pointer h-[40px]"
+                      className="flex-1 py-2.5 bg-[#1F5DF9] hover:bg-[#104BE3] text-white rounded-[4px] font-bold text-xs uppercase tracking-widest transition-all shadow-md cursor-pointer h-[40px]"
                     >
                       {language === 'TH' ? 'ยืนยันการเปิดใช้งาน' : 'Confirm Enable'}
                     </button>
@@ -1377,7 +1377,7 @@ function App() {
                             executeToggleWorkflowStatus(deleteWorkflowDialog.workflow, deleteWorkflowDialog.type);
                           }
                         }}
-                        className="flex-1 py-2.5 bg-[#0463EF] hover:bg-[#0251c8] text-white rounded-[4px] font-bold text-xs uppercase tracking-widest transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer h-[40px]"
+                        className="flex-1 py-2.5 bg-[#1F5DF9] hover:bg-[#104BE3] text-white rounded-[4px] font-bold text-xs uppercase tracking-widest transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer h-[40px]"
                       >
                         <Power size={14} />
                         {t.btnGoToDisable}
@@ -1416,7 +1416,7 @@ function App() {
                       </button>
                       <button 
                         onClick={executeDeleteWorkflow}
-                        className="flex-1 py-2.5 bg-[#0463EF] hover:bg-[#0251c8] text-white rounded-[4px] font-bold text-xs uppercase tracking-widest transition-all shadow-md shadow-blue-500/10"
+                        className="flex-1 py-2.5 bg-[#1F5DF9] hover:bg-[#104BE3] text-white rounded-[4px] font-bold text-xs uppercase tracking-widest transition-all shadow-md shadow-blue-500/10"
                       >
                         {t.btnConfirmDeleteShort}
                       </button>
