@@ -800,9 +800,9 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
                   <button
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="w-8 h-8 rounded-[4px] bg-white hover:bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center border border-slate-200/50 shadow-sm transition active:scale-90"
+                    className="p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 rounded-lg border-none bg-transparent cursor-pointer transition-colors"
                   >
-                    <X size={14} />
+                    <X size={20} />
                   </button>
                 </div>
 

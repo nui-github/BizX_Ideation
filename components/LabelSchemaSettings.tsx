@@ -1030,18 +1030,21 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
       <Drawer
         title={
           <div className="flex items-center gap-2">
-            <div className="p-2 bg-blue-50/60 text-[#1f5df9] rounded-xl">
-              <Layers size={18} />
-            </div>
             <div>
-              <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">
-                {editingSchema ? (isTh ? 'แก้ไขสคีมา' : 'EDIT SCHEMA') : (isTh ? 'เพิ่มสคีมาใหม่' : 'CREATE SCHEMA')}
-              </span>
               <h2 className="text-base font-black text-[#010136] tracking-tight">
                 {editingSchema ? (isTh ? 'ตั้งค่า Label schema ของคุณ' : 'Configure Your Label Schema') : (isTh ? 'สร้างสคีมาใหม่ในระบบ' : 'Create New Label Schema')}
               </h2>
             </div>
           </div>
+        }
+        closeIcon={false}
+        extra={
+          <button 
+            onClick={() => setShowModal(false)} 
+            className="p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 rounded-lg border-none bg-transparent cursor-pointer transition-colors"
+          >
+            <X size={20} />
+          </button>
         }
         open={showModal}
         onClose={() => setShowModal(false)}
@@ -1109,7 +1112,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
 
           {/* Connect & Add Doc Types and its Labels */}
           <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50 p-3 rounded-[8px] border border-slate-200/40">
+            <div className="flex flex-col gap-3 bg-slate-50 p-3 rounded-[8px] border border-slate-200/40">
               <div className="space-y-1">
                 <span className="text-xs font-black text-[#010136] uppercase tracking-wider flex items-center gap-1.5">
                   <FileText size={15} className="text-[#1f5df9]" />
@@ -1122,9 +1125,9 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
               </div>
 
               {/* Selector to custom add docType with button click */}
-              <div className="flex items-center gap-2 w-full sm:w-auto">
+              <div className="flex items-center gap-2 w-full">
                 <Select
-                  className="w-48 sm:w-64 ant-select-custom font-semibold text-xs"
+                  className="w-full sm:w-64 ant-select-custom font-semibold text-xs h-[32px]"
                   placeholder={isTh ? 'เลือกประเภทเอกสาร' : 'Select Document Type'}
                   value={selectedDocTypeToAdd}
                   onChange={(val) => setSelectedDocTypeToAdd(val)}
