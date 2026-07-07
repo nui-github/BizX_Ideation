@@ -900,9 +900,6 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
                           {/* ID Badge & Header */}
                           <div className="flex items-start justify-between">
                             <div className="flex items-center gap-2.5">
-                              <div className="h-8 w-8 bg-blue-50 border border-blue-100/85 rounded-lg flex items-center justify-center text-blue-600 shadow-2xs shrink-0 select-none">
-                                <Layers size={14} className="text-blue-500 animate-pulse" />
-                              </div>
                               <h3 className="text-sm font-black text-slate-800 tracking-tight group-hover:text-blue-700 transition-colors uppercase">
                                 {schema.name}
                               </h3>
