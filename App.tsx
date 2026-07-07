@@ -1302,30 +1302,30 @@ function App() {
                 initial={{ scale: 0.95, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.95, y: 20 }}
-                className="bg-white rounded-3xl shadow-xl w-full max-w-md overflow-hidden"
+                className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-white/20 text-center"
               >
                 <div className="p-6">
-                  <div className="w-16 h-16 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mb-6">
-                    <AlertCircle size={32} />
+                  <div className="flex items-center justify-center mx-auto mb-4 text-amber-500">
+                    <AlertCircle size={48} />
                   </div>
-                  <h3 className="text-2xl font-black text-slate-800 tracking-tight leading-tight mb-2">
+                  <h3 className="text-xl font-black text-[#010136] tracking-tight leading-tight mb-2">
                     {language === 'TH' ? 'เวิร์กโฟลว์ยังตั้งค่าไม่สมบูรณ์' : 'Incomplete Configuration'}
                   </h3>
-                  <p className="text-[15px] font-medium text-slate-500 mb-8 leading-relaxed">
+                  <p className="text-xs font-semibold text-slate-500 leading-relaxed w-full mb-6">
                     {language === 'TH' 
                       ? 'workflow นี้ยังมี node ที่ config ไม่ครบ ต้องการ enable ต่อไปหรือไม่?'
                       : 'This workflow still has incomplete nodes. Are you sure you want to proceed and enable it?'}
                   </p>
-                  <div className="flex justify-end gap-3">
+                  <div className="flex gap-3">
                     <button 
                       onClick={() => setConfirmToggleDialog({ isOpen: false, workflow: null, type: 'STANDARD' })}
-                      className="px-6 py-3 rounded-xl text-slate-600 font-bold hover:bg-slate-100 transition-colors text-sm"
+                      className="flex-1 py-2.5 border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 rounded-[4px] font-bold text-xs uppercase tracking-widest transition-all cursor-pointer h-[40px]"
                     >
                       {language === 'TH' ? 'ยกเลิก' : 'Cancel'}
                     </button>
                     <button 
                       onClick={() => executeToggleWorkflowStatus(confirmToggleDialog.workflow!, confirmToggleDialog.type)}
-                      className="px-6 py-3 rounded-xl bg-amber-500 text-white font-bold hover:bg-amber-600 transition-colors shadow-sm text-sm"
+                      className="flex-1 py-2.5 bg-[#0463EF] hover:bg-[#0251c8] text-white rounded-[4px] font-bold text-xs uppercase tracking-widest transition-all shadow-md cursor-pointer h-[40px]"
                     >
                       {language === 'TH' ? 'ยืนยันการเปิดใช้งาน' : 'Confirm Enable'}
                     </button>
@@ -1360,7 +1360,7 @@ function App() {
                       <h3 className="text-xl font-black text-[#010136] tracking-tight leading-tight">
                         {t.errDeleteActiveTitle}
                       </h3>
-                      <p className="text-xs font-semibold text-slate-500 leading-relaxed max-w-[340px] mx-auto">
+                      <p className="text-xs font-semibold text-slate-500 leading-relaxed w-full">
                         {t.errDeleteActiveDesc}
                       </p>
                     </div>
@@ -1394,10 +1394,10 @@ function App() {
                         {t.confirmDeleteWorkflowTitle}
                       </h3>
                       <div className="space-y-3">
-                        <p className="text-xs font-bold text-slate-700 bg-slate-50 py-2.5 px-4 rounded-[4px] border border-slate-150 italic max-w-[280px] mx-auto truncate">
+                        <p className="text-xs font-bold text-slate-700 bg-slate-50 py-2.5 px-4 rounded-[4px] border border-slate-150 italic w-full truncate">
                           "{deleteWorkflowDialog.workflow.name}"
                         </p>
-                        <div className="p-3 bg-rose-50/40 rounded-lg border border-rose-100/60 max-w-[280px] mx-auto">
+                        <div className="p-3 bg-rose-50/40 rounded-lg border border-rose-100/60 w-full">
                           <p className="text-[11px] font-bold text-rose-600 leading-relaxed mb-1">
                             {t.confirmDeleteWorkflowDesc(deleteWorkflowDialog.workflow.name)}
                           </p>

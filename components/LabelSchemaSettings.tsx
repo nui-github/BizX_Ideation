@@ -1560,7 +1560,7 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
         open={!!schemaToDelete}
         onCancel={() => setSchemaToDelete(null)}
         footer={null}
-        width={420}
+        width={480}
         centered
         closable={false}
         className="rounded-3xl overflow-hidden"
@@ -1580,29 +1580,28 @@ export const LabelSchemaSettings: React.FC<LabelSchemaSettingsProps> = ({
                 const schemaWorkflows = getWorkflowNames(schemaToDelete.workflowIds);
                 if (schemaWorkflows.length > 0) {
                   return (
-                    <div className="text-left mt-4 text-xs font-semibold leading-relaxed text-slate-500 bg-amber-50/50 p-4 rounded-xl border border-amber-100/50">
-                      <div className="flex items-start gap-2 mb-2">
-                        <AlertCircle size={16} className="text-amber-500 shrink-0 mt-0.5" />
-                        <span className="text-amber-600 font-bold">
-                          {isTh ? `schema นี้ถูกใช้ใน ${schemaToDelete.workflowIds.length} workflow` : `This schema is used in ${schemaToDelete.workflowIds.length} workflows`}
-                        </span>
+                    <div>
+                      <div className="text-left mt-4 text-xs font-semibold leading-relaxed text-slate-500 bg-slate-50 p-4 rounded-xl border border-slate-200/80">
+                        <div className="flex items-start gap-2 mb-2">
+                          <AlertCircle size={16} className="text-amber-500 shrink-0 mt-0.5" />
+                          <span className="text-slate-700 font-bold">
+                            {isTh ? `schema นี้ถูกใช้ใน ${schemaToDelete.workflowIds.length} workflow` : `This schema is used in ${schemaToDelete.workflowIds.length} workflows`}
+                          </span>
+                        </div>
+                        <ul className="list-disc pl-7 space-y-1 text-slate-600 font-medium opacity-90">
+                          {schemaWorkflows.map((wf, idx) => (
+                            <li key={idx}>{wf}</li>
+                          ))}
+                        </ul>
                       </div>
-                      <p className="mb-2 text-slate-600 font-medium">
-                        {isTh ? 'ได้แก่:' : 'Including:'}
-                      </p>
-                      <ul className="list-disc pl-5 space-y-1 mb-2 text-slate-600 font-medium opacity-90">
-                        {schemaWorkflows.map((wf, idx) => (
-                          <li key={idx}>{wf}</li>
-                        ))}
-                      </ul>
-                      <p className="text-rose-500 mt-3 font-bold bg-rose-50 p-2 rounded-lg text-center">
+                      <p className="text-[11px] font-semibold text-slate-500 text-center leading-relaxed mt-4 w-full">
                         {isTh ? 'การลบจะกระทบ workflow เหล่านั้น Extract node จะแสดง incomplete' : 'Deleting this will affect these workflows. Their Extract nodes will become incomplete.'}
                       </p>
                     </div>
                   );
                 }
                 return (
-                  <p className="text-xs text-rose-500 mt-2 font-bold px-2 py-1.5 bg-rose-50 rounded-lg inline-block">
+                  <p className="text-xs text-slate-500 mt-2 font-semibold">
                     {isTh ? 'การลบนี้ไม่สามารถกู้คืนได้' : 'This action cannot be undone.'}
                   </p>
                 );

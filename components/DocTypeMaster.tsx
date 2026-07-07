@@ -8,7 +8,7 @@ import {
  } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { DocType, Language, DocTypeSchemaField, Workflow } from '../types';
-import { LabelSchemaSettings } from './LabelSchemaSettings';
+import { LabelSchemaSettings, DEFAULT_SCHEMAS, LabelSchema } from './LabelSchemaSettings';
 
 const getFieldTypeLabel = (type: string, masterData?: string, lang: Language = 'TH'): string => {
   switch (type) {
@@ -153,10 +153,12 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
     isOpen: boolean;
     docType: DocType | null;
     usingWorkflows: { id: string; name: string; type: 'standard' | 'comparison' }[];
+    usingSchemas?: LabelSchema[];
   }>({
     isOpen: false,
     docType: null,
-    usingWorkflows: []
+    usingWorkflows: [],
+    usingSchemas: []
   });
 
   // Auto-generate ID Code from Document Name (e.g., Invoice -> INV)
@@ -276,10 +278,27 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
 
   const handleDelete = (dt: DocType) => {
     const usingWfs = getWorkflowsUsingDocType(dt.id, dt.name);
+    
+    // Check if there are schemas linked to this docType
+    let usingSchemas: LabelSchema[] = [];
+    try {
+      const savedSchemas = typeof window !== 'undefined' ? localStorage.getItem('bizx_label_schemas_v3') : null;
+      const schemas: LabelSchema[] = savedSchemas ? JSON.parse(savedSchemas) : DEFAULT_SCHEMAS;
+      usingSchemas = schemas.filter(s => 
+        s.docTypes && s.docTypes.some(id => 
+          id.toUpperCase() === dt.id.toUpperCase() || 
+          id.toUpperCase() === dt.name.toUpperCase()
+        )
+      );
+    } catch (e) {
+      console.error('Failed to parse saved schemas', e);
+    }
+
     setDeleteConfirmDialog({
       isOpen: true,
       docType: dt,
-      usingWorkflows: usingWfs
+      usingWorkflows: usingWfs,
+      usingSchemas: usingSchemas
     });
   };
 
@@ -933,7 +952,7 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                onClick={() => setDeleteConfirmDialog({ isOpen: false, docType: null, usingWorkflows: [] })}
+                onClick={() => setDeleteConfirmDialog({ isOpen: false, docType: null, usingWorkflows: [], usingSchemas: [] })}
                 className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm cursor-pointer"
               />
 
@@ -945,29 +964,43 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
                 transition={{ type: 'spring', damping: 25, stiffness: 250 }}
                 className="relative bg-white rounded-2xl shadow-2xl border border-slate-100 max-w-md w-full overflow-hidden z-10 p-6 text-center"
               >
-                {/* Warning Yellow Icon with no background circle */}
-                <div className="flex items-center justify-center mx-auto mb-4 text-amber-500">
+                {/* Warning Yellow/Red Icon with no background circle */}
+                <div className={`flex items-center justify-center mx-auto mb-4 ${deleteConfirmDialog.usingSchemas && deleteConfirmDialog.usingSchemas.length > 0 ? 'text-rose-500' : 'text-amber-500'}`}>
                   <AlertCircle size={48} />
                 </div>
 
                 <div className="space-y-1.5 mb-4">
-                  <h3 className="text-lg font-extrabold text-[#010136] tracking-tight leading-snug">
-                    {deleteConfirmDialog.usingWorkflows.length > 0 
-                      ? (language === 'TH' ? 'แจ้งเตือน: ตรวจพบการใช้งานในเวิร์กโฟลว์' : 'Warning: Document Type in Use')
-                      : (language === 'TH' ? `ลบประเภทเอกสาร "${deleteConfirmDialog.docType.name}" ใช่หรือไม่` : `Delete "${deleteConfirmDialog.docType.name}"?`)
+                  <h3 className="text-xl font-black text-[#010136] tracking-tight leading-tight">
+                    {deleteConfirmDialog.usingSchemas && deleteConfirmDialog.usingSchemas.length > 0
+                      ? (language === 'TH' ? 'ลบไม่ได้: เชื่อมโยงกับ Schema' : 'Cannot Delete: Linked to Schema')
+                      : deleteConfirmDialog.usingWorkflows.length > 0 
+                        ? (language === 'TH' ? 'แจ้งเตือน: ตรวจพบการใช้งานในเวิร์กโฟลว์' : 'Warning: Document Type in Use')
+                        : (language === 'TH' ? `ลบประเภทเอกสาร "${deleteConfirmDialog.docType.name}" ใช่หรือไม่` : `Delete "${deleteConfirmDialog.docType.name}"?`)
                     }
                   </h3>
-                  <p className="text-xs text-slate-400 font-sans font-bold uppercase tracking-widest">
-                    {deleteConfirmDialog.usingWorkflows.length > 0 
-                      ? (language === 'TH' ? 'เนื่องจากถูกเชื่อมโยงอยู่กับระบบ' : 'dependency alert')
-                      : (language === 'TH' ? 'การระบายข้อมูลถาวร' : 'permanent action')
-                    }
-                  </p>
                 </div>
 
                 {/* Content */}
                 <div className="space-y-4 text-left mb-6">
-                  {deleteConfirmDialog.usingWorkflows.length > 0 ? (
+                  {deleteConfirmDialog.usingSchemas && deleteConfirmDialog.usingSchemas.length > 0 ? (
+                    <div className="space-y-3.5">
+                      <p className="text-xs font-semibold text-slate-600 leading-relaxed">
+                        {language === 'TH' 
+                          ? `ประเภทเอกสารนี้ถูกใช้งานอยู่ใน Schema ต่อไปนี้ จึงไม่สามารถลบได้ หากต้องการลบ กรุณาไปลบ Schema เหล่านี้ออกก่อน:`
+                          : `This document type is currently utilized in the following schemas and cannot be deleted. If you wish to delete it, please delete these schemas first:`}
+                      </p>
+                      
+                      {/* Schema List */}
+                      <ul className="bg-slate-50 border border-slate-100 rounded-xl p-3.5 space-y-2">
+                        {deleteConfirmDialog.usingSchemas.map((sch) => (
+                          <li key={sch.id} className="flex items-center gap-2 text-xs font-semibold text-slate-700">
+                            <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                            <span>{sch.name}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : deleteConfirmDialog.usingWorkflows.length > 0 ? (
                     <div className="space-y-3.5">
                       <p className="text-xs font-bold text-slate-600 leading-relaxed">
                         {language === 'TH' 
@@ -1001,27 +1034,37 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
                 </div>
 
                 {/* Footer buttons */}
-                <div className="flex items-center justify-center gap-3">
+                {deleteConfirmDialog.usingSchemas && deleteConfirmDialog.usingSchemas.length > 0 ? (
                   <button
                     type="button"
-                    onClick={() => setDeleteConfirmDialog({ isOpen: false, docType: null, usingWorkflows: [] })}
-                    className="flex-1 py-2.5 rounded-[4px] border border-slate-200 bg-white text-slate-600 font-bold hover:bg-slate-50 text-xs transition active:scale-95 cursor-pointer h-[40px]"
+                    onClick={() => setDeleteConfirmDialog({ isOpen: false, docType: null, usingWorkflows: [], usingSchemas: [] })}
+                    className="w-full py-2.5 rounded-[4px] bg-[#0463EF] hover:bg-[#0251c8] text-white font-bold text-xs transition active:scale-95 cursor-pointer shadow-md shadow-blue-500/10 h-[40px]"
                   >
-                    {language === 'TH' ? 'ยกเลิก' : 'Cancel'}
+                    {language === 'TH' ? 'รับทราบ' : 'Close'}
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (deleteConfirmDialog.docType) {
-                        onDeleteDocType(deleteConfirmDialog.docType.id);
-                      }
-                      setDeleteConfirmDialog({ isOpen: false, docType: null, usingWorkflows: [] });
-                    }}
-                    className="flex-1 py-2.5 rounded-[4px] bg-[#0463EF] hover:bg-[#0251c8] text-white font-bold text-xs transition active:scale-95 cursor-pointer shadow-md shadow-blue-500/10 h-[40px]"
-                  >
-                    {language === 'TH' ? 'ลบประเภทเอกสาร' : 'Confirm Delete'}
-                  </button>
-                </div>
+                ) : (
+                  <div className="flex items-center justify-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setDeleteConfirmDialog({ isOpen: false, docType: null, usingWorkflows: [], usingSchemas: [] })}
+                      className="flex-1 py-2.5 rounded-[4px] border border-slate-200 bg-white text-slate-600 font-bold hover:bg-slate-50 text-xs transition active:scale-95 cursor-pointer h-[40px]"
+                    >
+                      {language === 'TH' ? 'ยกเลิก' : 'Cancel'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (deleteConfirmDialog.docType) {
+                          onDeleteDocType(deleteConfirmDialog.docType.id);
+                        }
+                        setDeleteConfirmDialog({ isOpen: false, docType: null, usingWorkflows: [], usingSchemas: [] });
+                      }}
+                      className="flex-1 py-2.5 rounded-[4px] bg-[#0463EF] hover:bg-[#0251c8] text-white font-bold text-xs transition active:scale-95 cursor-pointer shadow-md shadow-blue-500/10 h-[40px]"
+                    >
+                      {language === 'TH' ? 'ลบประเภทเอกสาร' : 'Confirm Delete'}
+                    </button>
+                  </div>
+                )}
               </motion.div>
             </div>
           )}
