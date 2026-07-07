@@ -132,29 +132,10 @@ export const DEFAULT_SCHEMAS: LabelSchema[] = [
     name: 'FTA HS Code Compliance',
     description: 'ตรวจสอบความถูกต้องของพิกัดอัตราศุลกากร (HS Code) และหนังสือรับรองถิ่นกำเนิดสินค้าเพื่อสิทธิประโยชน์ทางภาษี',
     templateType: 'fta-compliance',
-    docTypes: ['PO', 'CO'],
+    docTypes: ['CO'],
     workflowIds: ['cwf-2'],
     updatedAt: '2026-05-27T08:15:00Z',
     configs: [
-      {
-        docTypeId: 'PO',
-        labels: [
-          { id: 'l-9', name: 'PO No', required: true, compare: true, section: 'Header', type: 'string' },
-          { id: 'l-po-header-date', name: 'PO Date', required: true, compare: false, section: 'Header', type: 'date' },
-          { 
-            id: 'l-10', 
-            name: 'HS Code Group', 
-            required: true, 
-            compare: true, 
-            section: 'Description', 
-            type: 'array',
-            subLabels: [
-              { id: 'l-po-sub-1', name: 'Harmonized Code', required: true, type: 'string', compare: false },
-              { id: 'l-po-sub-2', name: 'Category Label', required: false, type: 'string', compare: false }
-            ]
-          }
-        ]
-      },
       {
         docTypeId: 'CO',
         labels: [

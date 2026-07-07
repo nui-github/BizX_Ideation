@@ -453,6 +453,10 @@ const MOCK_WORKFLOWS: Workflow[] = [
   }
 ];
 
+if (typeof window !== 'undefined') {
+  localStorage.removeItem('bizx_label_schemas_v3');
+}
+
 function App() {
   // New State: Tracking View is default, EXTRACTION is new
   const [currentView, setCurrentView] = useState<'TRACKING' | 'AGENT_LIST' | 'AGENT_FORM' | 'EXTRACTION' | 'UPLOAD' | 'WORKFLOW_LIST' | 'WORKFLOW_BUILDER' | 'DATA_COMPARISON_JOBS' | 'DATA_COMPARISON_WORKFLOW' | 'DATA_COMPARISON_RULE' | 'DATA_COMPARISON_WORKFLOW_BUILDER' | 'SETTINGS_DOC_TYPE_MASTER' | 'SETTINGS_LABEL_SCHEMA' | 'SETTINGS_MASTER_DATA'>('TRACKING');
@@ -629,7 +633,7 @@ function App() {
           mode: 'Prompt-based only',
           promptTemplate: 'Please filter out FTA documents that do not have HS codes.',
         } },
-        { id: 'fa-2', type: 'group_of_file', position: { x: 900, y: 250 }, data: { rule: 'GLOBAL_PO#G-IMP-26-0812', fileTypes: ['FTA_ANNEX', 'INVOICE'] } },
+        { id: 'fa-2', type: 'group_of_file', position: { x: 900, y: 250 }, data: { rule: 'GLOBAL_PO#G-IMP-26-0812', fileTypes: ['FTA_ANNEX', 'INVOICE', 'PO'] } },
         { id: 'fa-3', type: 'create_job', position: { x: 1300, y: 250 }, data: { namingFormat: 'COMPLIANCE-{Ref}', jobType: 'Validation' } }
       ],
       edges: [
