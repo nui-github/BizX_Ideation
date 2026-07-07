@@ -4232,13 +4232,13 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
               initial={{ scale: 0.95, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
-              className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-white"
+              className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden border border-white text-center"
             >
               <div className="p-8">
-                <div className="w-16 h-16 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center mb-6 shadow-sm">
-                  <Trash2 size={32} />
+                <div className="flex items-center justify-center mx-auto mb-6 text-amber-500">
+                  <AlertCircle size={48} />
                 </div>
-                <h3 className="text-2xl font-black text-slate-800 tracking-tight leading-tight mb-2">
+                <h3 className="text-xl font-black text-[#010136] tracking-tight leading-tight mb-2">
                   {t.confirmDeleteNodeTitle}
                 </h3>
                 <p className="text-sm font-medium text-slate-500 leading-relaxed mb-8">
@@ -4247,13 +4247,13 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                 <div className="flex gap-3">
                   <button 
                     onClick={() => setDeleteConfirmation(null)}
-                    className="flex-1 py-4 bg-slate-50 text-slate-600 rounded-[4px] font-black text-xs uppercase tracking-widest hover:bg-slate-100 transition-all border border-slate-200"
+                    className="flex-1 py-3 bg-slate-50 text-slate-600 rounded-[4px] font-black text-xs uppercase tracking-widest hover:bg-slate-100 transition-all border border-slate-200"
                   >
                     {t.btnCancel}
                   </button>
                   <button 
                     onClick={() => handleDeleteNode(deleteConfirmation.nodeId, true)}
-                    className="flex-1 py-4 bg-rose-500 text-white rounded-[4px] font-black text-xs uppercase tracking-widest hover:bg-rose-600 transition-all shadow-lg shadow-rose-200"
+                    className="flex-1 py-3 bg-[#0463EF] hover:bg-[#0251c8] text-white rounded-[4px] font-black text-xs uppercase tracking-widest transition-all shadow-md shadow-blue-500/15"
                   >
                     {language === 'TH' ? 'ลบทันที' : 'Confirm Delete'}
                   </button>

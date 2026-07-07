@@ -1349,56 +1349,56 @@ function App() {
                 initial={{ scale: 0.95, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.95, y: 20 }}
-                className="bg-white rounded-[32px] shadow-2xl w-full max-w-md overflow-hidden border border-white/20"
+                className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-white/20 text-center"
               >
                 {deleteWorkflowDialog.workflow.status === 'ACTIVE' ? (
-                  <div className="p-8">
-                    <div className="w-20 h-20 bg-rose-50 text-rose-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-sm">
-                      <AlertCircle size={40} />
+                  <div className="p-6">
+                    <div className="flex items-center justify-center mx-auto mb-4 text-amber-500">
+                      <AlertCircle size={48} />
                     </div>
-                    <div className="text-center space-y-3 mb-8">
-                      <h3 className="text-2xl font-black text-slate-800 tracking-tight leading-tight">
+                    <div className="space-y-2 mb-6">
+                      <h3 className="text-xl font-black text-[#010136] tracking-tight leading-tight">
                         {t.errDeleteActiveTitle}
                       </h3>
-                      <p className="text-sm font-medium text-slate-500 max-w-[280px] mx-auto leading-relaxed">
+                      <p className="text-xs font-semibold text-slate-500 leading-relaxed max-w-[340px] mx-auto">
                         {t.errDeleteActiveDesc}
                       </p>
                     </div>
-                    <div className="flex flex-col gap-3">
+                    <div className="flex gap-3">
+                      <button 
+                        onClick={() => setDeleteWorkflowDialog({ isOpen: false, workflow: null, type: 'STANDARD' })}
+                        className="flex-1 py-2.5 border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 rounded-[4px] font-bold text-xs uppercase tracking-widest transition-all cursor-pointer h-[40px]"
+                      >
+                        {t.btnCancel}
+                      </button>
                       <button 
                         onClick={() => {
                           if (deleteWorkflowDialog.workflow) {
                             executeToggleWorkflowStatus(deleteWorkflowDialog.workflow, deleteWorkflowDialog.type);
                           }
                         }}
-                        className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 flex items-center justify-center gap-2"
+                        className="flex-1 py-2.5 bg-[#0463EF] hover:bg-[#0251c8] text-white rounded-[4px] font-bold text-xs uppercase tracking-widest transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer h-[40px]"
                       >
-                        <Power size={18} />
+                        <Power size={14} />
                         {t.btnGoToDisable}
-                      </button>
-                      <button 
-                        onClick={() => setDeleteWorkflowDialog({ isOpen: false, workflow: null, type: 'STANDARD' })}
-                        className="w-full py-2 text-slate-400 hover:text-slate-600 font-bold text-sm transition-all"
-                      >
-                        {t.btnCancel}
                       </button>
                     </div>
                   </div>
                 ) : (
-                  <div className="p-8">
-                    <div className="w-20 h-20 bg-rose-50 text-rose-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-sm">
-                      <Trash2 size={40} />
+                  <div className="p-6">
+                    <div className="flex items-center justify-center mx-auto mb-4 text-amber-500">
+                      <AlertCircle size={48} />
                     </div>
-                    <div className="text-center space-y-3 mb-8">
-                      <h3 className="text-2xl font-black text-slate-800 tracking-tight leading-tight">
+                    <div className="space-y-3 mb-6 text-center">
+                      <h3 className="text-xl font-black text-[#010136] tracking-tight leading-tight">
                         {t.confirmDeleteWorkflowTitle}
                       </h3>
-                      <div className="space-y-4">
-                        <p className="text-sm font-black text-slate-700 bg-slate-50 py-3 px-4 rounded-xl border border-slate-100 italic">
+                      <div className="space-y-3">
+                        <p className="text-xs font-bold text-slate-700 bg-slate-50 py-2.5 px-4 rounded-[4px] border border-slate-150 italic max-w-[280px] mx-auto truncate">
                           "{deleteWorkflowDialog.workflow.name}"
                         </p>
-                        <div className="p-4 bg-rose-50/50 rounded-2xl border border-rose-100">
-                          <p className="text-xs font-bold text-rose-600 leading-relaxed mb-1">
+                        <div className="p-3 bg-rose-50/40 rounded-lg border border-rose-100/60 max-w-[280px] mx-auto">
+                          <p className="text-[11px] font-bold text-rose-600 leading-relaxed mb-1">
                             {t.confirmDeleteWorkflowDesc(deleteWorkflowDialog.workflow.name)}
                           </p>
                           <p className="text-[10px] font-medium text-rose-400">
@@ -1407,16 +1407,16 @@ function App() {
                         </div>
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="flex gap-3">
                       <button 
                         onClick={() => setDeleteWorkflowDialog({ isOpen: false, workflow: null, type: 'STANDARD' })}
-                        className="py-4 bg-white text-slate-500 hover:text-slate-700 border border-slate-200 rounded-2xl font-black text-xs uppercase tracking-widest transition-all"
+                        className="flex-1 py-2.5 bg-white text-slate-600 border border-slate-200 rounded-[4px] font-bold text-xs uppercase tracking-widest transition-all hover:bg-slate-50"
                       >
                         {t.btnCancel}
                       </button>
                       <button 
                         onClick={executeDeleteWorkflow}
-                        className="py-4 bg-rose-500 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-rose-600 transition-all shadow-lg shadow-rose-500/20"
+                        className="flex-1 py-2.5 bg-[#0463EF] hover:bg-[#0251c8] text-white rounded-[4px] font-bold text-xs uppercase tracking-widest transition-all shadow-md shadow-blue-500/10"
                       >
                         {t.btnConfirmDeleteShort}
                       </button>

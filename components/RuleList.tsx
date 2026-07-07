@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Settings, Plus, LayoutList, ChevronRight, Trash2, Tag, Calendar, Waypoints, Copy } from 'lucide-react';
+import { Settings, Plus, LayoutList, ChevronRight, Trash2, Tag, Calendar, Waypoints, Copy, AlertCircle } from 'lucide-react';
 import { TRANSLATIONS } from '../translations';
 import { Language } from '../types';
 import { Tooltip } from './Tooltip';
@@ -171,8 +171,8 @@ export const RuleList = ({ rules, onSelect, onCreate, onDelete, onToggleStatus, 
                     // Warning Dialog - Rule is in use
                     <div>
                       <div className="text-center mb-4">
-                        <div className="w-12 h-12 rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-4">
-                          <Trash2 size={24} />
+                        <div className="flex items-center justify-center mx-auto mb-4 text-amber-500">
+                          <AlertCircle size={48} />
                         </div>
                         
                         <h3 className="text-lg font-black text-[#010136] tracking-tight leading-tight mb-2">
@@ -214,7 +214,7 @@ export const RuleList = ({ rules, onSelect, onCreate, onDelete, onToggleStatus, 
                         </button>
                         <button 
                           onClick={handleDelete}
-                          className="flex-[1.5] py-3 text-white font-black bg-red-600 hover:bg-red-700 hover:shadow-lg transition-all shadow-md text-xs uppercase tracking-widest"
+                          className="flex-[1.5] py-3 text-white font-black bg-[#0463EF] hover:bg-[#0251c8] hover:shadow-lg transition-all shadow-md text-xs uppercase tracking-widest"
                           style={{ borderRadius: '4px' }}
                         >
                           {isTh ? 'ใช่, ฉันต้องการลบรายการ' : 'Confirm Delete'}
@@ -224,8 +224,8 @@ export const RuleList = ({ rules, onSelect, onCreate, onDelete, onToggleStatus, 
                   ) : (
                     // Simple Confirmation Dialog - Rule is NOT in use
                     <div className="text-center">
-                      <div className="w-12 h-12 rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-4">
-                        <Trash2 size={24} />
+                      <div className="flex items-center justify-center mx-auto mb-4 text-amber-500">
+                        <AlertCircle size={48} />
                       </div>
                       
                       <h3 className="text-lg font-black text-[#010136] tracking-tight leading-tight mb-2">
@@ -250,7 +250,7 @@ export const RuleList = ({ rules, onSelect, onCreate, onDelete, onToggleStatus, 
                         </button>
                         <button 
                           onClick={handleDelete}
-                          className="flex-1 py-3 text-white font-black bg-red-600 hover:bg-red-700 hover:shadow-lg transition-all shadow-md text-xs uppercase tracking-widest"
+                          className="flex-1 py-3 text-white font-black bg-[#0463EF] hover:bg-[#0251c8] hover:shadow-lg transition-all shadow-md text-xs uppercase tracking-widest"
                           style={{ borderRadius: '4px' }}
                         >
                           {isTh ? 'ใช่, ฉันต้องการลบรายการ' : 'Confirm'}

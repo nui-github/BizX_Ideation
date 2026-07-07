@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { ArrowLeft, Plus, ShieldCheck, Tag, X, FilePlus, Pencil, Trash2, Check, Copy, ClipboardPaste, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Plus, ShieldCheck, Tag, X, FilePlus, Pencil, Trash2, Check, Copy, ClipboardPaste, ChevronLeft, ChevronRight, AlertCircle } from 'lucide-react';
 import { TRANSLATIONS } from '../translations';
 import { Language } from '../types';
 import { Tooltip } from './Tooltip';
@@ -1140,8 +1140,8 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="p-6 text-center">
-              <div className="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4">
-                <Trash2 size={24} />
+              <div className="flex items-center justify-center mx-auto mb-4 text-amber-500">
+                <AlertCircle size={48} />
               </div>
               <h3 className="text-lg font-black text-slate-800 mb-2">ลบรายการนี้?</h3>
               <p className="text-slate-500 text-sm mb-6">คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้ ข้อมูลที่ลบจะไม่สามารถกู้คืนได้</p>
@@ -1154,7 +1154,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                 </button>
                 <button 
                   onClick={confirmDelete}
-                  className="flex-1 py-2.5 rounded-[4px] text-white font-bold bg-red-600 hover:bg-red-700 transition-colors shadow-sm"
+                  className="flex-1 py-2.5 rounded-[4px] text-white font-bold bg-[#0463EF] hover:bg-[#0251c8] transition-colors shadow-sm"
                 >
                   ลบข้อมูล
                 </button>
@@ -1241,8 +1241,8 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="p-6 text-center">
-              <div className="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4">
-                <Trash2 size={24} />
+              <div className="flex items-center justify-center mx-auto mb-4 text-amber-500">
+                <AlertCircle size={48} />
               </div>
               <h3 className="text-lg font-black text-slate-800 mb-2">ลบประเภทเอกสาร?</h3>
               <p className="text-slate-500 text-sm mb-6">คุณแน่ใจหรือไม่ว่าต้องการลบเอกสาร <span className="font-bold text-slate-800">"{activeRule.docTypes[deletingDocType]}"</span> ข้อมูลที่เกี่ยวข้องทั้งหมดจะถูกลบและไม่สามารถกู้คืนได้</p>
@@ -1255,7 +1255,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                 </button>
                 <button 
                   onClick={confirmDeleteDocType}
-                  className="flex-1 py-2.5 rounded-[4px] text-white font-bold bg-red-600 hover:bg-red-700 transition-colors shadow-sm"
+                  className="flex-1 py-2.5 rounded-[4px] text-white font-bold bg-[#0463EF] hover:bg-[#0251c8] transition-colors shadow-sm"
                 >
                   ลบข้อมูล
                 </button>

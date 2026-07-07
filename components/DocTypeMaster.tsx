@@ -943,37 +943,30 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
                 animate={{ scale: 1, y: 0, opacity: 1 }}
                 exit={{ scale: 0.95, y: 20, opacity: 0 }}
                 transition={{ type: 'spring', damping: 25, stiffness: 250 }}
-                className="relative bg-white rounded-2xl shadow-2xl border border-slate-100 max-w-md w-full overflow-hidden z-10"
+                className="relative bg-white rounded-2xl shadow-2xl border border-slate-100 max-w-md w-full overflow-hidden z-10 p-6 text-center"
               >
-                {/* Header pattern or background indicator */}
-                <div className={`p-6 pb-2 flex items-start gap-4 ${
-                  deleteConfirmDialog.usingWorkflows.length > 0 ? 'bg-amber-50/50' : 'bg-rose-50/50'
-                }`}>
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border ${
-                    deleteConfirmDialog.usingWorkflows.length > 0 
-                      ? 'bg-amber-100/80 text-amber-600 border-amber-200' 
-                      : 'bg-rose-100/80 text-rose-600 border-rose-200'
-                  }`}>
-                    <AlertCircle size={22} strokeWidth={2.5} />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-extrabold text-slate-800 font-sans tracking-tight leading-snug">
-                      {deleteConfirmDialog.usingWorkflows.length > 0 
-                        ? (language === 'TH' ? 'แจ้งเตือน: ตรวจพบการใช้งานในเวิร์กโฟลว์' : 'Warning: Document Type in Use')
-                        : (language === 'TH' ? `ลบประเภทเอกสาร "${deleteConfirmDialog.docType.name}" ใช่หรือไม่` : `Delete "${deleteConfirmDialog.docType.name}"?`)
-                      }
-                    </h3>
-                    <p className="text-xs text-slate-500 font-sans font-bold uppercase tracking-widest mt-1">
-                      {deleteConfirmDialog.usingWorkflows.length > 0 
-                        ? (language === 'TH' ? 'เนื่องจากถูกเชื่อมโยงอยู่กับระบบ' : 'dependency alert')
-                        : (language === 'TH' ? 'การระบายข้อมูลถาวร' : 'permanent action')
-                      }
-                    </p>
-                  </div>
+                {/* Warning Yellow Icon with no background circle */}
+                <div className="flex items-center justify-center mx-auto mb-4 text-amber-500">
+                  <AlertCircle size={48} />
+                </div>
+
+                <div className="space-y-1.5 mb-4">
+                  <h3 className="text-lg font-extrabold text-[#010136] tracking-tight leading-snug">
+                    {deleteConfirmDialog.usingWorkflows.length > 0 
+                      ? (language === 'TH' ? 'แจ้งเตือน: ตรวจพบการใช้งานในเวิร์กโฟลว์' : 'Warning: Document Type in Use')
+                      : (language === 'TH' ? `ลบประเภทเอกสาร "${deleteConfirmDialog.docType.name}" ใช่หรือไม่` : `Delete "${deleteConfirmDialog.docType.name}"?`)
+                    }
+                  </h3>
+                  <p className="text-xs text-slate-400 font-sans font-bold uppercase tracking-widest">
+                    {deleteConfirmDialog.usingWorkflows.length > 0 
+                      ? (language === 'TH' ? 'เนื่องจากถูกเชื่อมโยงอยู่กับระบบ' : 'dependency alert')
+                      : (language === 'TH' ? 'การระบายข้อมูลถาวร' : 'permanent action')
+                    }
+                  </p>
                 </div>
 
                 {/* Content */}
-                <div className="p-6 pt-4 space-y-4 font-sans">
+                <div className="space-y-4 text-left mb-6">
                   {deleteConfirmDialog.usingWorkflows.length > 0 ? (
                     <div className="space-y-3.5">
                       <p className="text-xs font-bold text-slate-600 leading-relaxed">
@@ -999,7 +992,7 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
                       </p>
                     </div>
                   ) : (
-                    <p className="text-xs font-semibold text-slate-600 leading-relaxed">
+                    <p className="text-xs font-semibold text-slate-600 leading-relaxed text-center">
                       {language === 'TH'
                         ? `คุณยืนยันที่จะลบประเภทเอกสาร "${deleteConfirmDialog.docType.name}" ใช่หรือไม่? การลบนี้ไม่สามารถกู้คืนได้เมื่อดำเนินการสำเร็จ`
                         : `Are you sure you want to permanently delete the "${deleteConfirmDialog.docType.name}" document type? This action cannot be undone.`}
@@ -1008,11 +1001,11 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
                 </div>
 
                 {/* Footer buttons */}
-                <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-3 font-sans">
+                <div className="flex items-center justify-center gap-3">
                   <button
                     type="button"
                     onClick={() => setDeleteConfirmDialog({ isOpen: false, docType: null, usingWorkflows: [] })}
-                    className="px-4 py-2.5 rounded-[4px] border border-slate-200 bg-white text-slate-600 font-bold hover:bg-slate-50 text-xs transition active:scale-95 cursor-pointer"
+                    className="flex-1 py-2.5 rounded-[4px] border border-slate-200 bg-white text-slate-600 font-bold hover:bg-slate-50 text-xs transition active:scale-95 cursor-pointer h-[40px]"
                   >
                     {language === 'TH' ? 'ยกเลิก' : 'Cancel'}
                   </button>
@@ -1024,11 +1017,7 @@ export const DocTypeMaster: React.FC<DocTypeMasterProps> = ({
                       }
                       setDeleteConfirmDialog({ isOpen: false, docType: null, usingWorkflows: [] });
                     }}
-                    className={`px-4 py-2.5 rounded-[4px] text-white font-bold text-xs transition active:scale-95 cursor-pointer shadow-sm ${
-                      deleteConfirmDialog.usingWorkflows.length > 0
-                        ? 'bg-amber-600 hover:bg-amber-700 shadow-amber-200'
-                        : 'bg-rose-600 hover:bg-rose-700 shadow-rose-200'
-                    }`}
+                    className="flex-1 py-2.5 rounded-[4px] bg-[#0463EF] hover:bg-[#0251c8] text-white font-bold text-xs transition active:scale-95 cursor-pointer shadow-md shadow-blue-500/10 h-[40px]"
                   >
                     {language === 'TH' ? 'ลบประเภทเอกสาร' : 'Confirm Delete'}
                   </button>
