@@ -298,9 +298,11 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentUserRole, onTog
                   <span className="flex items-center gap-1 font-semibold text-slate-800">
                     {activeMenu === 'settings_doc_type' 
                       ? (language === 'TH' ? 'ตั้งค่า Doc Type' : 'Doc Type Settings') 
-                      : activeMenu === 'settings_label_schema'
-                      ? (language === 'TH' ? 'ตั้งค่า Label schema' : 'Label Schema Settings')
-                      : (language === 'TH' ? 'ตั้งค่า Master data' : 'Master Data Settings')}
+                      : activeMenu === 'settings_job_preset'
+                      ? (language === 'TH' ? 'ตั้งค่าพรีเซ็ตงานเริ่มต้น' : 'Job Preset Settings')
+                      : activeMenu === 'settings_master_data'
+                      ? (language === 'TH' ? 'ตั้งค่า Master data' : 'Master Data Settings')
+                      : (language === 'TH' ? 'ตั้งค่า Label schema' : 'Label Schema Settings')}
                   </span>
                 </>
               ) : (
@@ -368,6 +370,17 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentUserRole, onTog
                   >
                     <Settings size={16} className="text-slate-400" /> 
                     <span>{language === 'TH' ? 'ตั้งค่า Doc Type' : 'Doc Type Settings'}</span>
+                  </button>
+                  <button 
+                    onClick={() => {
+                      onNavigate('SETTINGS_JOB_PRESET');
+                      setActiveMenu('settings_job_preset');
+                      setProfileOpen(false);
+                    }}
+                    className="w-full text-left px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 flex items-center gap-2"
+                  >
+                    <Settings size={16} className="text-slate-400" /> 
+                    <span>{language === 'TH' ? 'ตั้งค่าพรีเซ็ตงานเริ่มต้น' : 'Job Preset Settings'}</span>
                   </button>
                   <button 
                     onClick={() => {

@@ -227,3 +227,19 @@ export const AVAILABLE_TRIGGERS = [
 ];
 
 export const ALLOWED_VARIABLES = ['{DocNo}', '{Date}', '{Customer}', '{AgentName}', '{Year}', '{Month}', '{DocType}'];
+
+export interface JobPresetWorkflow {
+  id: string;
+  workflowId: string;
+  assignedTeams: string[];
+}
+
+export interface JobPreset {
+  id: string;
+  name: string;
+  assignedTeams: string[];
+  workflows: JobPresetWorkflow[];
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}

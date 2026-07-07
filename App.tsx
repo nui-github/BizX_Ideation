@@ -12,10 +12,12 @@ import { ManageRule } from './components/ManageRule';
 import { ComparisonWorkflow } from './components/ComparisonWorkflow';
 import { DataComparisonWorkflowBuilder } from './components/DataComparisonWorkflowBuilder';
 import { DocTypeMaster } from './components/DocTypeMaster';
+import { JobPresetSettings } from './components/JobPresetSettings';
 import { LabelSchemaSettings } from './components/LabelSchemaSettings';
 import { MasterDataSettings } from './components/MasterDataSettings';
-import { Agent, AgentStatus, AgentType, AuditLog, UserRole, Language, TrackingItem, TrackingSource, ReviewStatus, SendStatus, Workflow, DocType } from './types';
+import { Agent, AgentStatus, AgentType, AuditLog, UserRole, Language, TrackingItem, TrackingSource, ReviewStatus, SendStatus, Workflow, DocType, JobPreset } from './types';
 import { TRANSLATIONS } from './translations';
+import { MOCK_PRESETS } from './mock-data/preset.mock';
 import { CheckCircle2, AlertCircle, Trash2, Power } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -459,7 +461,7 @@ if (typeof window !== 'undefined') {
 
 function App() {
   // New State: Tracking View is default, EXTRACTION is new
-  const [currentView, setCurrentView] = useState<'TRACKING' | 'AGENT_LIST' | 'AGENT_FORM' | 'EXTRACTION' | 'UPLOAD' | 'WORKFLOW_LIST' | 'WORKFLOW_BUILDER' | 'DATA_COMPARISON_JOBS' | 'DATA_COMPARISON_WORKFLOW' | 'DATA_COMPARISON_RULE' | 'DATA_COMPARISON_WORKFLOW_BUILDER' | 'SETTINGS_DOC_TYPE_MASTER' | 'SETTINGS_LABEL_SCHEMA' | 'SETTINGS_MASTER_DATA'>('TRACKING');
+  const [currentView, setCurrentView] = useState<'TRACKING' | 'AGENT_LIST' | 'AGENT_FORM' | 'EXTRACTION' | 'UPLOAD' | 'WORKFLOW_LIST' | 'WORKFLOW_BUILDER' | 'DATA_COMPARISON_JOBS' | 'DATA_COMPARISON_WORKFLOW' | 'DATA_COMPARISON_RULE' | 'DATA_COMPARISON_WORKFLOW_BUILDER' | 'SETTINGS_DOC_TYPE_MASTER' | 'SETTINGS_LABEL_SCHEMA' | 'SETTINGS_MASTER_DATA' | 'SETTINGS_JOB_PRESET'>('TRACKING');
   const [docTypes, setDocTypes] = useState<DocType[]>([
     { 
       id: 'INV', 
@@ -503,6 +505,7 @@ function App() {
   ]);
   const [formMode, setFormMode] = useState<'CREATE' | 'EDIT' | 'VIEW'>('CREATE');
   const [agents, setAgents] = useState<Agent[]>(MOCK_AGENTS);
+  const [jobPresets, setJobPresets] = useState<JobPreset[]>(MOCK_PRESETS);
   const [selectedAgent, setSelectedAgent] = useState<Agent | undefined>(undefined);
   
   // State for Tracking Items
@@ -1257,22 +1260,30 @@ function App() {
            />
         )}
 
-        {false && (
-           <LabelSchemaSettings 
-             language={language}
-             docTypes={docTypes}
-             workflows={workflows}
-             comparisonWorkflows={comparisonWorkflows}
-             onBack={() => setCurrentView('TRACKING')}
-             setComparisonWorkflows={setComparisonWorkflows}
-           />
+        {currentView === 'SETTINGS_JOB_PRESET' && (
+          <div className="flex-1 overflow-y-auto">
+            <JobPresetSettings 
+              language={language}
+              workflows={workflows}
+              comparisonWorkflows={comparisonWorkflows}
+              presets={jobPresets}
+              onAddPreset={(preset) => setJobPresets([...jobPresets, preset])}
+              onUpdatePreset={(preset) => setJobPresets(jobPresets.map(p => p.id === preset.id ? preset : p))}
+              onDeletePreset={(id) => setJobPresets(jobPresets.filter(p => p.id !== id))}
+              onBack={() => setCurrentView('TRACKING')}
+            />
+          </div>
         )}
 
         {currentView === 'SETTINGS_MASTER_DATA' && (
-           <MasterDataSettings 
-             language={language}
-             onBack={() => setCurrentView('TRACKING')}
-           />
+          <div className="flex-1 overflow-y-auto">
+            <MasterDataSettings 
+              language={language}
+              onBack={() => {
+                setCurrentView('TRACKING');
+              }}
+            />
+          </div>
         )}
 
         {/* Global Toast Notification */}
