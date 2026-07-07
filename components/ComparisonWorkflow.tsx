@@ -217,9 +217,10 @@ export const ComparisonWorkflow: React.FC<ComparisonWorkflowProps> = ({
                             e.stopPropagation();
                             onToggleStatus(workflow);
                           }}
-                          className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-[4px] border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${
+                          className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full rounded-[16px] px-0 border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${
                             workflow.status === 'ACTIVE' ? 'bg-emerald-500' : 'bg-slate-300'
                           }`}
+                          style={{ borderRadius: '16px', paddingLeft: '0px', paddingRight: '0px' }}
                         >
                           <span
                             aria-hidden="true"
@@ -255,7 +256,7 @@ export const ComparisonWorkflow: React.FC<ComparisonWorkflowProps> = ({
                       <div className="relative group/tip">
                         <button 
                           onClick={() => handleOpenDuplicate(workflow)}
-                          className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-[4px] transition-all md:opacity-0 md:group-hover:opacity-100"
+                          className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-[4px] transition-all"
                         >
                           <Copy size={16} />
                         </button>
@@ -268,7 +269,7 @@ export const ComparisonWorkflow: React.FC<ComparisonWorkflowProps> = ({
                     <div className="relative group/tip">
                       <button 
                         onClick={() => onDelete(workflow)}
-                        className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-[4px] transition-all md:opacity-0 md:group-hover:opacity-100"
+                        className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-[4px] transition-all"
                       >
                         <Trash2 size={16} />
                       </button>

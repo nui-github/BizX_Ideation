@@ -468,7 +468,7 @@ export const RuleMatrix = ({ rule, onBack, onUpdate, language }: any) => {
                  const newStatus = activeRule.status === 'Active' ? 'Inactive' : 'Active';
                  setActiveRule({...activeRule, status: newStatus});
                }}
-               className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-[4px] border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+               className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
                  activeRule.status === 'Active' ? 'bg-emerald-500' : 'bg-slate-300'
                }`}
              >

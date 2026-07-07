@@ -501,6 +501,25 @@ export const ManageRule: React.FC<ManageRuleProps> = ({ language, comparisonWork
     }));
   }, []);
 
+  const handleDuplicateRule = useCallback((ruleId: string) => {
+    setRules(prevRules => {
+      const ruleToDuplicate = prevRules.find(r => r.id === ruleId);
+      if (!ruleToDuplicate) return prevRules;
+      
+      const newRuleId = `rule-new-${Date.now()}`;
+      const newRule = {
+        ...ruleToDuplicate,
+        id: newRuleId,
+        name: `${ruleToDuplicate.name} (Copy)`,
+        nameTh: ruleToDuplicate.nameTh ? `${ruleToDuplicate.nameTh} (สำเนา)` : `${ruleToDuplicate.name} (สำเนา)`,
+        updatedAt: new Date().toISOString().split('T')[0],
+        workflowIds: []
+      };
+      
+      return [newRule, ...prevRules];
+    });
+  }, []);
+
   if (selectedRuleId) {
     const activeRule = rules.find(r => r.id === selectedRuleId);
     return <RuleMatrix rule={activeRule} onBack={() => setSelectedRuleId(null)} onUpdate={handleUpdateRule} language={language} />;
@@ -514,6 +533,7 @@ export const ManageRule: React.FC<ManageRuleProps> = ({ language, comparisonWork
         onCreate={handleOpenCreateModal} 
         onDelete={handleDeleteRule} 
         onToggleStatus={handleToggleRuleStatus} 
+        onDuplicate={handleDuplicateRule}
         language={language}
         comparisonWorkflows={comparisonWorkflows}
       />

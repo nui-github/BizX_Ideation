@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Settings, Plus, LayoutList, ChevronRight, Trash2, Tag, Calendar, Waypoints } from 'lucide-react';
+import { Settings, Plus, LayoutList, ChevronRight, Trash2, Tag, Calendar, Waypoints, Copy } from 'lucide-react';
 import { TRANSLATIONS } from '../translations';
 import { Language } from '../types';
+import { Tooltip } from './Tooltip';
 
-export const RuleList = ({ rules, onSelect, onCreate, onDelete, onToggleStatus, language, comparisonWorkflows }: any) => {
+export const RuleList = ({ rules, onSelect, onCreate, onDelete, onToggleStatus, language, comparisonWorkflows, onDuplicate }: any) => {
   const t = TRANSLATIONS[language as Language] || TRANSLATIONS.EN;
   const isTh = language === 'TH';
   const [ruleToDelete, setRuleToDelete] = useState<any>(null);
@@ -127,15 +128,28 @@ export const RuleList = ({ rules, onSelect, onCreate, onDelete, onToggleStatus, 
                 </div>
                 
                 <div className="flex items-center gap-2">
-                  <button 
-                    onClick={(e) => confirmDelete(e, rule)}
-                    className="w-10 h-10 rounded-[4px] bg-slate-50 flex items-center justify-center text-slate-300 hover:bg-red-50 hover:text-red-600 transition-all opacity-0 group-hover:opacity-100"
-                  >
-                    <Trash2 size={18} />
-                  </button>
-                  <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
-                    <ChevronRight size={20} />
-                  </div>
+                  <Tooltip content={isTh ? 'ทำซ้ำรายการ' : 'Duplicate'}>
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (onDuplicate) {
+                          onDuplicate(rule.id);
+                        }
+                      }}
+                      className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-[4px] flex items-center justify-center transition-all"
+                    >
+                      <Copy size={16} />
+                    </button>
+                  </Tooltip>
+
+                  <Tooltip content={isTh ? 'ลบรายการ' : 'Delete'}>
+                    <button 
+                      onClick={(e) => confirmDelete(e, rule)}
+                      className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-[4px] flex items-center justify-center transition-all"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </Tooltip>
                 </div>
               </div>
             </div>

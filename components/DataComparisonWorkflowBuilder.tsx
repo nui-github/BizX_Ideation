@@ -3479,10 +3479,10 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                             const currentVal = node.data?.allowReview !== false; // default = true
                             updateNodeData(node.id, { allowReview: !currentVal });
                           }}
-                          className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-[4px] border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                          className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-[20px] border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
                             (node.data?.allowReview !== false) ? 'bg-[#16EA9E]' : 'bg-slate-200'
                           }`}
-                          style={{ borderRadius: '9999px' }}
+                          style={{ borderRadius: '20px' }}
                         >
                           <span
                             className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
@@ -3904,7 +3904,7 @@ export const DataComparisonWorkflowBuilder: React.FC<DataComparisonWorkflowBuild
                               const newVal = node.data.allowReview === false ? true : false;
                               updateNodeData(node.id, { allowReview: newVal });
                             }}
-                            className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-[4px] border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                            className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-[20px] border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                               node.data.allowReview !== false ? 'bg-[#1f5df9]' : 'bg-slate-200'
                             }`}
                           >
